@@ -86,4 +86,22 @@ Debug Script
 Maintain Script
     ↓
 Execute on Servers
-``` 
+```
+### Ansible Automation Approach
+Write Playbook
+    ↓
+Run Playbook
+    ↓
+Automate Infrastructure
+
+Example Use Case 1: Restarting Application Infrastructure
+
+Imagine you have a production environment with:
+
+Web Servers
+Database Servers
+
+You need to restart the entire application stack in a specific order.
+
+Required Restart Sequence
+Shutdown Phase
