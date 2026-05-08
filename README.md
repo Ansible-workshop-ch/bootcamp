@@ -1,2 +1,1 @@
-# bootcamp
-All learning modules
+readme
