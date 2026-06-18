@@ -1,0 +1,17 @@
+---
+# Module 2: install and start a service. Run it twice to see idempotency.
+- name: Module 2 - install and start a web service
+  hosts: web
+  become: true
+
+  tasks:
+    - name: Install the web package
+      ansible.builtin.package:
+        name: "{{ package_name }}"
+        state: present
+
+    - name: Start and enable the service
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: started
+        enabled: true

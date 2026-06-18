@@ -1,0 +1,27 @@
+---
+- name: Install common packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ common_packages }}"
+
+- name: Install the web package (RedHat family)
+  ansible.builtin.package:
+    name: "{{ package_name }}"
+    state: present
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Ensure the web service is running and enabled
+  ansible.builtin.service:
+    name: "{{ service_name }}"
+    state: started
+    enabled: true
+
+- name: Deploy index page from template
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ index_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart web service

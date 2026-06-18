@@ -1,0 +1,9 @@
+---
+# Module 6: the playbook is now tiny - the role holds the logic.
+- name: Module 6 - apply the web_config role
+  hosts: web
+  become: true
+  gather_facts: true
+
+  roles:
+    - web_config

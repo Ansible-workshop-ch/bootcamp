@@ -1,0 +1,14 @@
+---
+# Module 1: prove connectivity and gather a basic fact.
+- name: Module 1 - verify connectivity
+  hosts: linux
+  gather_facts: true
+  become: false
+
+  tasks:
+    - name: Ping all managed hosts
+      ansible.builtin.ping:
+
+    - name: Show the hostname Ansible sees
+      ansible.builtin.debug:
+        msg: "Reached {{ inventory_hostname }} ({{ ansible_facts['hostname'] | default('n/a') }})"

@@ -1,0 +1,23 @@
+---
+# Module 4: show how values come from group_vars / host_vars / facts.
+- name: Module 4 - variables and facts
+  hosts: web
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Show where the web_message came from
+      ansible.builtin.debug:
+        msg: "web_message = {{ web_message }}"
+
+    - name: Show a few useful facts
+      ansible.builtin.debug:
+        msg: >-
+          os_family={{ ansible_facts['os_family'] }}
+          hostname={{ ansible_facts['hostname'] }}
+          total_memory={{ ansible_facts['memtotal_mb'] }}MB
+
+    - name: Install the package using a variable (not a hardcoded name)
+      ansible.builtin.package:
+        name: "{{ package_name }}"
+        state: present

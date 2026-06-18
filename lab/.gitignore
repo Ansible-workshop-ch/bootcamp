@@ -1,0 +1,18 @@
+# Ansible
+*.retry
+*.log
+
+# Vault (never commit decrypted secrets)
+vault_pass.txt
+*.decrypted
+
+# Editor / OS noise
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/

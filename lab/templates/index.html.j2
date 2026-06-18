@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <head><title>{{ inventory_hostname }}</title></head>
+  <body>
+    <h1>{{ web_message }}</h1>
+    <p>Host: {{ inventory_hostname }}</p>
+    <p>OS family: {{ ansible_facts['os_family'] | default('unknown') }}</p>
+    <p>Managed by Ansible. Do not edit by hand.</p>
+  </body>
+</html>

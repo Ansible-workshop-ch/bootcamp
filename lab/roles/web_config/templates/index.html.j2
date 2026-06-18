@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <head><title>{{ inventory_hostname }}</title></head>
+  <body>
+    <h1>{{ web_message }}</h1>
+    <p>Host: {{ inventory_hostname }}</p>
+    <p>Served on port {{ web_port }}</p>
+    <p>Deployed by the web_config role.</p>
+  </body>
+</html>

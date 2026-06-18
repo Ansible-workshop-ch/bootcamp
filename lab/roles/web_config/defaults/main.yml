@@ -1,0 +1,10 @@
+---
+# Safe, overridable defaults. group_vars/host_vars/survey can override these.
+package_name: httpd
+service_name: httpd
+web_port: 80
+web_message: "Hello from the web_config role"
+common_packages:
+  - vim
+  - git
+  - curl

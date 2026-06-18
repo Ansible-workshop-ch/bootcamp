@@ -1,0 +1,4 @@
+---
+# Role-internal constants that should NOT normally be overridden.
+web_root: /var/www/html
+index_path: /var/www/html/index.html

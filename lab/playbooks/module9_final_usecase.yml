@@ -1,0 +1,32 @@
+---
+# Module 9: a small, realistic "remediate a web service" workflow.
+# Designed to also run from an AAP job template with a survey that sets
+# `web_message` and `target_group` as extra vars.
+- name: Module 9 - Charter-style service remediation
+  hosts: "{{ target_group | default('web') }}"
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Make sure the package and config are in place (via role)
+      ansible.builtin.include_role:
+        name: web_config
+
+    - name: Check whether the web service is running
+      ansible.builtin.service_facts:
+
+    - name: Report service state
+      ansible.builtin.debug:
+        msg: >-
+          {{ service_name }} state is
+          {{ ansible_facts.services[service_name ~ '.service'].state | default('unknown') }}
+
+    - name: Remediate - ensure service is started
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: started
+      register: remediation
+
+    - name: Summary
+      ansible.builtin.debug:
+        msg: "Remediation changed={{ remediation.changed }} on {{ inventory_hostname }}"

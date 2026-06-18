@@ -1,0 +1,4 @@
+---
+# Variables that apply to every host unless overridden lower down.
+company: "Charter"
+environment_name: "training"

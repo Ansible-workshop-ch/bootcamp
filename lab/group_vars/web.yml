@@ -1,0 +1,12 @@
+---
+# Variables for every host in the [web] group.
+package_name: httpd
+service_name: httpd
+web_port: 80
+web_message: "Hello from Ansible - {{ company }} {{ environment_name }}"
+
+# Used by the loop lab in Module 5
+common_packages:
+  - vim
+  - git
+  - curl
