@@ -2,8 +2,6 @@
 
 > 🧪 Lab commands run from [`bootcamp/lab/`](../lab/) — `cd bootcamp/lab` first. Diagrams render automatically on GitHub.
 
-> 🧪 Lab commands run from [`bootcamp/lab/`](../lab/) — `cd bootcamp/lab` first. Diagrams render automatically on GitHub.
-
 **Day 3 · AAP and Applied Workflow** — bring the whole course together on something that *feels* like Charter work, without going down application-specific rabbit holes.
 
 ---
