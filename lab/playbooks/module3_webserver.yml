@@ -1,17 +1,35 @@
 ---
-# Module 3: a basic, readable playbook combining install + service.
 - name: Module 3 - basic web server setup
   hosts: web
   become: true
+  gather_facts: true
 
   tasks:
-    - name: Install httpd
+    - name: Install the web package
       ansible.builtin.package:
-        name: httpd
+        name: "{{ package_name }}"
         state: present
 
-    - name: Start and enable httpd
+    - name: Ensure web document root exists
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Deploy a simple index page
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          <h1>{{ web_message }}</h1>
+          <p>Host: {{ inventory_hostname }}</p>
+          <p>OS family: {{ ansible_facts["os_family"] }}</p>
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure the web service is running
       ansible.builtin.service:
-        name: httpd
+        name: "{{ service_name }}"
         state: started
-        enabled: true
