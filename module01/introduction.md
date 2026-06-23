@@ -35,7 +35,7 @@ flowchart LR
     A -- runs modules over SSH --> C
 ```
 This is Ansible working the way your team will use it on Day 1: from the command line, no AAP yet.
-
+---
 Control node (your workstation) — this is you, sitting at your laptop or a jump box, typing the Ansible command. It's the machine that does the bossing around.
 Inventory (list of hosts) — before Ansible can do anything, it has to know which machines to act on. The inventory is just that list. The arrow from your workstation to the inventory means "first, Ansible reads the list to find out who the targets are."
 Managed Linux hosts — the actual servers you want to change or check. These are the machines getting the work done to them.
@@ -53,7 +53,7 @@ flowchart LR
 ```
 
 This is a sneak peek of how the same thing happens once you move into Ansible Automation Platform. It's a straight pipeline, left to right, and each box hands off to the next:
-
+---
 Git repo — your code (playbooks, roles) lives in Git, the single source of truth.
 AAP project — AAP connects to that Git repo and pulls the code in. A "project" is basically AAP's link to your repo.
 Inventory — same concept as before: the list of target hosts, but now managed inside AAP.
