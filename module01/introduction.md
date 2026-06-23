@@ -164,3 +164,9 @@ ansible all -m command -a "uptime"
     <img src="/images/nexticon.webp" alt="Ansbile Training" style="width:25px;" />
   </a>
 </p>
+
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
