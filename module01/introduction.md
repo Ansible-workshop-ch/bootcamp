@@ -83,12 +83,18 @@ ansible --version
 
 # Make sure your in the right dirctory 
 cd lab
+
 # Can I reach every host in the inventory?
 ansible all -i inventories/inventory.ini -m ping
 
 # Run a single command (the command module) on all hosts
 ansible all -i inventories/inventory.ini -m command -a "hostname"
 ```
+> Notes: 
+>> all -> Runs an Ansible ad-hoc command
+>> -i targets all hosts in the inventory 
+>> -m ping/command - uses the Ansible module 
+>> -a -> passes the argument to the module.
 
 Talking points:
 - The **target host came from the inventory**, not from the command.
