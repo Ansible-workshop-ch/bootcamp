@@ -157,3 +157,10 @@ ansible all -m command -a "uptime"
 2. **B** — The system being automated
 3. **B** — Repeatable, readable automation across systems
 </details>
+
+
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module02/inventory-and-idempotency.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="OpenShift Training" style="width:25px;" />
+  </a>
+</p>
