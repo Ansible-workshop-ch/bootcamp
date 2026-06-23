@@ -1,0 +1,42 @@
+# Ansible Training - sample inventory
+# This inventory file tells Ansible which lab hosts it can manage.
+# Replace the ansible_host values with your real lab host IPs or DNS names.
+
+# The web group contains hosts that will act as web or application servers.
+[web]
+# server1 is the inventory name.
+# ansible_host defines the real IP address or DNS name Ansible will connect to.
+server1 ansible_host=10.0.0.11
+
+# server2 is another host in the web group.
+server2 ansible_host=10.0.0.12
+
+[linux]
+container1 ansible_host=127.0.0.1 ansible_port=2222 ansible_user=ansible ansible_python_interpreter=/usr/bin/python3
+
+# The db group contains database servers.
+[db]
+
+# dbserver1 is the inventory name for the database server.
+dbserver1 ansible_host=10.0.0.21
+
+
+# The linux group is a parent group.
+# The :children keyword means this group includes other groups.
+[linux:children]
+
+# Include all hosts from the web group in the linux group.
+web
+
+# Include all hosts from the db group in the linux group.
+db
+
+# The linux:vars section defines variables for all hosts in the linux group.
+# These variables apply to both web and db hosts.
+[linux:vars]
+
+# ansible_user defines the SSH user Ansible will use to connect to the hosts.
+ansible_user=ansible
+
+# ansible_python_interpreter defines which Python binary Ansible should use on the managed hosts.
+ansible_python_interpreter=/usr/bin/python3
