@@ -43,7 +43,7 @@ flowchart LR
 ---
 > The important part is the bottom arrow labeled "runs modules over SSH." That straight line from your workstation directly to the managed hosts is the key idea: once Ansible knows the targets, it connects to them over SSH and runs its work there. Notice there's nothing installed on those servers no agent. Ansible just logs in like a person would and does the task. So the flow reads: you tell Ansible what to do → it checks the list of hosts → it SSHes into those hosts and runs the work.
 
-Where AAP fits later (preview of Day 3):
+Where AAP fits later:
 
 ```mermaid
 flowchart LR
