@@ -1,4 +1,0 @@
----
-# Host-specific overrides for server1.
-# This value beats the group_vars/web.yml value because host_vars wins.
-web_message: "Hello from Ansible - this is server1 specifically"
