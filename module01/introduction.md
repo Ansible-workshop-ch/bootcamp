@@ -81,6 +81,8 @@ The instructor demonstrates, students watch:
 # What version am I running?
 ansible --version
 
+# Make sure your in the right dirctory 
+cd lab
 # Can I reach every host in the inventory?
 ansible all -i inventories/inventory.ini -m ping
 
