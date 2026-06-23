@@ -161,6 +161,6 @@ ansible all -m command -a "uptime"
 
 <p align="right">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module02/inventory-and-idempotency.md" target="_blank">
-    <img src="/images/nexticon.webp" alt="OpenShift Training" style="width:25px;" />
+    <img src="/images/nexticon.webp" alt="Ansbile Training" style="width:25px;" />
   </a>
 </p>
