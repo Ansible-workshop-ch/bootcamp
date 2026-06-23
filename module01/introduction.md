@@ -71,8 +71,6 @@ flowchart LR
 
 > The connection between the two: they end at the same place  managed hosts getting changed. The top diagram is one person driving from their laptop. The bottom diagram wraps that same Ansible run inside AAP, which adds the things a team needs: code stored in Git, shared inventories, a launch button, logged output, and a dedicated machine to run it. Day 1 teaches the top picture; Day 3 connects it to the bottom one.
 
-> One quick note on your screenshot: the label "runs modules over SSH" is sitting a bit on top of the box below it, which makes it look cramped. That's just Mermaid's auto-layout being tight it's not broken. If it bugs you visually, I can tweak that diagram so the SSH label sits cleanly on its own. Want me to?
-
 ---
 
 ## Hands-On Walkthrough
