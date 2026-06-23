@@ -34,13 +34,10 @@ flowchart LR
     B --> C[Managed Linux hosts]
     A -- runs modules over SSH --> C
 ```
-This is Ansible working the way your team will use it on Day 1: from the command line, no AAP yet.
+> This is Ansible working the way your team will use it on Day 1: from the command line, no AAP yet. Control node (your workstation) — this is you, sitting at your laptop or a jump box, typing the Ansible command. It's the machine that does the bossing around. Inventory (list of hosts) — before Ansible can do anything, it has to know which machines to act on. The inventory is just that list. The arrow from your workstation to the inventory means "first, Ansible reads the list to find out who the targets are." Managed Linux hosts — the actual servers you want to change or check. These are the machines getting the work done to them.
 ---
-Control node (your workstation) — this is you, sitting at your laptop or a jump box, typing the Ansible command. It's the machine that does the bossing around.
-Inventory (list of hosts) — before Ansible can do anything, it has to know which machines to act on. The inventory is just that list. The arrow from your workstation to the inventory means "first, Ansible reads the list to find out who the targets are."
-Managed Linux hosts — the actual servers you want to change or check. These are the machines getting the work done to them.
----
-The important part is the bottom arrow labeled "runs modules over SSH." That straight line from your workstation directly to the managed hosts is the key idea: once Ansible knows the targets, it connects to them over SSH and runs its work there. Notice there's nothing installed on those servers — no agent. Ansible just logs in like a person would and does the task. So the flow reads: you tell Ansible what to do → it checks the list of hosts → it SSHes into those hosts and runs the work.
+> The important part is the bottom arrow labeled "runs modules over SSH." That straight line from your workstation directly to the managed hosts is the key idea: once Ansible knows the targets, it connects to them over SSH and runs its work there. Notice there's nothing installed on those servers — no agent. Ansible just logs in like a person would and does the task. So the flow reads: you tell Ansible what to do → it checks the list of hosts → it SSHes into those hosts and runs the work.
+
 Where AAP fits later (preview of Day 3):
 
 ```mermaid
@@ -52,17 +49,9 @@ flowchart LR
     E --> H[Managed hosts]
 ```
 
-This is a sneak peek of how the same thing happens once you move into Ansible Automation Platform. It's a straight pipeline, left to right, and each box hands off to the next:
+> This is a sneak peek of how the same thing happens once you move into Ansible Automation Platform. It's a straight pipeline, left to right, and each box hands off to the next: Git repo — your code (playbooks, roles) lives in Git, the single source of truth. AAP project — AAP connects to that Git repo and pulls the code in. A "project" is basically AAP's link to your repo. Inventory — same concept as before: the list of target hosts, but now managed inside AAP. Job template — the "run button." It bundles together which playbook to run, which inventory to run it against, and how to log in. This is what an operator actually launches. Execution node — the worker machine AAP uses to actually run the playbook (instead of your laptop doing it). Managed hosts — same endpoint as the top diagram: the real servers getting the work done.
 ---
-Git repo — your code (playbooks, roles) lives in Git, the single source of truth.
-AAP project — AAP connects to that Git repo and pulls the code in. A "project" is basically AAP's link to your repo.
-Inventory — same concept as before: the list of target hosts, but now managed inside AAP.
-Job template — the "run button." It bundles together which playbook to run, which inventory to run it against, and how to log in. This is what an operator actually launches.
-Execution node — the worker machine AAP uses to actually run the playbook (instead of your laptop doing it).
-Managed hosts — same endpoint as the top diagram: the real servers getting the work done.
----
-The connection between the two: they end at the same place — managed hosts getting changed. The top diagram is one person driving from their laptop. The bottom diagram wraps that same Ansible run inside AAP, which adds the things a team needs: code stored in Git, shared inventories, a launch button, logged output, and a dedicated machine to run it. Day 1 teaches the top picture; Day 3 connects it to the bottom one.
-One quick note on your screenshot: the label "runs modules over SSH" is sitting a bit on top of the box below it, which makes it look cramped. That's just Mermaid's auto-layout being tight — it's not broken. If it bugs you visually, I can tweak that diagram so the SSH label sits cleanly on its own. Want me to?
+> The connection between the two: they end at the same place — managed hosts getting changed. The top diagram is one person driving from their laptop. The bottom diagram wraps that same Ansible run inside AAP, which adds the things a team needs: code stored in Git, shared inventories, a launch button, logged output, and a dedicated machine to run it. Day 1 teaches the top picture; Day 3 connects it to the bottom one. One quick note on your screenshot: the label "runs modules over SSH" is sitting a bit on top of the box below it, which makes it look cramped. That's just Mermaid's auto-layout being tight — it's not broken. If it bugs you visually, I can tweak that diagram so the SSH label sits cleanly on its own. Want me to?
 
 ---
 
