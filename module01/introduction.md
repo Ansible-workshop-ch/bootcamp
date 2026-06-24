@@ -1,3 +1,15 @@
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module02/inventory-and-idempotency.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansbile Training" style="width:25px;" />
+  </a>
+</p>
+
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
 # Module 1: Ansible Introduction and Architecture
 
 > 🧪 Lab commands run from [`bootcamp/lab/`](../lab/) — `cd bootcamp/lab` first. Diagrams render automatically on GitHub.
