@@ -180,3 +180,15 @@ ansible web -m package -a "name=httpd state=stopped" --become
 3. **A** — Modules are structured and state-aware
 
 </details>
+
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module03/playbook-basics.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansbile Training" style="width:25px;" />
+  </a>
+</p>
+
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module01/introduction.md" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
