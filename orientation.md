@@ -2,65 +2,352 @@
 
 > Light orientation only. Read or skim before Day 1 so the first morning is not spent on setup confusion. This is **not** full training.
 
+---
+
 ## 1. What is Ansible?
 
-Ansible is an automation tool that runs tasks across one or many systems. It needs **no agent** on the managed Linux hosts — it connects over SSH, reads an **inventory** of target machines, and runs **modules** to make changes or collect information.
+Ansible is an automation tool that runs tasks across one or many systems.
+
+It does **not require an agent** on managed Linux hosts. Instead, Ansible usually connects over SSH, reads an **inventory** of target machines, and runs **modules** to make changes or collect information.
+
+In simple terms:
+
+```text
+Inventory tells Ansible where to run.
+Modules tell Ansible what to do.
+Playbooks make the automation reusable.
+```
+
+---
 
 ## 2. What is AAP?
 
-Ansible Automation Platform (AAP) is the enterprise platform that runs, schedules, and controls Ansible automation. Instead of every engineer running playbooks from a laptop, AAP pulls code from Git and runs it through **job templates** against shared **inventories**, with logged output. Target version for this class: **AAP 2.6 sandbox**.
+Ansible Automation Platform, or **AAP**, is the enterprise platform for running, scheduling, controlling, and auditing Ansible automation.
+
+Instead of every engineer running playbooks from a laptop, AAP can:
+
+* Pull automation code from Git
+* Use shared inventories
+* Use stored credentials
+* Run job templates
+* Show job output
+* Track who launched what
+* Provide a controlled automation workflow
+
+Target version for this class:
+
+```text
+AAP 2.6 sandbox
+```
+
+---
 
 ## 3. How the Git repo is structured
 
+The training repo contains both the course content and the hands-on lab files.
+
+High-level structure:
+
 ```text
-charter-ansible-training/
-  ansible.cfg            # points Ansible at the inventory + roles
-  inventories/           # who we manage
-  group_vars/            # variables shared by a group of hosts
-  host_vars/             # variables for one specific host
-  playbooks/             # one playbook per module
-  roles/                 # reusable automation (web_config)
-  templates/             # Jinja2 templates
-  docs/                  # the module you are reading now
+bootcamp/
+  README.md
+  orientation.md
+
+  module01/
+  module02/
+  module03/
+  module04/
+  module05/
+  module06/
+  module07/
+  module08/
+  module09/
+
+  lab/
+    README.md
+    ansible.cfg
+    inventories/
+      inventory.ini
+      group_vars/
+        all.yml
+        web.yml
+        ubuntu_web.yml
+        rhel_web.yml
+    playbooks/
+      module1_ping.yml
+      module2_service.yml
+      module3_webserver.yml
+      module4_variables.yml
+      module5_template_deploy.yml
+      module6_role_apply.yml
+      module9_final_usecase.yml
+    roles/
+      web_config/
+    templates/
+      index.html.j2
+      motd.j2
+    bonus/
+      netbox-source-of-truth.md
 ```
 
-## 4. How to clone the repo
+The most important lab folder is:
+
+```text
+bootcamp/lab/
+```
+
+Most hands-on commands should be run from there:
 
 ```bash
-git clone <training-repo-url> charter-ansible-training
-cd charter-ansible-training
+cd bootcamp/lab
 ```
 
-## 5. What a basic playbook looks like
+---
+
+## 4. Inventory structure
+
+The lab inventory is located here:
+
+```text
+lab/inventories/inventory.ini
+```
+
+This inventory includes multiple groups.
+
+Example structure:
+
+```text
+ubuntu_web
+  container1
+  container2
+  container3
+
+rhel_web
+  rhel1
+  rhel2
+  rhel3
+
+web
+  ubuntu_web
+  rhel_web
+
+```
+
+Why this matters:
+
+* `ubuntu_web` targets Ubuntu-based containers
+* `rhel_web` targets Rocky/RHEL-based containers
+* `web` targets all web servers
+* `linux` targets all Linux hosts
+
+This lets us teach a real-world Ansible pattern:
+
+```text
+Same playbook.
+Different operating systems.
+Different package and service names.
+Group variables make the playbook reusable.
+```
+
+---
+
+## 5. Variables in this lab
+
+Inventory variables live under:
+
+```text
+lab/inventories/group_vars/
+```
+
+Important files:
+
+```text
+all.yml         # variables for all hosts
+web.yml         # variables shared by all web hosts
+ubuntu_web.yml  # Ubuntu-specific variables
+rhel_web.yml    # Rocky/RHEL-specific variables
+```
+
+Example:
+
+```yaml
+# inventories/group_vars/ubuntu_web.yml
+---
+package_name: apache2
+service_name: apache2
+```
+
+```yaml
+# inventories/group_vars/rhel_web.yml
+---
+package_name: httpd
+service_name: httpd
+```
+
+This allows one playbook to work across different Linux distributions.
+
+Ubuntu/Debian uses:
+
+```text
+Package: apache2
+Service: apache2
+```
+
+Rocky/RHEL uses:
+
+```text
+Package: httpd
+Service: httpd
+```
+
+---
+
+## 6. How to clone the repo
+
+```bash
+git clone <training-repo-url> bootcamp
+cd bootcamp
+```
+
+For lab commands:
+
+```bash
+cd lab
+```
+
+---
+
+## 7. What a basic playbook looks like
+
+A playbook is a YAML file that describes automation steps.
+
+Example:
 
 ```yaml
 ---
 - name: Basic web server setup
   hosts: web
   become: true
+
   tasks:
-    - name: Install httpd
+    - name: Install the web package
       ansible.builtin.package:
-        name: httpd
+        name: "{{ package_name }}"
         state: present
+
+    - name: Start the web service
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: started
 ```
 
-## 6. What an AAP job template looks like
+This playbook does not hardcode `apache2` or `httpd`.
 
-A job template ties together: a **project** (the Git repo), an **inventory** (the targets), a **credential** (how to log in), and a **playbook** (what to run). You press **Launch**, AAP runs the playbook, and you read the **output**.
+Instead, it uses variables:
 
-## 7. How to confirm access before class
+```text
+package_name
+service_name
+```
+
+The correct values come from the inventory group variables.
+
+That is what makes the playbook reusable across Ubuntu and Rocky/RHEL hosts.
+
+---
+
+## 8. What an AAP job template looks like
+
+An AAP job template ties together:
+
+* **Project** - the Git repo
+* **Inventory** - the target hosts
+* **Credential** - how AAP logs into the hosts
+* **Playbook** - what automation to run
+* **Limit** - optional targeting filter
+* **Variables** - optional runtime values
+
+Basic flow:
+
+```text
+Git repo -> AAP Project -> Inventory -> Job Template -> Launch -> Output
+```
+
+You press **Launch**, AAP runs the playbook, and you review the job output.
+
+---
+
+## 9. What NetBox is in this course
+
+NetBox is introduced as a **bonus source-of-truth topic**.
+
+NetBox does not run automation.
+
+NetBox stores infrastructure information such as:
+
+* Sites
+* Devices
+* Virtual machines
+* IP addresses
+* Tags
+* Roles
+* Tenants
+* Locations
+
+In simple terms:
+
+```text
+NetBox tells Ansible what exists.
+Ansible performs the automation.
+AAP controls and runs the automation.
+```
+
+For the main beginner labs, we start with static inventory.
+NetBox is introduced later as an enterprise pattern for dynamic inventory.
+
+---
+
+## 10. How to confirm access before class
 
 Before Day 1, confirm you can:
 
-- [ ] Open a Linux terminal and run `ssh`
-- [ ] Reach the VPN / pass MFA (if required)
-- [ ] `git clone` the training repo
-- [ ] Log into the **AAP 2.6 sandbox** web UI
-- [ ] Log into the assigned **lab host**
+* [ ] Open a Linux terminal
+* [ ] Run `ssh`
+* [ ] Run `git`
+* [ ] Clone the training repo
+* [ ] Change into the lab directory
+* [ ] Log into the AAP sandbox web UI
+* [ ] Reach the assigned lab host or local lab environment
+* [ ] Run basic Ansible commands if Ansible is already installed
 
-If any box is unchecked, raise it before Day 1 — not during it.
+Recommended quick checks:
 
-## Prerequisites recap
+```bash
+ssh -V
+git --version
+ansible --version
+```
 
-Basic Linux CLI, basic SSH, basic Git (cloning). **No Ansible experience required.**
+If the local Podman lab is being used, also confirm:
+
+```bash
+podman ps
+```
+
+If any item is not working, raise it before Day 1.
+
+---
+
+## 11. Prerequisites recap
+
+You do **not** need previous Ansible experience.
+
+You should be comfortable with basic:
+
+* Linux CLI
+* SSH
+* Git clone
+* Reading simple YAML
+* Running commands from a terminal
+
+The course starts from the foundation and builds up step by step.
