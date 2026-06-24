@@ -94,7 +94,10 @@ The instructor demonstrates, students watch:
 ansible --version
 
 # Make sure your in the right dirctory 
-cd lab
+cd ~/bootcamp/lab
+
+# lets see what we go in our inventory
+ansible-inventory -i inventories/inventory.ini --graph
 
 # Can I reach every host in the inventory?
 ansible all -i inventories/inventory.ini -m ping

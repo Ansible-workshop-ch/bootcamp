@@ -1,0 +1,9 @@
+---
+package_name: apache2
+service_name: apache2
+web_port: 80
+common_packages:
+  - vim
+  - git
+  - curl
+  - apache2

@@ -1,0 +1,9 @@
+---
+package_name: httpd
+service_name: httpd
+web_port: 80
+common_packages:
+  - vim
+  - git
+  - curl-minimal
+  - httpd
