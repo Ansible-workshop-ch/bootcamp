@@ -24,6 +24,8 @@
         content: |
           <h1>{{ web_message }}</h1>
           <p>Host: {{ inventory_hostname }}</p>
+          <p>Package: {{ package_name }}</p>
+          <p>Service: {{ service_name }}</p>
           <p>OS family: {{ ansible_facts["os_family"] }}</p>
         owner: root
         group: root
