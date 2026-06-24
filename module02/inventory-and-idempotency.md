@@ -161,10 +161,10 @@ Talking points:
 5. Observe `changed` vs `ok` in the output.
 
 ```bash
-ansible web -m package -a "name=httpd state=present" --become
+ansible web -m package -a "name=httpd state=restarted" --become
 ansible web -m service -a "name=httpd state=started" --become
 # run the install again and watch the result flip to "ok"
-ansible web -m package -a "name=httpd state=present" --become
+ansible web -m package -a "name=httpd state=stopped" --become
 ```
 
 **Success check:**
