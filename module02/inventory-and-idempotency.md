@@ -1,4 +1,4 @@
-# Module 3: Playbook Basics
+# Module 2: Inventory, Ad Hoc Commands, and Idempotency
 
 > 🧪 Lab commands run from [`bootcamp/lab/`](../lab/) — `cd bootcamp/lab` first. Diagrams render automatically on GitHub.
 
@@ -8,206 +8,187 @@
 
 ## Definition
 
-A **playbook** is a YAML file that describes automation in a repeatable way.
+An **inventory** defines the systems Ansible manages. It can start simple — an INI or YAML file — and later come from **dynamic sources** such as NetBox.
 
-Instead of typing one Ansible command at a time, a playbook lets us define multiple steps in one file and run them consistently.
+**Ad hoc commands** are one-line Ansible commands used for quick tasks or testing.
 
-A playbook helps us move from quick ad hoc commands into reusable automation.
+**Idempotency** means Ansible tries to bring a system to the *desired state* without repeating unnecessary changes. The same run twice should not keep "changing" things that are already correct.
 
-Basic parts of a playbook:
-
-* **Name** — human-readable description of the play
-* **Hosts** — which inventory group/host to target
-* **Become** — whether to escalate privilege, similar to `sudo`
-* **Tasks** — the ordered list of actions
-* **Modules** — what each task actually uses
-* **State** — the desired end condition, such as `present` or `started`
-
-In this lab, the managed containers are Ubuntu-based, so we use:
-
-* Package: `apache2`
-* Service: `apache2`
-
-On Red Hat, RHEL, CentOS, or Rocky Linux, the package and service are usually called `httpd`.
+> Bash may run `yum install httpd` every time. The Ansible `package` module first checks whether `httpd` is already installed and only acts if needed.
 
 ---
 
 ## Diagram / Workflow
 
-The diagram below shows how a playbook is structured and how Ansible executes it.
+The diagram below shows the basic Ansible flow.
 
-A **playbook** is the full YAML automation file.
+Ansible starts with an **inventory**. The inventory is where we define the hosts that Ansible can manage.
 
-Inside the playbook, we define a **play**. The play tells Ansible which hosts to target. In this example, the play targets the `web` group from the inventory.
+Inside the inventory, hosts can be organized into groups. In this example, the group is called `web`.
 
-Inside the play, we define multiple **tasks**. Tasks run from top to bottom, in order.
+The `web` group contains two hosts:
 
-Each task uses an Ansible **module**. A module is the tool Ansible uses to perform the work.
+* `server1`
+* `server2`
 
-In this example:
+When we run Ansible against the `web` group, Ansible targets the hosts inside that group. Then Ansible runs a **module** against those hosts.
 
-* Task 1 uses the `package` module to install Apache
-* Task 2 uses the `service` module to start Apache
-* Both tasks run against the managed hosts in the `web` group
+A module is the action Ansible performs. For example, a module can test connectivity, install a package, copy a file, start a service, or create a user.
+
+After the module runs, Ansible reports the result. The result tells us whether the task was already correct, changed something, failed, or could not reach the host.
 
 ```mermaid
-flowchart TD
-    PB[Playbook] --> PL[Play<br/>hosts: web]
-    PL --> T1[Task 1] --> M1[package module]
-    PL --> T2[Task 2] --> M2[service module]
-    M1 --> Hosts[Managed hosts]
-    M2 --> Hosts
+flowchart LR
+    subgraph INV[Inventory]
+        G[Group: web] --> H1[server1]
+        G --> H2[server2]
+    end
+    H1 --> M[Module]
+    M --> R[Result: ok / changed]
 ```
-
-### Diagram Explanation
-
-The diagram starts with the **Playbook** box.
-
-That represents the YAML file we run with the `ansible-playbook` command.
-
-The playbook points to a **Play**. The play contains `hosts: web`, which means Ansible will run this automation against the `web` group in the inventory.
-
-From that play, Ansible runs the tasks.
-
-Task 1 runs first. It uses the `package` module. In this lab, that task installs the `apache2` package.
-
-Task 2 runs next. It uses the `service` module. In this lab, that task starts the `apache2` service.
-
-Both modules act on the **managed hosts**. These are the systems Ansible is configuring.
 
 In simple terms:
 
 ```text
-Playbook = the automation file
-Play = which hosts to target
-Tasks = the steps to run
-Modules = the tools Ansible uses to perform each step
-Managed hosts = the systems being configured
+Inventory tells Ansible where to run.
+Module tells Ansible what to do.
+Result tells us what happened.
 ```
 
-This is the main difference between an ad hoc command and a playbook:
+Common results include:
+
+* `ok`: the host was already in the correct state
+* `changed`: Ansible made a change on the host
+* `failed`: the task failed
+* `unreachable`: Ansible could not connect to the host
+
+---
+
+## Idempotency, visually:
+
+The diagram below explains how Ansible decides whether a change is needed.
+
+Before Ansible changes anything, it checks the current state of the system.
+
+It asks:
 
 ```text
-Ad hoc command = one quick task from the terminal
-Playbook = multiple tasks saved in a YAML file and reused
+Is the system already in the desired state?
 ```
+
+If the answer is **Yes**, Ansible does nothing and reports `ok`.
+
+That means the system was already configured correctly.
+
+If the answer is **No**, Ansible makes the required change and reports `changed`.
+
+That means Ansible updated the system to match the desired state.
+
+```mermaid
+flowchart TD
+    S{Is the system<br/>already in the<br/>desired state?} -->|Yes| OK[Report ok - do nothing]
+    S -->|No| CH[Make the change - report changed]
+```
+
+In simple terms:
+
+```text
+If the system is already correct, Ansible reports ok.
+If the system needs to be fixed, Ansible makes the change and reports changed.
+```
+
+This is why Ansible is safe to run multiple times. If nothing needs to change, Ansible will not keep changing the system again and again.
 
 ---
 
 ## Hands-On Walkthrough
 
-The instructor builds this live:
-
-```text
-playbooks/module3_webserver.yml
-```
-
-```yaml
----
-- name: Basic web server setup
-  hosts: web
-  become: true
-
-  tasks:
-    - name: Install Apache
-      ansible.builtin.package:
-        name: apache2
-        state: present
-
-    - name: Start Apache
-      ansible.builtin.service:
-        name: apache2
-        state: started
-```
-
-Run it:
-
 ```bash
-ansible-playbook playbooks/module3_webserver.yml
+# Target just the 'web' group
+ansible web -m command -a "hostname"
+
+# Use the package module (state-aware) with privilege escalation
+ansible web -m package -a "name=httpd state=present" --become
+
+# Make sure the service is started
+ansible web -m service -a "name=httpd state=started" --become
 ```
+> Note: 
+>> we are using apache2 and we can use states like "started, stopped, restarted & reloaded"
+
 
 Talking points:
 
-* **Indentation matters** — YAML uses spaces, never tabs.
-* Tasks run **top to bottom, in order**.
-* `ansible-playbook` is the command that runs a playbook.
-* `hosts: web` means the playbook targets the `web` group from the inventory.
-* `become: true` means Ansible will use privilege escalation when needed.
-* The `package` module manages installed software.
-* The `service` module manages running services.
-* Read the play recap at the end: `ok`, `changed`, `failed`, and `unreachable`.
+* Target **one group** (`web`) or **one host** (`server1`) by name.
+* `command`, `shell`, `package`, `service` are common modules.
+* Prefer **modules over raw shell** when a module exists: modules are structured and state-aware, shell is not.
 
 ---
 
 ## Quiz
 
-1. What command runs a playbook?
+1. What is an ad hoc command?
 
-   * A. `ansible-playbook`
-   * B. `ansible-role`
-   * C. `ansible-template`
-   * D. `ansible-vault` only
+   * A. A quick one-line Ansible command
+   * B. A full AAP workflow
+   * C. A Git branch
+   * D. A role
 
-2. What does `hosts: web` mean?
+2. What does idempotency mean?
 
-   * A. Run against the inventory group named `web`
-   * B. Create a web server automatically
-   * C. Run only in AAP
-   * D. Ignore inventory
+   * A. The task always changes something
+   * B. The task tries to reach the desired state without unnecessary changes
+   * C. The task only works in AAP
+   * D. The task only runs on Windows
 
-3. What does `become: true` usually mean?
+3. Why prefer Ansible modules over raw shell when possible?
 
-   * A. Run with privilege escalation
-   * B. Run without inventory
-   * C. Convert Bash to Ansible
-   * D. Create a role
+   * A. Modules are more structured and state-aware
+   * B. Shell is not supported
+   * C. Modules do not need inventory
+   * D. Shell cannot run commands
 
 ---
 
-## Hands-On Lab — *Write the first playbook*
+## Hands-On Lab — *Install and start a service*
 
 **You will:**
 
-1. Create a new playbook or copy `module3_webserver.yml`.
-2. Install a package.
-3. Start a service.
-4. Run the playbook.
-5. **Re-run** the playbook.
-6. Review the output both times.
+1. Target the `web` group.
+2. Install `httpd` or `apache2` using the `package` module.
+3. Start `httpd` or `apache2` using the `service` module.
+4. Run the **same install command again**.
+5. Observe `changed` vs `ok` in the output.
 
 ```bash
-ansible-playbook playbooks/module3_webserver.yml
-ansible-playbook playbooks/module3_webserver.yml   # second run
+ansible web -m package -a "name=httpd state=restarted" --become
+ansible web -m service -a "name=httpd state=started" --become
+# run the install again and watch the result flip to "ok"
+ansible web -m package -a "name=httpd state=stopped" --become
 ```
 
 **Success check:**
 
-* [ ] You can explain each line of the playbook.
-* [ ] You can explain what `hosts: web` means.
-* [ ] You can explain why `become: true` is needed.
-* [ ] You can explain the difference between the `package` module and the `service` module.
-* [ ] You can run and safely re-run the playbook.
-* [ ] You can explain why the second run should show more `ok` results and fewer `changed` results.
+* [ ] You can explain why the second run shows `ok` instead of `changed`.
+* [ ] You can explain the value of idempotency in your own words.
 
 <details>
 <summary>Instructor answer key</summary>
 
-1. **A** — `ansible-playbook`
-2. **A** — Run against the inventory group named `web`
-3. **A** — Run with privilege escalation
+1. **A** — A quick one-line Ansible command
+2. **B** — Reach desired state without unnecessary changes
+3. **A** — Modules are structured and state-aware
 
 </details>
 
----
-
 <p align="right">
-  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module04/variables-and-facts.md" target="_blank">
-    <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module03/playbook-basics.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansbile Training" style="width:25px;" />
   </a>
 </p>
 
 <p align="left">
-  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module02/inventory-and-idempotency.md" target="_blank">
+  <a href="https://github.com/Ansible-workshop-ch" target="_blank">
     <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
   </a>
 </p>
