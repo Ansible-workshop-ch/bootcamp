@@ -8,7 +8,11 @@
 
 ## Definition
 
-A **playbook** is a YAML file that describes automation in a repeatable way. Instead of typing one command at a time, a playbook defines the desired steps and runs them consistently, in order.
+A **playbook** is a YAML file that describes automation in a repeatable way.
+
+Instead of typing one Ansible command at a time, a playbook lets us define multiple steps in one file and run them consistently.
+
+A playbook helps us move from quick ad hoc commands into reusable automation.
 
 Basic parts of a playbook:
 
@@ -30,16 +34,20 @@ On Red Hat, RHEL, CentOS, or Rocky Linux, the package and service are usually ca
 
 ## Diagram / Workflow
 
-The diagram below shows how a playbook is structured.
+The diagram below shows how a playbook is structured and how Ansible executes it.
 
-The **playbook** is the full automation file. Inside the playbook, we define a **play**. The play tells Ansible which hosts to target. In this example, the play targets the `web` group from the inventory.
+A **playbook** is the full YAML automation file.
 
-Inside the play, we define multiple **tasks**. Each task uses a module to perform one action.
+Inside the playbook, we define a **play**. The play tells Ansible which hosts to target. In this example, the play targets the `web` group from the inventory.
+
+Inside the play, we define multiple **tasks**. Tasks run from top to bottom, in order.
+
+Each task uses an Ansible **module**. A module is the tool Ansible uses to perform the work.
 
 In this example:
 
-* Task 1 uses the `package` module to install a package
-* Task 2 uses the `service` module to start a service
+* Task 1 uses the `package` module to install Apache
+* Task 2 uses the `service` module to start Apache
 * Both tasks run against the managed hosts in the `web` group
 
 ```mermaid
@@ -50,6 +58,22 @@ flowchart TD
     M1 --> Hosts[Managed hosts]
     M2 --> Hosts
 ```
+
+### Diagram Explanation
+
+The diagram starts with the **Playbook** box.
+
+That represents the YAML file we run with the `ansible-playbook` command.
+
+The playbook points to a **Play**. The play contains `hosts: web`, which means Ansible will run this automation against the `web` group in the inventory.
+
+From that play, Ansible runs the tasks.
+
+Task 1 runs first. It uses the `package` module. In this lab, that task installs the `apache2` package.
+
+Task 2 runs next. It uses the `service` module. In this lab, that task starts the `apache2` service.
+
+Both modules act on the **managed hosts**. These are the systems Ansible is configuring.
 
 In simple terms:
 
@@ -72,7 +96,11 @@ Playbook = multiple tasks saved in a YAML file and reused
 
 ## Hands-On Walkthrough
 
-The instructor builds this live (`playbooks/module3_webserver.yml`):
+The instructor builds this live:
+
+```text
+playbooks/module3_webserver.yml
+```
 
 ```yaml
 ---
@@ -105,6 +133,8 @@ Talking points:
 * `ansible-playbook` is the command that runs a playbook.
 * `hosts: web` means the playbook targets the `web` group from the inventory.
 * `become: true` means Ansible will use privilege escalation when needed.
+* The `package` module manages installed software.
+* The `service` module manages running services.
 * Read the play recap at the end: `ok`, `changed`, `failed`, and `unreachable`.
 
 ---
@@ -155,6 +185,7 @@ ansible-playbook playbooks/module3_webserver.yml   # second run
 * [ ] You can explain each line of the playbook.
 * [ ] You can explain what `hosts: web` means.
 * [ ] You can explain why `become: true` is needed.
+* [ ] You can explain the difference between the `package` module and the `service` module.
 * [ ] You can run and safely re-run the playbook.
 * [ ] You can explain why the second run should show more `ok` results and fewer `changed` results.
 
