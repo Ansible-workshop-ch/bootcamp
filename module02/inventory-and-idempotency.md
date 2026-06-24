@@ -113,6 +113,9 @@ ansible web -m package -a "name=httpd state=present" --become
 # Make sure the service is started
 ansible web -m service -a "name=httpd state=started" --become
 ```
+> Note: 
+>> we are using apache2 and we can use states like "absent - build-dep - fixed - latest - present & got"
+
 
 Talking points:
 
