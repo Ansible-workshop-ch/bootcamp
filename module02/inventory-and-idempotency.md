@@ -64,7 +64,7 @@ Common results include:
 
 ---
 
-Idempotency, visually:
+## Idempotency, visually:
 
 The diagram below explains how Ansible decides whether a change is needed.
 
