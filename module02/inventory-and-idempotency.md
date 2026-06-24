@@ -155,8 +155,8 @@ Talking points:
 **You will:**
 
 1. Target the `web` group.
-2. Install `httpd` using the `package` module.
-3. Start `httpd` using the `service` module.
+2. Install `httpd` or `apache2` using the `package` module.
+3. Start `httpd` or `apache2` using the `service` module.
 4. Run the **same install command again**.
 5. Observe `changed` vs `ok` in the output.
 
