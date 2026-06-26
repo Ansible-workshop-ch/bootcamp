@@ -115,8 +115,6 @@ web
   ubuntu_web
   rhel_web
 
-linux
-  web
 ```
 
 This allows the course to teach a real-world Ansible pattern:
