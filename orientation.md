@@ -133,8 +133,6 @@ web
   ubuntu_web
   rhel_web
 
-linux
-  web
 ```
 
 Why this matters:
