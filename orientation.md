@@ -81,6 +81,7 @@ bootcamp/
       module5_template_deploy.yml
       module6_role_apply.yml
       module9_final_usecase.yml
+      ec2_exact_count.yml
     roles/
       web_config/
     templates/
@@ -88,6 +89,7 @@ bootcamp/
       motd.j2
     bonus/
       netbox-source-of-truth.md
+      creating-ec2-with-ansible.md
 ```
 
 The most important lab folder is:
@@ -131,6 +133,8 @@ web
   ubuntu_web
   rhel_web
 
+linux
+  web
 ```
 
 Why this matters:
@@ -162,10 +166,10 @@ lab/inventories/group_vars/
 Important files:
 
 ```text
-all.yml         # variables for all hosts
-web.yml         # variables shared by all web hosts
-ubuntu_web.yml  # Ubuntu-specific variables
-rhel_web.yml    # Rocky/RHEL-specific variables
+all.yml          # variables for all hosts
+web.yml          # variables shared by all web hosts
+ubuntu_web.yml   # Ubuntu-specific variables
+rhel_web.yml     # Rocky/RHEL-specific variables
 ```
 
 Example:
@@ -303,11 +307,72 @@ AAP controls and runs the automation.
 ```
 
 For the main beginner labs, we start with static inventory.
+
 NetBox is introduced later as an enterprise pattern for dynamic inventory.
+
+Reference:
+
+[NetBox Source of Truth Bonus](https://github.com/Ansible-workshop-ch/bootcamp/blob/main/lab/bonus/netbox-source-of-truth.md)
 
 ---
 
-## 10. How to confirm access before class
+## 10. What EC2 creation means in this course
+
+EC2 creation is introduced as a **bonus cloud automation topic**.
+
+Most of the main labs use machines that already exist:
+
+```text
+Inventory -> Existing hosts -> Ansible playbook -> Configuration
+```
+
+The EC2 bonus lab shows a different pattern:
+
+```text
+Ansible -> AWS API -> Create EC2 instance -> Configure the instance
+```
+
+This teaches that Ansible can do more than configure existing servers. It can also create infrastructure directly by calling cloud APIs.
+
+The EC2 bonus playbook uses:
+
+```yaml
+hosts: localhost
+connection: local
+```
+
+That means Ansible is running locally and calling AWS. It is not connecting to a remote managed host yet because the EC2 instance does not exist at the start of the playbook.
+
+The key lesson is the difference between:
+
+```yaml
+count: 1
+```
+
+and:
+
+```yaml
+exact_count: 1
+```
+
+`count: 1` can create a new instance every time the playbook runs if used carelessly.
+
+`exact_count: 1` is safer for repeatable automation because it tells Ansible:
+
+```text
+Make sure exactly one matching instance exists.
+```
+
+References:
+
+* [Creating EC2 with Ansible](https://github.com/Ansible-workshop-ch/bootcamp/blob/main/lab/bonus/creating-ec2-with-ansible.md)
+* [EC2 exact_count Playbook](https://github.com/Ansible-workshop-ch/bootcamp/blob/main/lab/playbooks/ec2_exact_count.yml)
+
+> Warning: The EC2 bonus lab can create real AWS resources. Use only in a safe AWS sandbox or instructor-controlled demo environment.
+
+---
+
+## 11. How to confirm access before class
 
 Before Day 1, confirm you can:
 
@@ -334,11 +399,18 @@ If the local Podman lab is being used, also confirm:
 podman ps
 ```
 
+If the EC2 bonus lab will be demonstrated, the instructor should also confirm AWS access:
+
+```bash
+aws sts get-caller-identity
+aws configure get region
+```
+
 If any item is not working, raise it before Day 1.
 
 ---
 
-## 11. Prerequisites recap
+## 12. Prerequisites recap
 
 You do **not** need previous Ansible experience.
 
@@ -349,5 +421,7 @@ You should be comfortable with basic:
 * Git clone
 * Reading simple YAML
 * Running commands from a terminal
+
+The EC2 bonus lab is optional. It requires AWS access only if the instructor decides to run it live.
 
 The course starts from the foundation and builds up step by step.
