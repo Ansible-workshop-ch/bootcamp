@@ -269,27 +269,9 @@ That means Ansible is running locally and calling the AWS API. It is not connect
 * HashiCorp Vault / CyberArk
 * AAP installation
 * Execution environment creation
-* Deep NetBox implementation
-* Deep AWS infrastructure design
 
 AWS and NetBox are included as **bonus topics**, not required beginner labs.
 
 ---
 
-## Recommended flow
-
-Use this order when teaching:
-
-```text
-1. Static inventory
-2. Ad hoc commands
-3. Playbooks
-4. Variables and facts
-5. Templates and handlers
-6. Roles
-7. AAP workflow
-8. AAP inventory and job templates
-9. Final use case
-10. Bonus: NetBox and EC2 creation
-```
 
