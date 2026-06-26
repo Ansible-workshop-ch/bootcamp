@@ -252,26 +252,13 @@ That means Ansible is running locally and calling the AWS API. It is not connect
 
 ### Emphasized
 
-* CLI-first Ansible workflow
-* Inventory
-* Ad hoc commands
-* Playbooks
-* Variables
-* Facts
-* `group_vars`
-* Conditions
-* Loops
-* Templates
-* Handlers
-* Roles
-* Git-based structure
-* Multi-OS Linux automation
-* AAP projects
-* AAP inventories
-* AAP job templates
-* AAP job output
-* Troubleshooting
-* Code-first workflow
+|                            |                           |                 |                     |
+| -------------------------- | ------------------------- | --------------- | ------------------- |
+| CLI-first Ansible workflow | Inventory                 | Ad hoc commands | Playbooks           |
+| Variables                  | Facts                     | `group_vars`    | Conditions          |
+| Loops                      | Templates                 | Handlers        | Roles               |
+| Git-based structure        | Multi-OS Linux automation | AAP projects    | AAP inventories     |
+| AAP job templates          | AAP job output            | Troubleshooting | Code-first workflow |
 
 ---
 
