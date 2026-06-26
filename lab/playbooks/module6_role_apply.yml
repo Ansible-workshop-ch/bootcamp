@@ -1,9 +1,49 @@
 ---
-# Module 6: the playbook is now tiny - the role holds the logic.
+# Module 6: Apply the web_config role
+#
+# This playbook introduces Ansible roles.
+#
+# In earlier modules, most of the logic lived directly inside the playbook.
+# In this module, the playbook becomes smaller because the reusable logic
+# moves into the role.
+#
+# Flow:
+# 1. Target the web group.
+# 2. Use sudo because the role installs packages, writes files, and manages services.
+# 3. Gather facts so the role can use system information if needed.
+# 4. Apply the web_config role.
+#
+# Main lesson:
+# A playbook tells Ansible what role to run and where to run it.
+# The role holds the reusable automation logic.
+
 - name: Module 6 - apply the web_config role
+
+  # Target all web servers.
+  # The web group includes both Ubuntu-based and Rocky/RHEL-based hosts.
   hosts: web
+
+  # become: true allows Ansible to use sudo.
+  # The role may need root access to install packages,
+  # write files under /var/www/html, and restart services.
   become: true
+
+  # gather_facts: true collects system information from each host.
+  # Roles can use facts such as OS family, hostname, and distribution.
   gather_facts: true
 
   roles:
+    # This applies the web_config role.
+    #
+    # Ansible will look for the role under:
+    # roles/web_config/
+    #
+    # The role may include:
+    # - tasks
+    # - templates
+    # - handlers
+    # - defaults
+    # - vars
+    #
+    # This keeps the playbook clean and makes the automation reusable.
     - web_config

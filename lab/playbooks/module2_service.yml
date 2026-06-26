@@ -1,15 +1,59 @@
 ---
-# Module 2: install and start a service. Run it twice to see idempotency.
+# Module 2: Install and start a web service
+#
+# This playbook introduces service management and idempotency.
+#
+# Idempotency means:
+# You can run the same playbook multiple times.
+# If the system is already in the correct state, Ansible should not keep changing it.
+#
+# Flow:
+# 1. Target the web group from inventory.
+# 2. Use sudo because package and service changes require root access.
+# 3. Install the correct web package for the OS.
+# 4. Start and enable the correct web service.
+#
+# Ubuntu/Debian uses:
+# package_name: apache2
+# service_name: apache2
+#
+# Rocky/RHEL uses:
+# package_name: httpd
+# service_name: httpd
+#
+# These values come from group_vars.
+
 - name: Module 2 - install and start a web service
+
+  # Target all hosts in the web group.
+  # The web group includes both ubuntu_web and rhel_web.
   hosts: web
+
+  # become: true allows Ansible to use sudo.
+  # Installing packages and managing services requires elevated privileges.
   become: true
 
   tasks:
+    # Install the web server package.
+    # The package module is OS-aware.
+    # It uses apt on Ubuntu/Debian and dnf/yum on Rocky/RHEL.
+    #
+    # package_name is defined in group_vars:
+    # - ubuntu_web.yml -> apache2
+    # - rhel_web.yml -> httpd
     - name: Install the web package
       ansible.builtin.package:
         name: "{{ package_name }}"
         state: present
 
+    # Start the web service and enable it at boot.
+    #
+    # state: started means the service should be running now.
+    # enabled: true means the service should start automatically after reboot.
+    #
+    # service_name is defined in group_vars:
+    # - ubuntu_web.yml -> apache2
+    # - rhel_web.yml -> httpd
     - name: Start and enable the service
       ansible.builtin.service:
         name: "{{ service_name }}"

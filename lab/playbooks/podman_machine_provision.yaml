@@ -1,0 +1,186 @@
+---
+# Bonus Lab: Provision a local machine using Podman
+#
+# This playbook teaches that Ansible can create a machine-like target first,
+# then configure it afterward.
+#
+# This is similar to the EC2 idea, but without needing AWS access.
+#
+# Flow:
+# 1. Ansible runs on localhost.
+# 2. Ansible creates a local Podman container.
+# 3. Ansible installs an SSH key into the container.
+# 4. Ansible adds the new container to temporary in-memory inventory.
+# 5. Ansible runs a second play to configure the new machine.
+
+# First play:
+# Here we are provisioning the machine.
+# The machine does not exist yet, so this play runs on localhost.
+- name: Bonus - provision a local machine using Podman
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    # This is the name of the Podman container Ansible will create.
+    container_name: ansible-provisioned-rhel
+
+    # This is the hostname inside the container.
+    container_hostname: provisioned-rhel
+
+    # This is the local Podman image used to create the container.
+    # It should already exist from the Rocky/RHEL lab.
+    container_image: ansible-target-rocky
+
+    # This maps localhost port 2235 to port 22 inside the container.
+    # We use this later so Ansible can SSH into the container.
+    ssh_port: 2235
+
+    # This maps localhost port 8085 to port 80 inside the container.
+    # We use this later to test the web page with curl.
+    http_port: 8085
+
+    # This is the local SSH public key that will be copied into the container.
+    # It allows the ansible user to log in without a password.
+    ssh_key_path: "{{ lookup('env', 'HOME') }}/.ssh/ansible_lab_key.pub"
+
+  tasks:
+    # This reads the local SSH public key from the control machine.
+    # The slurp module returns the file content in base64 format.
+    - name: Read local SSH public key
+      ansible.builtin.slurp:
+        src: "{{ ssh_key_path }}"
+      register: ssh_public_key
+
+    # Here we are provisioning the machine.
+    # Ansible creates and starts a local Podman container.
+    # In this lab, the container acts like a lightweight Linux server.
+    - name: Create a local Podman container as a provisioned machine
+      containers.podman.podman_container:
+        name: "{{ container_name }}"
+        image: "{{ container_image }}"
+        hostname: "{{ container_hostname }}"
+        state: started
+
+        # Do not destroy and recreate the container every time the playbook runs.
+        # This makes the playbook safer to re-run.
+        recreate: false
+
+        # These options allow systemd services like httpd to run inside the container.
+        privileged: true
+        systemd: always
+
+        # Publish container ports to the local machine.
+        # 2235 on localhost goes to SSH port 22 inside the container.
+        # 8085 on localhost goes to HTTP port 80 inside the container.
+        publish:
+          - "{{ ssh_port }}:22"
+          - "{{ http_port }}:80"
+
+    # Create the .ssh directory for the ansible user inside the new container.
+    # This is needed before we can install the authorized_keys file.
+    - name: Create SSH directory for ansible user
+      ansible.builtin.command:
+        cmd: podman exec {{ container_name }} mkdir -p /home/ansible/.ssh
+
+      # mkdir -p is safe to run many times.
+      # We do not want this task to show changed every time.
+      changed_when: false
+
+    # Copy the local SSH public key into the container.
+    # This allows Ansible to connect to the container over SSH.
+    - name: Install SSH public key inside the provisioned machine
+      ansible.builtin.command:
+        cmd: >
+          podman exec {{ container_name }}
+          sh -c "echo '{{ ssh_public_key.content | b64decode | trim }}' > /home/ansible/.ssh/authorized_keys"
+
+      # This writes the authorized_keys file.
+      # For the lab, we mark it as changed.
+      changed_when: true
+
+    # Fix ownership so the ansible user owns the .ssh directory.
+    # SSH may reject the key if permissions or ownership are wrong.
+    - name: Fix SSH directory ownership
+      ansible.builtin.command:
+        cmd: podman exec {{ container_name }} chown -R ansible:ansible /home/ansible/.ssh
+      changed_when: false
+
+    # Set correct permissions on the .ssh directory.
+    # SSH expects this directory to be private.
+    - name: Fix SSH directory permissions
+      ansible.builtin.command:
+        cmd: podman exec {{ container_name }} chmod 700 /home/ansible/.ssh
+      changed_when: false
+
+    # Set correct permissions on the authorized_keys file.
+    # SSH expects this file to be private.
+    - name: Fix authorized_keys permissions
+      ansible.builtin.command:
+        cmd: podman exec {{ container_name }} chmod 600 /home/ansible/.ssh/authorized_keys
+      changed_when: false
+
+    # Add the newly created container to Ansible inventory during runtime.
+    # This is not written to inventory.ini.
+    # It only exists in memory for this playbook run.
+    - name: Add the new machine to in-memory inventory
+      ansible.builtin.add_host:
+        name: provisioned_rhel
+        groups: provisioned
+
+        # The container is reached through localhost because Podman maps
+        # the container SSH port to the local machine.
+        ansible_host: 127.0.0.1
+        ansible_port: "{{ ssh_port }}"
+
+        # This is the SSH user inside the provisioned container.
+        ansible_user: ansible
+
+        # This is the private key Ansible will use to connect.
+        ansible_ssh_private_key_file: "{{ lookup('env', 'HOME') }}/.ssh/ansible_lab_key"
+
+        # Tell Ansible where Python exists inside the target container.
+        ansible_python_interpreter: /usr/bin/python3
+
+        # Disable host key prompts for the training lab.
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
+# Second play:
+# Now we are configuring the machine that Ansible just created.
+# This proves the full workflow:
+# provision first, configure second.
+- name: Configure the machine that Ansible just provisioned
+  hosts: provisioned
+  become: true
+  gather_facts: true
+
+  vars:
+    # Rocky/RHEL uses httpd as the web package and service name.
+    package_name: httpd
+    service_name: httpd
+
+  tasks:
+    # Install the web package on the newly provisioned machine.
+    - name: Install web package
+      ansible.builtin.package:
+        name: "{{ package_name }}"
+        state: present
+
+    # Create a simple test web page.
+    # This confirms that Ansible successfully configured the new machine.
+    - name: Deploy test web page
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          Created by Ansible after provisioning the machine.
+          Host: {{ inventory_hostname }}
+          OS: {{ ansible_facts['distribution'] }}
+        owner: root
+        group: root
+        mode: "0644"
+
+    # Start the web service so the page is available over HTTP.
+    - name: Start web service
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: started

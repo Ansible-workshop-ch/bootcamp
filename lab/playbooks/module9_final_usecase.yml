@@ -1,32 +1,113 @@
 ---
-# Module 9: a small, realistic "remediate a web service" workflow.
-# Designed to also run from an AAP job template with a survey that sets
-# `web_message` and `target_group` as extra vars.
+# Module 9: Charter-style service remediation
+#
+# This playbook is a small realistic remediation workflow.
+#
+# The goal is to simulate a common operations task:
+# make sure a web service is installed, configured, running, and reported.
+#
+# This playbook is designed to work from:
+# - Ansible CLI
+# - AAP job template
+#
+# AAP survey idea:
+# In AAP, a survey can ask the operator for values such as:
+# - web_message
+# - target_group
+#
+# Example extra vars from AAP:
+# target_group: web
+# web_message: "Updated by AAP remediation job"
+#
+# Flow:
+# 1. Target a group of hosts.
+# 2. Apply the web_config role to make sure the package and page are present.
+# 3. Collect service facts.
+# 4. Report the current service state.
+# 5. Remediate by making sure the service is started.
+# 6. Print a summary showing whether Ansible changed anything.
+
 - name: Module 9 - Charter-style service remediation
+
+  # This allows the target group to be controlled from AAP or CLI.
+  #
+  # If target_group is provided as an extra var, Ansible uses it.
+  # If target_group is not provided, Ansible defaults to the web group.
+  #
+  # CLI example:
+  # ansible-playbook playbooks/module9_final_usecase.yml -e "target_group=rhel_web"
+  #
+  # AAP survey example:
+  # target_group = web
   hosts: "{{ target_group | default('web') }}"
+
+  # become: true allows Ansible to use sudo.
+  # The role may install packages, write web files, and manage services.
   become: true
+
+  # gather_facts: true collects system information from the target hosts.
+  # Facts can be used by the role, templates, or reporting tasks.
   gather_facts: true
 
   tasks:
-    - name: Make sure the package and config are in place (via role)
+    # Apply the reusable web_config role.
+    #
+    # The role should handle the normal desired state:
+    # - install the correct web package
+    # - deploy the index page
+    # - manage the web service
+    #
+    # This keeps the remediation playbook small and focused.
+    - name: Make sure the package and config are in place via role
       ansible.builtin.include_role:
         name: web_config
 
+    # Collect service information from the managed host.
+    #
+    # service_facts creates ansible_facts.services.
+    # That lets us inspect whether services are running, stopped, enabled, etc.
     - name: Check whether the web service is running
       ansible.builtin.service_facts:
 
+    # Print the current state of the web service.
+    #
+    # service_name comes from group_vars.
+    #
+    # Ubuntu/Debian:
+    # service_name: apache2
+    #
+    # Rocky/RHEL:
+    # service_name: httpd
+    #
+    # The expression service_name ~ '.service' builds the systemd service name.
+    # Example:
+    # httpd + .service = httpd.service
+    #
+    # default('unknown') prevents failure if the service is not found.
     - name: Report service state
       ansible.builtin.debug:
         msg: >-
           {{ service_name }} state is
           {{ ansible_facts.services[service_name ~ '.service'].state | default('unknown') }}
 
+    # This is the remediation step.
+    #
+    # If the service is stopped, Ansible starts it.
+    # If the service is already running, Ansible does nothing.
+    #
+    # This demonstrates idempotent remediation.
     - name: Remediate - ensure service is started
       ansible.builtin.service:
         name: "{{ service_name }}"
         state: started
       register: remediation
 
+    # Print a short summary for the operator.
+    #
+    # remediation.changed tells us whether Ansible had to fix anything.
+    #
+    # changed=false means the service was already running.
+    # changed=true means Ansible started or corrected the service.
     - name: Summary
       ansible.builtin.debug:
         msg: "Remediation changed={{ remediation.changed }} on {{ inventory_hostname }}"

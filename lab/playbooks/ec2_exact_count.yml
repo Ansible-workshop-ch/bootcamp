@@ -1,18 +1,73 @@
+---
+# Bonus Lab: Create an AWS EC2 instance using exact_count
+#
+# This playbook teaches that Ansible can create cloud infrastructure,
+# not only configure existing servers.
+#
+# Flow:
+# 1. Ansible runs locally on localhost.
+# 2. Ansible calls the AWS API.
+# 3. Ansible finds the default VPC.
+# 4. Ansible finds a subnet inside that VPC.
+# 5. Ansible finds the latest Ubuntu 24.04 AMI.
+# 6. Ansible creates or reuses a security group.
+# 7. Ansible ensures exactly one matching EC2 instance is running.
+#
+# IMPORTANT:
+# This playbook can create real AWS resources.
+# Use only in a safe AWS sandbox or instructor-controlled demo account.
+#
+# STUDENT / INSTRUCTOR NOTE:
+# Before running this playbook, change the AWS values below to match your own AWS environment.
+#
+# You must update:
+# - aws_region
+# - key_name
+# - sg_name if needed
+# - instance_name if needed
+#
+# You must also make sure AWS credentials are configured on the machine running Ansible.
+#
+# Recommended AWS credential methods:
+# - aws configure
+# - AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY environment variables
+# - AWS SSO login
+# - IAM role if running from an AWS-based control node
+#
+# Do not hardcode AWS access keys or secret keys inside this YAML file.
+
 - name: Bonus - create EC2 using exact_count
+
+  # This play runs on localhost because the EC2 instance does not exist yet.
+  # Ansible is not SSHing into a managed host here.
+  # Ansible is using the local machine to call the AWS API.
   hosts: localhost
   connection: local
   gather_facts: false
 
   vars:
+    # Change this to your own AWS region.
+    # The EC2 key pair, VPC, subnet, and AMI lookup must all exist in this region.
     aws_region: us-east-2
+
+    # Change this if you want to use a different EC2 instance size.
     instance_type: t3.micro
 
+    # Change this to your own EC2 key pair name.
     # This key pair must already exist in the AWS region above.
+    # If it does not exist, the playbook will fail with InvalidKeyPair.NotFound.
     key_name: ray-vault-key
 
+    # Change this if you want a different security group name.
+    # Ansible will create or reuse this security group.
     sg_name: ansible-ec2-demo-sg
+
+    # Change this if you want a different EC2 Name tag.
+    # This is important because exact_count uses this tag to find the matching instance.
     instance_name: ansible-exact-demo
 
+    # User data runs inside the EC2 instance during first boot.
+    # Here we install nginx and create a simple test page.
     nginx_user_data: |
       #!/bin/bash
       apt-get update
@@ -22,6 +77,8 @@
       echo "Created by Ansible exact_count demo" > /var/www/html/index.html
 
   tasks:
+    # Find the default VPC in the selected AWS region.
+    # This avoids hardcoding a VPC ID in the training playbook.
     - name: Find default VPC
       amazon.aws.ec2_vpc_net_info:
         region: "{{ aws_region }}"
@@ -29,15 +86,20 @@
           is-default: "true"
       register: vpc_info
 
+    # Stop the playbook early if no default VPC exists.
+    # This gives students a clear error instead of failing later.
     - name: Fail if no default VPC exists
       ansible.builtin.fail:
         msg: "No default VPC found in region {{ aws_region }}."
       when: vpc_info.vpcs | length == 0
 
+    # Save the default VPC ID into a variable we can reuse later.
     - name: Set default VPC ID
       ansible.builtin.set_fact:
         default_vpc_id: "{{ vpc_info.vpcs[0].vpc_id }}"
 
+    # Find a subnet inside the default VPC.
+    # EC2 instances must be launched into a subnet.
     - name: Find subnet in default VPC
       amazon.aws.ec2_vpc_subnet_info:
         region: "{{ aws_region }}"
@@ -45,15 +107,21 @@
           vpc-id: "{{ default_vpc_id }}"
       register: subnet_info
 
+    # Stop the playbook if the default VPC has no subnet.
+    # This protects the EC2 creation task from failing with a confusing error.
     - name: Fail if no subnet exists in the default VPC
       ansible.builtin.fail:
         msg: "No subnet found in default VPC {{ default_vpc_id }}."
       when: subnet_info.subnets | length == 0
 
+    # Save the first subnet ID into a variable.
+    # For a simple demo, using the first subnet is enough.
     - name: Set subnet ID
       ansible.builtin.set_fact:
         default_subnet_id: "{{ subnet_info.subnets[0].subnet_id }}"
 
+    # Find the latest Ubuntu 24.04 AMI from Canonical.
+    # This avoids hardcoding an AMI ID because AMI IDs change by region and over time.
     - name: Find latest Ubuntu 24.04 AMI
       amazon.aws.ec2_ami_info:
         region: "{{ aws_region }}"
@@ -66,15 +134,19 @@
           root-device-type: ebs
       register: ubuntu_ami_info
 
+    # Stop the playbook if no Ubuntu AMI is found.
     - name: Fail if no Ubuntu AMI was found
       ansible.builtin.fail:
         msg: "No Ubuntu 24.04 AMI found in region {{ aws_region }}."
       when: ubuntu_ami_info.images | length == 0
 
+    # Sort the returned AMIs by creation date and pick the newest one.
     - name: Set latest Ubuntu AMI ID
       ansible.builtin.set_fact:
         ubuntu_ami_id: "{{ (ubuntu_ami_info.images | sort(attribute='creation_date') | last).image_id }}"
 
+    # Create a security group for the demo instance.
+    # This allows SSH on port 22 and HTTP on port 80.
     - name: Create security group for SSH and HTTP
       amazon.aws.ec2_security_group:
         name: "{{ sg_name }}"
@@ -82,48 +154,86 @@
         region: "{{ aws_region }}"
         vpc_id: "{{ default_vpc_id }}"
         rules:
+          # Allow SSH access for the demo.
+          # In production, do not use 0.0.0.0/0 for SSH.
           - proto: tcp
             from_port: 22
             to_port: 22
             cidr_ip: 0.0.0.0/0
             rule_desc: Allow SSH for demo
+
+          # Allow HTTP access so we can test nginx in a browser or with curl.
           - proto: tcp
             from_port: 80
             to_port: 80
             cidr_ip: 0.0.0.0/0
             rule_desc: Allow HTTP for demo
+
+        # Allow outbound traffic from the instance.
         rules_egress:
           - proto: all
             cidr_ip: 0.0.0.0/0
       register: web_sg
 
+    # This is the main EC2 creation task.
+    #
+    # exact_count: 1 means:
+    # Make sure exactly one matching EC2 instance exists.
+    #
+    # This is safer than count: 1 for repeatable labs.
+    #
+    # count: 1 can create another instance every time if used carelessly.
+    # exact_count: 1 checks the filters first, then decides whether to create.
     - name: Ensure exactly one matching EC2 instance is running
       amazon.aws.ec2_instance:
         region: "{{ aws_region }}"
         image_id: "{{ ubuntu_ami_id }}"
         instance_type: "{{ instance_type }}"
         key_name: "{{ key_name }}"
+
+        # The key teaching point of this lab.
+        # This keeps the playbook repeatable and safer to run more than once.
         exact_count: 1
+
+        # Wait until AWS finishes creating or finding the instance.
         wait: true
+
+        # Run the nginx setup script during first boot.
         user_data: "{{ nginx_user_data }}"
+
+        # Filters define which EC2 instances count as matching.
+        # exact_count depends on these filters.
+        # Without clear filters, Ansible may not know which instance belongs to this lab.
         filters:
           "tag:Name": "{{ instance_name }}"
           "tag:ManagedBy": Ansible
           "tag:Lab": exact-count-demo
           instance-state-name: running
+
+        # Launch the instance into the default subnet.
         vpc_subnet_id: "{{ default_subnet_id }}"
+
+        # Attach the security group created above.
         security_groups:
           - "{{ web_sg.group_id }}"
+
+        # Assign a public IP so the instance can be reached for demo/testing.
         network:
           assign_public_ip: true
+
+        # Tags make the instance easy to identify and allow exact_count filters to work.
         tags:
           Name: "{{ instance_name }}"
           ManagedBy: Ansible
           Lab: exact-count-demo
           Course: Charter Ansible Training
+
+        # Desired state of the EC2 instance.
         state: running
       register: ec2_result
 
+    # Print the result so students can see what Ansible created or found.
+    # This helps show instance IDs, public IPs, and any terminated instances.
     - name: Show EC2 result
       ansible.builtin.debug:
         msg:

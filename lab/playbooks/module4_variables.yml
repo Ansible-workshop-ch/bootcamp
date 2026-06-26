@@ -1,15 +1,61 @@
 ---
-# Module 4: show how values come from group_vars / host_vars / facts.
+# Module 4: Variables and facts
+#
+# This playbook shows where Ansible values come from.
+#
+# In Ansible, values can come from different places:
+# - group_vars
+# - host_vars
+# - playbook vars
+# - facts collected from the managed host
+#
+# This module focuses on:
+# 1. Reading a variable from group_vars.
+# 2. Reading facts from the remote host.
+# 3. Using a variable instead of hardcoding a package name.
+#
+# Flow:
+# 1. Target the web group.
+# 2. Use sudo because package installation requires root access.
+# 3. Gather facts from each host.
+# 4. Print the web_message variable.
+# 5. Print useful system facts.
+# 6. Install the correct package using package_name.
+
 - name: Module 4 - variables and facts
+
+  # Target all web servers.
+  # The web group includes both ubuntu_web and rhel_web.
   hosts: web
+
+  # become: true allows Ansible to use sudo.
+  # Installing packages requires elevated privileges.
   become: true
+
+  # gather_facts: true tells Ansible to collect host information.
+  # Facts include OS family, hostname, memory, IP addresses, Python version, and more.
   gather_facts: true
 
   tasks:
+    # Show the value of web_message.
+    #
+    # web_message is usually defined in:
+    # inventories/group_vars/web.yml
+    #
+    # This demonstrates how group variables are automatically loaded
+    # for hosts that belong to the web group.
     - name: Show where the web_message came from
       ansible.builtin.debug:
         msg: "web_message = {{ web_message }}"
 
+    # Show a few facts collected from the managed host.
+    #
+    # ansible_facts['os_family'] shows the OS family.
+    # Example: Debian or RedHat
+    #
+    # ansible_facts['hostname'] shows the hostname from the target system.
+    #
+    # ansible_facts['memtotal_mb'] shows total system memory in MB.
     - name: Show a few useful facts
       ansible.builtin.debug:
         msg: >-
@@ -17,7 +63,18 @@
           hostname={{ ansible_facts['hostname'] }}
           total_memory={{ ansible_facts['memtotal_mb'] }}MB
 
-    - name: Install the package using a variable (not a hardcoded name)
+    # Install the web package using a variable.
+    #
+    # This is better than hardcoding apache2 or httpd.
+    #
+    # Ubuntu/Debian:
+    # package_name: apache2
+    #
+    # Rocky/RHEL:
+    # package_name: httpd
+    #
+    # The correct value comes from group_vars.
+    - name: Install the package using a variable not a hardcoded name
       ansible.builtin.package:
         name: "{{ package_name }}"
         state: present

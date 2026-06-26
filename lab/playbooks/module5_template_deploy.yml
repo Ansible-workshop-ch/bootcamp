@@ -1,23 +1,86 @@
 ---
-# Module 5: conditions + loops + template + handler working together.
+# Module 5: Conditions, loops, templates, and handlers
+#
+# This playbook shows multiple important Ansible concepts working together:
+# - loops
+# - conditions
+# - templates
+# - handlers
+#
+# Flow:
+# 1. Target the web group.
+# 2. Install a list of common packages using a loop.
+# 3. Use a condition to run a task only on RedHat-family systems.
+# 4. Deploy an index.html file from a Jinja2 template.
+# 5. Notify a handler if the template changes.
+# 6. Restart the web service only when needed.
+#
+# This module is important because it teaches safe configuration management.
+# The web service should restart only if the deployed template changes.
+
 - name: Module 5 - deploy a config safely
+
+  # Target all web servers.
+  # The web group includes both Ubuntu-based and Rocky/RHEL-based hosts.
   hosts: web
+
+  # become: true allows Ansible to use sudo.
+  # Installing packages, writing to /var/www/html, and restarting services require root access.
   become: true
+
+  # gather_facts: true collects system information from each host.
+  # We need facts here because the condition checks ansible_facts['os_family'].
   gather_facts: true
 
   tasks:
+    # Install multiple common packages using a loop.
+    #
+    # common_packages is defined in group_vars.
+    # Ansible will run this task once for each item in the list.
+    #
+    # Example:
+    # common_packages:
+    #   - vim
+    #   - git
+    #   - curl
+    #   - tree
+    #
+    # item represents the current package in the loop.
     - name: Install common packages (loop)
       ansible.builtin.package:
         name: "{{ item }}"
         state: present
       loop: "{{ common_packages }}"
 
+    # This task runs only on RedHat-family systems.
+    #
+    # The when statement is the condition.
+    # If the OS family is RedHat, Ansible runs this task.
+    # If the OS family is Debian, Ansible skips this task.
+    #
+    # This is useful when different Linux families need different handling.
     - name: Install the web package (RedHat family only - condition)
       ansible.builtin.package:
         name: "{{ package_name }}"
         state: present
       when: ansible_facts['os_family'] == "RedHat"
 
+    # Deploy an index.html file from a Jinja2 template.
+    #
+    # The source template is:
+    # ../templates/index.html.j2
+    #
+    # The destination on the managed host is:
+    # /var/www/html/index.html
+    #
+    # The template can use variables such as:
+    # - web_message
+    # - inventory_hostname
+    # - package_name
+    # - service_name
+    # - ansible_facts
+    #
+    # If the rendered file changes, this task notifies the handler below.
     - name: Deploy the index page from a template
       ansible.builtin.template:
         src: ../templates/index.html.j2
@@ -25,9 +88,17 @@
         owner: root
         group: root
         mode: "0644"
+
+      # notify does not restart the service immediately.
+      # It tells Ansible to run the handler at the end of the play,
+      # but only if this task changed something.
       notify: Restart web service
 
   handlers:
+    # A handler is a special task that runs only when notified.
+    #
+    # In this playbook, the web service restarts only if the template changed.
+    # This prevents unnecessary service restarts.
     - name: Restart web service
       ansible.builtin.service:
         name: "{{ service_name }}"

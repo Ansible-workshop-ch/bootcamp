@@ -1,14 +1,40 @@
 ---
-# Module 1: prove connectivity and gather a basic fact.
+# Module 1: Verify Ansible connectivity
+#
+# This playbook is the first basic test in the bootcamp.
+# It proves that Ansible can reach the managed hosts from the control node.
+#
+# Flow:
+# 1. Target the linux group from inventory.
+# 2. Gather basic facts from each host.
+# 3. Run the Ansible ping module.
+# 4. Print the hostname Ansible sees for each target.
+
 - name: Module 1 - verify connectivity
+
+  # This tells Ansible which group of hosts to target.
+  # The linux group is defined in inventories/inventory.ini.
   hosts: linux
+
+  # gather_facts: true tells Ansible to collect system information
+  # such as hostname, OS, IP addresses, Python version, and more.
   gather_facts: true
+
+  # become: false means Ansible will not use sudo for this play.
+  # The ping and debug tasks do not need root access.
   become: false
 
   tasks:
+    # This uses the Ansible ping module.
+    # It does not send a normal network ICMP ping.
+    # It tests whether Ansible can connect to the host and run Python.
     - name: Ping all managed hosts
       ansible.builtin.ping:
 
+    # This prints a simple confirmation message for each host.
+    # inventory_hostname is the name from the Ansible inventory.
+    # ansible_facts['hostname'] is the hostname collected from the remote system.
+    # default('n/a') prevents the playbook from failing if hostname is missing.
     - name: Show the hostname Ansible sees
       ansible.builtin.debug:
         msg: "Reached {{ inventory_hostname }} ({{ ansible_facts['hostname'] | default('n/a') }})"
