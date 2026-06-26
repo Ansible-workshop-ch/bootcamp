@@ -60,6 +60,18 @@ See [`lab/README.md`](lab/README.md) for runnable lab details.
 
 ---
 
+## Scope
+
+|                            |                           |                 |                     |
+| -------------------------- | ------------------------- | --------------- | ------------------- |
+| CLI-first Ansible workflow | Inventory                 | Ad hoc commands | Playbooks           |
+| Variables                  | Facts                     | `group_vars`    | Conditions          |
+| Loops                      | Templates                 | Handlers        | Roles               |
+| Git-based structure        | Multi-OS Linux automation | AAP projects    | AAP inventories     |
+| AAP job templates          | AAP job output            | Troubleshooting | Code-first workflow |
+
+---
+
 ## Course map
 
 **Before Day 1:** [Orientation](orientation.md)
@@ -246,19 +258,6 @@ That means Ansible is running locally and calling the AWS API. It is not connect
 
 > Warning: This lab can create real AWS resources. Use only in a safe AWS sandbox or instructor-controlled demo environment.
 
----
-
-## Scope
-
-### Emphasized
-
-|                            |                           |                 |                     |
-| -------------------------- | ------------------------- | --------------- | ------------------- |
-| CLI-first Ansible workflow | Inventory                 | Ad hoc commands | Playbooks           |
-| Variables                  | Facts                     | `group_vars`    | Conditions          |
-| Loops                      | Templates                 | Handlers        | Roles               |
-| Git-based structure        | Multi-OS Linux automation | AAP projects    | AAP inventories     |
-| AAP job templates          | AAP job output            | Troubleshooting | Code-first workflow |
 
 ---
 
