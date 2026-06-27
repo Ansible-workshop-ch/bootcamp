@@ -1,0 +1,181 @@
+---
+# Bonus Lab: Loops in Ansible
+#
+# This playbook teaches how to use loops in Ansible.
+#
+# A loop lets one task run multiple times against a list of values.
+#
+# Example:
+# Instead of writing three separate tasks to create three users,
+# we write one task and loop over a list of users.
+#
+# Flow:
+# 1. Target the web group.
+# 2. Gather facts so we can show host information.
+# 3. Create multiple users using one loop.
+# 4. Create multiple files using one loop.
+# 5. Optionally install packages using one loop.
+# 6. Verify the users were created.
+#
+# Safe training note:
+# This playbook creates demo users inside the lab containers.
+# Do not run this against production systems.
+
+- name: Bonus - loops with users, files, and optional packages
+  hosts: web
+  become: true
+  gather_facts: true
+
+  vars:
+    # Change this to absent if you want to clean up the users.
+    #
+    # To remove the users later, run:
+    # ansible-playbook playbooks/loops.yml -e "loop_user_state=absent"
+    loop_user_state: present
+
+    # By default, package installation is disabled to keep the lab fast.
+    #
+    # To enable package loop demo, run:
+    # ansible-playbook playbooks/loops.yml -e "install_loop_packages=true"
+    install_loop_packages: false
+
+    # This is a list of users.
+    # The loop will run once for each user in this list.
+    training_users:
+      - username: loop_jerry
+        full_name: "Jerry Loop Demo"
+      - username: loop_kramer
+        full_name: "Kramer Loop Demo"
+      - username: loop_elaine
+        full_name: "Elaine Loop Demo"
+
+    # This is a list of files.
+    # The loop will run once for each file in this list.
+    training_files:
+      - path: /tmp/ansible-loop-demo-1.txt
+        content: "Loop demo file number 1"
+      - path: /tmp/ansible-loop-demo-2.txt
+        content: "Loop demo file number 2"
+      - path: /tmp/ansible-loop-demo-3.txt
+        content: "Loop demo file number 3"
+
+  tasks:
+    # Show which host Ansible is working on.
+    # This helps students see that the same loop runs on every target host.
+    - name: Show host and OS family
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is {{ ansible_facts['distribution'] }} / {{ ansible_facts['os_family'] }}"
+
+    # This is the main loop example.
+    #
+    # The user module creates or removes Linux users.
+    #
+    # loop: "{{ training_users }}" means:
+    # Run this task once for each item in training_users.
+    #
+    # During each loop run:
+    # item.username becomes the username.
+    # item.full_name becomes the comment field.
+    #
+    # Example:
+    # First run:
+    # item.username = loop_jerry
+    #
+    # Second run:
+    # item.username = loop_kramer
+    #
+    # Third run:
+    # item.username = loop_elaine
+    - name: Create demo users using a loop
+      ansible.builtin.user:
+        name: "{{ item.username }}"
+        comment: "{{ item.full_name }}"
+        state: "{{ loop_user_state }}"
+        create_home: true
+        remove: "{{ loop_user_state == 'absent' }}"
+      loop: "{{ training_users }}"
+
+      # loop_control changes how the loop item appears in the output.
+      # Instead of printing the full dictionary, it prints only the username.
+      loop_control:
+        label: "{{ item.username }}"
+
+    # This creates multiple demo files using one task.
+    #
+    # The copy module writes a file.
+    # The loop runs once for each item in training_files.
+    #
+    # This task only runs when loop_user_state is present.
+    - name: Create demo files using a loop
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        content: |
+          {{ item.content }}
+          Created by Ansible loop demo.
+          Host: {{ inventory_hostname }}
+          OS Family: {{ ansible_facts['os_family'] }}
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ training_files }}"
+      loop_control:
+        label: "{{ item.path }}"
+      when: loop_user_state == "present"
+
+    # This removes the demo files when we run cleanup.
+    #
+    # Cleanup command:
+    # ansible-playbook playbooks/loops.yml -e "loop_user_state=absent"
+    - name: Remove demo files during cleanup
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ training_files }}"
+      loop_control:
+        label: "{{ item.path }}"
+      when: loop_user_state == "absent"
+
+    # Optional package loop.
+    #
+    # common_packages comes from group_vars:
+    # inventories/group_vars/ubuntu_web.yml
+    # inventories/group_vars/rhel_web.yml
+    #
+    # This shows that loops can also install a list of packages.
+    #
+    # This task is disabled by default to avoid slow package installs during class.
+    - name: Optionally install common packages using a loop
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ common_packages }}"
+      loop_control:
+        label: "{{ item }}"
+      when: install_loop_packages | bool
+
+    # Verify each user using getent.
+    #
+    # We use command here because there is no pipe or shell feature needed.
+    #
+    # failed_when: false means the playbook will not fail if a user is absent.
+    # That helps when testing cleanup.
+    - name: Verify demo users
+      ansible.builtin.command:
+        cmd: "getent passwd {{ item.username }}"
+      loop: "{{ training_users }}"
+      loop_control:
+        label: "{{ item.username }}"
+      register: loop_user_check
+      changed_when: false
+      failed_when: false
+
+    # Print a clean verification result.
+    #
+    # This loops over the registered results from the previous task.
+    - name: Show user verification results
+      ansible.builtin.debug:
+        msg: "{{ item.item.username }} -> {{ item.stdout | default('not found') }}"
+      loop: "{{ loop_user_check.results }}"
+      loop_control:
+        label: "{{ item.item.username }}"
+
