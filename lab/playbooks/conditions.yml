@@ -1,0 +1,102 @@
+---
+# Bonus Lab: OS family condition example
+#
+# This playbook teaches Ansible conditions using facts.
+#
+# The main idea:
+# Ansible gathers facts from each managed host.
+# Then we can use those facts to decide which task should run.
+#
+# Example:
+# - Ubuntu/Debian hosts should install apache2.
+# - Rocky/RHEL hosts should install httpd.
+#
+# This is similar to the screenshot example, but updated for our lab.
+
+- name: Bonus - install web server based on OS family
+
+  # Target all web hosts in the lab.
+  # This includes both Ubuntu-based and Rocky/RHEL-based containers.
+  hosts: web
+
+  # Package installation and service management need sudo/root access.
+  become: true
+
+  # Facts must be gathered because we are using ansible_facts['os_family'].
+  gather_facts: true
+
+  tasks:
+    # Show the OS family that Ansible detected.
+    #
+    # This helps students understand where the condition value comes from.
+    #
+    # Example output:
+    # container1 -> Debian
+    # rhel1 -> RedHat
+    - name: Show detected OS family
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} OS family is {{ ansible_facts['os_family'] }}"
+
+    # This task runs only on Debian-family systems.
+    #
+    # Ubuntu belongs to the Debian OS family in Ansible facts.
+    #
+    # Condition:
+    # when ansible_facts['os_family'] == "Debian"
+    #
+    # If the host is Rocky/RHEL, this task will be skipped.
+    - name: Install Apache on Ubuntu/Debian hosts
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+      when: ansible_facts['os_family'] == "Debian"
+
+    # This task runs only on RedHat-family systems.
+    #
+    # Rocky Linux, RHEL, CentOS, and Fedora usually belong to the RedHat OS family.
+    #
+    # Condition:
+    # when ansible_facts['os_family'] == "RedHat"
+    #
+    # If the host is Ubuntu, this task will be skipped.
+    - name: Install Apache/httpd on Rocky/RHEL hosts
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+      when: ansible_facts['os_family'] == "RedHat"
+
+    # Start Apache on Ubuntu/Debian hosts.
+    #
+    # The service name on Ubuntu is apache2.
+    - name: Start Apache service on Ubuntu/Debian hosts
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: true
+      when: ansible_facts['os_family'] == "Debian"
+
+    # Start Apache/httpd on Rocky/RHEL hosts.
+    #
+    # The service name on Rocky/RHEL is httpd.
+    - name: Start httpd service on Rocky/RHEL hosts
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+      when: ansible_facts['os_family'] == "RedHat"
+
+    # Deploy a simple page on all hosts.
+    #
+    # This task has no condition because /var/www/html is the web root
+    # for both Apache on Ubuntu and httpd on Rocky/RHEL in this lab.
+    - name: Deploy OS condition demo page
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          Created by Ansible condition demo.
+          Host: {{ inventory_hostname }}
+          OS Family: {{ ansible_facts['os_family'] }}
+          Distribution: {{ ansible_facts['distribution'] }}
+        owner: root
+        group: root
+        mode: "0644"
