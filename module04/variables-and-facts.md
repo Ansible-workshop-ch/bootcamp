@@ -1,3 +1,16 @@
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module03/playbook-basics.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module05/conditions-loops-handlers-templates.md" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
+
 # Module 4: Variables, Facts, group_vars, and host_vars
 
 > 🧪 Lab commands run from [`bootcamp/lab/`](../lab/) — `cd bootcamp/lab` first. Diagrams render automatically on GitHub.
