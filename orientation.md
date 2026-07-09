@@ -423,3 +423,9 @@ You should be comfortable with basic:
 The EC2 bonus lab is optional. It requires AWS access only if the instructor decides to run it live.
 
 The course starts from the foundation and builds up step by step.
+
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/README.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansbile Training" style="width:25px;" />
+  </a>
+</p>
