@@ -1,10 +1,10 @@
-<p align="right">
+<p align="left">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module05/conditions-loops-handlers-templates.md" target="_blank">
     <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
   </a>
 </p>
 
-<p align="left">
+<p align="right">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module07/aap-workflow.md" target="_blank">
     <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
   </a>
@@ -135,3 +135,15 @@ ansible-playbook playbooks/module6_role_apply.yml
 2. **A** — `roles/<name>/tasks/main.yml`
 3. **A** — Versioned, reviewable, reusable
 </details>
+
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module05/conditions-loops-handlers-templates.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module07/aap-workflow.md" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>

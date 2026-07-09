@@ -1,10 +1,10 @@
-<p align="right">
+<p align="left">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module08/aap-inventories-surveys-troubleshooting.md" target="_blank">
     <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
   </a>
 </p>
 
-<p align="left">
+<p align="right">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module09/final-use-case.md" target="_blank">
     <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
   </a>
@@ -115,3 +115,16 @@ Troubleshooting order to teach:
 2. **A** — Running a job at a defined time
 3. **A** — The failed task and job output
 </details>
+
+
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module08/aap-inventories-surveys-troubleshooting.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module09/final-use-case.md" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>

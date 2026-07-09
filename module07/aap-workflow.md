@@ -1,10 +1,10 @@
-<p align="right">
+<p align="left">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module06/roles-and-code-first.md" target="_blank">
     <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
   </a>
 </p>
 
-<p align="left">
+<p align="right">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module08/aap-inventories-surveys-troubleshooting.md" target="_blank">
     <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
   </a>
@@ -117,3 +117,16 @@ Credentials, high level only:
 2. **A** — Defines how a playbook runs in AAP
 3. **A** — Shows what ran, changed, and failed
 </details>
+
+
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module06/roles-and-code-first.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module08/aap-inventories-surveys-troubleshooting.md" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>

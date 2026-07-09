@@ -1,10 +1,10 @@
-<p align="right">
+<p align="left">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module04/variables-and-facts.md" target="_blank">
     <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
   </a>
 </p>
 
-<p align="left">
+<p align="right">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module06/roles-and-code-first.md" target="_blank">
     <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
   </a>
@@ -144,3 +144,15 @@ ansible-playbook playbooks/module5_template_deploy.yml
 2. **A** — Generate files using variables
 3. **A** — Controls whether a task should run
 </details>
+
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module04/variables-and-facts.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module06/roles-and-code-first.md" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>

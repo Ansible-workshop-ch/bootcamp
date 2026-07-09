@@ -1,3 +1,16 @@
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module08/aap-inventories-surveys-troubleshooting.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/tree/main/lab/bonus" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
+
 # Module 9: Final Charter-Style Use Case
 
 > 🧪 Lab commands run from [`bootcamp/lab/`](../lab/) — `cd bootcamp/lab` first. Diagrams render automatically on GitHub.
@@ -105,3 +118,16 @@ ansible-playbook playbooks/module9_final_usecase.yml
 2. **A** — Focus on the concept, not rabbit holes
 3. **A** — Read, modify, run, and troubleshoot automation
 </details>
+
+
+<p align="left">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module08/aap-inventories-surveys-troubleshooting.md" target="_blank">
+    <img src="/images/nexticon.webp" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
+
+<p align="right">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/tree/main/lab/bonus" target="_blank">
+    <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
+  </a>
+</p>
