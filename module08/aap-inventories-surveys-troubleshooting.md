@@ -1,5 +1,5 @@
 <p align="left">
-  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module08/aap-inventories-surveys-troubleshooting.md" target="_blank">
+  <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module07/aap-workflow.md" target="_blank">
     <img src="/images/backred1.png" alt="Ansible Training" style="width:25px;" />
   </a>
 </p>
