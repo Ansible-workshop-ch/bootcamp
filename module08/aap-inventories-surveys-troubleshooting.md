@@ -2207,40 +2207,6 @@ Before class:
 
 ---
 
-# 45. Connection to Module 9
-
-Module 8 provides the operational controls needed for the final use case.
-
-```mermaid id="wjq4vb"
-flowchart LR
-    CODE[Git-based role] --> PROJECT[AAP project]
-    NETBOX[NetBox inventory] --> INVENTORY[AAP inventory]
-    SURVEY[Approved user input] --> TEMPLATE[Job template]
-    SCHEDULE[Optional schedule] --> TEMPLATE
-
-    PROJECT --> TEMPLATE
-    INVENTORY --> TEMPLATE
-
-    TEMPLATE --> JOB[Controlled automation job]
-    JOB --> OUTPUT[Auditable result]
-    OUTPUT --> TROUBLE[Troubleshooting and escalation]
-
-    TROUBLE --> M9[Module 9 final use case]
-```
-
-In Module 9, students will combine:
-
-* Git-based roles
-* AAP projects
-* Dynamic inventory concepts
-* Survey input
-* Controlled job templates
-* Job output
-* Idempotency
-* Troubleshooting
-* Charter-style operational requirements
-
----
 
 <p align="left">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module07/aap-workflow.md" target="_blank">
