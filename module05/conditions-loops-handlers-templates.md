@@ -17,7 +17,7 @@
 
 **Day 2 · Core Skills**
 
-In this module, playbooks become dynamic. Instead of running every task against every host, Ansible can make decisions, process lists, generate configuration files, and restart services only when necessary.
+In this module, playbooks become smarter. Ansible will make decisions, process lists, manage files, generate configuration files, and restart services only when changes occur.
 
 ---
 
@@ -25,58 +25,13 @@ In this module, playbooks become dynamic. Instead of running every task against 
 
 By the end of this module, you will be able to:
 
-* Control task execution with `when`.
+* Control task execution using `when`.
 * Repeat tasks using `loop`.
 * Manage directories and static files.
 * Generate dynamic files with Jinja2 templates.
 * Notify handlers when configuration changes.
 * Avoid unnecessary service restarts.
-* Validate idempotency by running automation multiple times.
-* Run and inspect playbooks using Ansible Navigator.
-
----
-
-## Ansible Navigator First
-
-Confirm that Ansible Navigator is available:
-
-```bash
-ansible-navigator --version
-```
-
-Inspect the inventory before running the playbook:
-
-```bash
-ansible-navigator inventory \
-  -i inventories/inventory.ini \
-  --graph \
-  --mode stdout
-```
-
-Run the module playbook:
-
-```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
-  -i inventories/inventory.ini \
-  --mode stdout
-```
-
-If the training workstation is using locally installed Ansible instead of an Execution Environment, append:
-
-```bash
---ee false
-```
-
-Example:
-
-```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
-  -i inventories/inventory.ini \
-  --mode stdout \
-  --ee false
-```
+* Confirm idempotency by running a playbook multiple times.
 
 ---
 
@@ -86,12 +41,14 @@ ansible-navigator run \
 
 A **condition** controls whether Ansible runs or skips a task.
 
-Conditions use the `when` keyword and can evaluate:
+Conditions use the `when` keyword.
+
+Conditions can evaluate:
 
 * Ansible facts
 * Inventory variables
-* Registered task results
 * Boolean values
+* Registered task results
 * Loop items
 * Host or group information
 
@@ -103,12 +60,10 @@ A condition is evaluated separately for every managed host.
 
 ```mermaid
 flowchart LR
-    A[Gather facts and variables] --> B{Evaluate when condition}
-
+    A[Facts and variables] --> B{Evaluate when condition}
     B -->|True| C[Run task]
     B -->|False| D[Skip task]
-
-    C --> E[Report task result]
+    C --> E[Continue playbook]
     D --> E
 ```
 
@@ -134,7 +89,7 @@ Run a task only on Debian systems:
   when: ansible_facts['os_family'] == "Debian"
 ```
 
-Do not place `{{ }}` around a variable inside a basic `when` expression.
+Do not place `{{ }}` around variables inside a basic `when` expression.
 
 Correct:
 
@@ -156,7 +111,7 @@ when: "{{ ansible_facts['os_family'] == 'RedHat' }}"
 
 A **loop** repeats the same task for multiple items.
 
-Instead of writing three separate package tasks, one task can process a list.
+Instead of creating several nearly identical tasks, one task can process a list.
 
 ---
 
@@ -206,6 +161,8 @@ During each loop iteration, the current value is available through:
 
 ## Loop Using a Variable
 
+Variables file:
+
 ```yaml
 common_packages:
   - vim
@@ -213,7 +170,7 @@ common_packages:
   - curl
 ```
 
-The task can then use the variable:
+Task:
 
 ```yaml
 - name: Install common packages
@@ -229,10 +186,9 @@ The task can then use the variable:
 
 ```mermaid
 flowchart LR
-    A[Package list] --> B[Select next item]
-    B --> C[Run task for item]
+    A[Item list] --> B[Select next item]
+    B --> C[Run task]
     C --> D{More items?}
-
     D -->|Yes| B
     D -->|No| E[Continue playbook]
 ```
@@ -241,17 +197,19 @@ flowchart LR
 
 # 3. Managing Files
 
-Ansible provides several modules for managing files.
+Ansible provides several modules for managing files and directories.
+
+---
 
 ## `ansible.builtin.file`
 
-The `file` module manages filesystem objects and their properties.
+The `file` module manages filesystem objects.
 
 It can:
 
 * Create directories
-* Create symbolic links
 * Create empty files
+* Create symbolic links
 * Set ownership
 * Set permissions
 * Remove files or directories
@@ -272,7 +230,7 @@ Example:
 
 ## `ansible.builtin.copy`
 
-The `copy` module transfers static content or creates a file with fixed content.
+The `copy` module deploys static files or fixed content.
 
 Example:
 
@@ -288,15 +246,15 @@ Example:
     mode: "0644"
 ```
 
-Use `copy` when the file content is the same for every applicable host.
+Use `copy` when the content should remain mostly the same across managed hosts.
 
 ---
 
 ## `ansible.builtin.template`
 
-The `template` module generates a file from variables.
+The `template` module generates a file using variables.
 
-Use `template` when file content changes based on:
+Use `template` when content changes based on:
 
 * Hostname
 * Operating system
@@ -309,10 +267,10 @@ Use `template` when file content changes based on:
 
 ## File Module Comparison
 
-| Module     | Main purpose              | Typical example                       |
+| Module     | Main purpose              | Example                               |
 | ---------- | ------------------------- | ------------------------------------- |
-| `file`     | Manage filesystem objects | Create a directory or symbolic link   |
-| `copy`     | Deploy static content     | Copy a fixed configuration file       |
+| `file`     | Manage filesystem objects | Create a directory or link            |
+| `copy`     | Deploy static content     | Create a fixed information file       |
 | `template` | Generate dynamic content  | Build a configuration using variables |
 
 ---
@@ -331,7 +289,7 @@ Example:
 templates/index.html.j2
 ```
 
-Jinja2 inserts variable values while Ansible renders the destination file.
+Jinja2 replaces expressions with variable values when Ansible creates the destination file.
 
 ---
 
@@ -343,14 +301,14 @@ Jinja2 inserts variable values while Ansible renders the destination file.
 <p>Environment: {{ web_environment }}</p>
 ```
 
-For the following variables:
+Variables:
 
 ```yaml
 web_message: "Charter Ansible Training"
 web_environment: "training"
 ```
 
-Ansible could generate:
+Generated output:
 
 ```html
 <h1>Charter Ansible Training</h1>
@@ -358,13 +316,13 @@ Ansible could generate:
 <p>Environment: training</p>
 ```
 
-Each managed host can receive different content from the same template.
+The same template can generate different content for every host.
 
 ---
 
 ## Jinja2 Loop
 
-A template can loop over a list:
+Templates can loop over lists:
 
 ```jinja2
 <ul>
@@ -378,7 +336,7 @@ A template can loop over a list:
 
 ## Jinja2 Condition
 
-A template can also make decisions:
+Templates can also make decisions:
 
 ```jinja2
 {% if ansible_facts['os_family'] == "RedHat" %}
@@ -390,7 +348,7 @@ A template can also make decisions:
 {% endif %}
 ```
 
-Do not place too much automation logic inside templates. Tasks and variables should control most of the playbook behavior.
+Do not place too much automation logic inside templates. Tasks and variables should control most playbook behavior.
 
 ---
 
@@ -405,8 +363,8 @@ Handlers are commonly used to:
 * Restart services
 * Reload services
 * Regenerate caches
-* Apply configuration changes
 * Restart applications
+* Apply configuration changes
 
 ---
 
@@ -414,11 +372,9 @@ Handlers are commonly used to:
 
 ```mermaid
 flowchart LR
-    A[Run template task] --> B{Did the file change?}
-
+    A[Run configuration task] --> B{Did content change?}
     B -->|No| C[Do not notify handler]
     B -->|Yes| D[Notify handler]
-
     D --> E[Continue remaining tasks]
     E --> F[Run handler once]
     F --> G[Restart or reload service]
@@ -426,14 +382,14 @@ flowchart LR
 
 ---
 
-## Notification
+## Handler Notification
 
 A task notifies a handler using `notify`:
 
 ```yaml
 - name: Deploy Apache configuration
   ansible.builtin.template:
-    src: apache-hardening.conf.j2
+    src: ../templates/apache-hardening.conf.j2
     dest: /etc/httpd/conf.d/charter-module5.conf
     owner: root
     group: root
@@ -453,7 +409,7 @@ handlers:
       state: restarted
 ```
 
-The name used by `notify` must match the handler name:
+The notification name must match the handler name:
 
 ```yaml
 notify: Restart web service
@@ -463,11 +419,11 @@ notify: Restart web service
 
 ## Important Handler Behavior
 
-* A handler runs only when notified by a task that reports `changed`.
+* A handler runs only when notified by a task reporting `changed`.
 * A handler normally runs near the end of the play.
 * Multiple tasks can notify the same handler.
-* A handler normally runs only once, even if several tasks notify it.
-* A second unchanged playbook run should not trigger the handler.
+* A handler normally runs only once per host.
+* An unchanged second run should not trigger the handler.
 
 This prevents unnecessary service interruptions.
 
@@ -477,20 +433,20 @@ This prevents unnecessary service interruptions.
 
 ```mermaid
 flowchart TD
-    A[Ansible Navigator] --> B[Load inventory]
+    A[Run playbook] --> B[Load inventory]
     B --> C[Gather facts]
     C --> D[Load variables]
 
     D --> E{Supported OS family?}
-    E -->|No| F[Stop with clear error]
-    E -->|Yes| G[Install packages using loop]
+    E -->|No| F[Stop with error]
+    E -->|Yes| G[Install packages with loop]
 
-    G --> H[Create directories using file]
-    H --> I[Create static files using copy]
-    I --> J[Render configuration using template]
+    G --> H[Create directory with file]
+    H --> I[Create static file with copy]
+    I --> J[Generate configuration with template]
 
     J --> K{Configuration changed?}
-    K -->|No| L[No restart]
+    K -->|No| L[Do not restart service]
     K -->|Yes| M[Notify handler]
 
     M --> N[Continue tasks]
@@ -509,7 +465,7 @@ Create or verify the following files:
 ```text
 lab/
 ├── group_vars/
-│   └── web.yml
+│   └── linux.yml
 ├── inventories/
 │   └── inventory.ini
 ├── playbooks/
@@ -526,7 +482,7 @@ lab/
 Create:
 
 ```text
-group_vars/web.yml
+group_vars/linux.yml
 ```
 
 Add:
@@ -542,6 +498,8 @@ common_packages:
   - git
   - curl
 ```
+
+The filename `linux.yml` must match the inventory group used by the playbook.
 
 ---
 
@@ -564,8 +522,6 @@ ServerTokens Prod
 ServerSignature Off
 AddDefaultCharset UTF-8
 ```
-
-This file contains settings understood by Apache on both Debian and Red Hat systems.
 
 ---
 
@@ -631,7 +587,7 @@ Add:
 ```yaml
 ---
 - name: Module 5 - Conditions, loops, files, templates, and handlers
-  hosts: web
+  hosts: linux
   become: true
   gather_facts: true
 
@@ -745,45 +701,13 @@ Add:
 
 ---
 
-## Template Search Path Note
-
-The playbook above uses:
-
-```yaml
-src: ../templates/index.html.j2
-```
-
-This matches the existing course structure where `templates/` and `playbooks/` are both directly under `lab/`.
-
-In a standard role, templates normally live inside:
-
-```text
-roles/<role_name>/templates/
-```
-
-Roles are covered in Module 6.
-
----
-
 ## Step 5: Run a Syntax Check
 
 ```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
+ansible-playbook \
   -i inventories/inventory.ini \
-  --mode stdout \
+  playbooks/module5_template_deploy.yml \
   --syntax-check
-```
-
-For local execution:
-
-```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
-  -i inventories/inventory.ini \
-  --mode stdout \
-  --syntax-check \
-  --ee false
 ```
 
 Expected result:
@@ -792,32 +716,31 @@ Expected result:
 playbook: playbooks/module5_template_deploy.yml
 ```
 
-A syntax check confirms that Ansible can parse the playbook. It does not guarantee that every package, service, path, or variable is correct.
+A syntax check confirms that Ansible can parse the playbook. It does not confirm that packages, services, paths, and variables are correct.
 
 ---
 
 ## Step 6: Perform the First Run
 
 ```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
+ansible-playbook \
   -i inventories/inventory.ini \
-  --mode stdout
+  playbooks/module5_template_deploy.yml
 ```
 
 The first run should:
 
 1. Gather facts.
 2. Identify each host's operating system family.
-3. Run the appropriate conditional tasks.
+3. Run or skip conditional tasks.
 4. Install packages using a loop.
 5. Create `/etc/charter`.
 6. Create the static information file.
-7. Render the Apache configuration.
+7. Generate the Apache configuration.
 8. Create the Debian configuration link where required.
-9. Render the HTML page.
-10. Start the web service.
-11. Run the restart handler if the configuration changed.
+9. Generate the HTML page.
+10. Start and enable the web service.
+11. Run the handler if the Apache configuration changed.
 
 ---
 
@@ -826,18 +749,17 @@ The first run should:
 Run the same command again without editing anything:
 
 ```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
+ansible-playbook \
   -i inventories/inventory.ini \
-  --mode stdout
+  playbooks/module5_template_deploy.yml
 ```
 
 Expected behavior:
 
 * Most tasks report `ok`.
-* Conditional tasks continue to run or skip based on each host.
+* Conditions still run or skip based on each host.
 * Files remain unchanged.
-* The configuration template reports `ok`.
+* The Apache configuration reports `ok`.
 * The restart handler does not run.
 
 This confirms idempotency.
@@ -861,10 +783,9 @@ TraceEnable Off
 Run the playbook again:
 
 ```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
+ansible-playbook \
   -i inventories/inventory.ini \
-  --mode stdout
+  playbooks/module5_template_deploy.yml
 ```
 
 Expected behavior:
@@ -872,23 +793,22 @@ Expected behavior:
 1. The Apache configuration task reports `changed`.
 2. The task notifies `Restart web service`.
 3. Ansible continues through the remaining tasks.
-4. The handler runs once near the end of the play.
+4. The handler runs once near the end.
 5. The web service restarts.
 
 ---
 
 ## Step 9: Confirm Idempotency Again
 
-Run the playbook a fourth time without making another change:
+Run the playbook one more time without making another change:
 
 ```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
+ansible-playbook \
   -i inventories/inventory.ini \
-  --mode stdout
+  playbooks/module5_template_deploy.yml
 ```
 
-The handler should remain quiet because the configuration is already correct.
+The handler should not run because the configuration is already correct.
 
 ---
 
@@ -897,20 +817,18 @@ The handler should remain quiet because the configuration is already correct.
 Preview possible changes without applying them:
 
 ```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
+ansible-playbook \
   -i inventories/inventory.ini \
-  --mode stdout \
+  playbooks/module5_template_deploy.yml \
   --check
 ```
 
 Display file differences where supported:
 
 ```bash
-ansible-navigator run \
-  playbooks/module5_template_deploy.yml \
+ansible-playbook \
   -i inventories/inventory.ini \
-  --mode stdout \
+  playbooks/module5_template_deploy.yml \
   --check \
   --diff
 ```
@@ -919,67 +837,111 @@ Check mode is a prediction. Not every module can perfectly simulate a real run.
 
 ---
 
-# 9. Troubleshooting
+# 9. Validation Commands
 
-## Error: No hosts matched
+Check the generated static file:
+
+```bash
+ansible linux \
+  -i inventories/inventory.ini \
+  -b \
+  -m ansible.builtin.command \
+  -a "cat /etc/charter/module5.txt"
+```
+
+Check the generated website:
+
+```bash
+ansible linux \
+  -i inventories/inventory.ini \
+  -b \
+  -m ansible.builtin.command \
+  -a "cat /var/www/html/index.html"
+```
+
+Check the web service:
+
+```bash
+ansible linux \
+  -i inventories/inventory.ini \
+  -b \
+  -m ansible.builtin.service_facts
+```
+
+Test the web page from the managed host:
+
+```bash
+ansible linux \
+  -i inventories/inventory.ini \
+  -m ansible.builtin.uri \
+  -a "url=http://localhost return_content=true"
+```
+
+---
+
+# 10. Troubleshooting
+
+## Error: No Hosts Matched
 
 Check the inventory:
 
 ```bash
-ansible-navigator inventory \
+ansible-inventory \
   -i inventories/inventory.ini \
-  --graph \
-  --mode stdout
+  --graph
 ```
 
-Confirm that the inventory contains a group named:
+Confirm the inventory contains:
 
 ```ini
-[web]
+[linux]
 ```
 
-If the actual inventory group is named `linux`, change:
-
-```yaml
-hosts: web
-```
-
-To:
+If the actual inventory group uses a different name, update:
 
 ```yaml
 hosts: linux
 ```
 
----
-
-## Error: Variable is undefined
-
-Confirm that this file exists:
-
-```text
-group_vars/web.yml
-```
-
-The filename must match the inventory group name.
-
-For a group named `linux`, use:
+And rename:
 
 ```text
 group_vars/linux.yml
 ```
 
+To match the real group name.
+
 ---
 
-## Error: Template not found
+## Error: Variable Is Undefined
 
-Confirm the template paths:
+Confirm this file exists:
+
+```text
+group_vars/linux.yml
+```
+
+Confirm that the variables are correctly indented:
+
+```yaml
+common_packages:
+  - vim
+  - git
+  - curl
+```
+
+---
+
+## Error: Template Not Found
+
+Confirm the templates exist:
 
 ```text
 lab/templates/apache-hardening.conf.j2
 lab/templates/index.html.j2
 ```
 
-Confirm that the playbook uses:
+Confirm the playbook uses:
 
 ```yaml
 src: ../templates/apache-hardening.conf.j2
@@ -993,18 +955,18 @@ src: ../templates/index.html.j2
 
 ---
 
-## Error: Service could not be found
+## Error: Service Could Not Be Found
 
-Check the detected operating system:
+Check the operating system facts:
 
 ```bash
-ansible-navigator run \
-  playbooks/module4_facts.yml \
+ansible linux \
   -i inventories/inventory.ini \
-  --mode stdout
+  -m ansible.builtin.setup \
+  -a "filter=ansible_os_family"
 ```
 
-Confirm the service names:
+Expected service names:
 
 | OS family | Package   | Service   |
 | --------- | --------- | --------- |
@@ -1015,38 +977,37 @@ Confirm the service names:
 
 ## Handler Runs Every Time
 
-A handler running on every execution usually means its notifying task reports `changed` every time.
+A handler running during every execution normally means the notifying task reports `changed` every time.
 
-Investigate:
+Check for:
 
-* Commands or shell scripts without proper change detection
-* Templates containing changing timestamps
-* Randomly generated values
-* Incorrect file permissions
+* Templates containing timestamps
+* Random values
+* Commands without change detection
+* Incorrect file ownership or permissions
 * Tasks that are not idempotent
 
 ---
 
-# 10. Talking Points
+# 11. Talking Points
 
-* Conditions allow one playbook to support different systems.
-* Conditions are evaluated separately for each host.
+* Conditions allow one playbook to support multiple operating systems.
+* Conditions are evaluated separately for every host.
 * Loops remove repeated task definitions.
 * `item` represents the current loop value.
-* `file` manages filesystem objects and metadata.
-* `copy` is best for static content.
-* `template` generates dynamic content from variables.
-* A handler runs only when notified by a changed task.
+* `file` manages directories, links, ownership, and permissions.
+* `copy` is intended for static content.
+* `template` creates dynamic content using variables.
+* Handlers run only when notified by a changed task.
 * Several tasks can notify the same handler.
-* The same handler normally runs only once during the handler phase.
-* Static HTML changes do not normally require an Apache restart.
-* Apache configuration changes do require a restart or reload.
-* Re-running the playbook is part of the lab, not an optional extra.
-* Idempotency must be demonstrated, not merely explained.
+* A handler normally runs once near the end of the play.
+* Changing HTML content does not normally require a web service restart.
+* Changing web server configuration normally requires a restart or reload.
+* Re-running the playbook is required to prove idempotency.
 
 ---
 
-# 11. Quiz
+# 12. Quiz
 
 ## Question 1
 
@@ -1061,7 +1022,7 @@ What does the `when` keyword do?
 
 ## Question 2
 
-What does `item` represent inside a basic loop?
+What does `item` represent inside a loop?
 
 * A. The current managed host
 * B. The playbook filename
@@ -1086,7 +1047,7 @@ Which module is best for generating a configuration file from variables?
 When does a notified handler normally run?
 
 * A. Every time the playbook starts
-* B. Only when the notifying task reports a change
+* B. When the notifying task reports a change
 * C. Before facts are gathered
 * D. Only inside Ansible Automation Platform
 
@@ -1096,51 +1057,50 @@ When does a notified handler normally run?
 
 What should happen during a second playbook run when nothing has changed?
 
-* A. Every task should report changed
-* B. Every service should restart
-* C. Most tasks should report ok and the handler should not run
-* D. The inventory should be deleted
+* A. Every task reports changed
+* B. Every service restarts
+* C. Most tasks report ok and the handler does not run
+* D. The inventory is deleted
 
 ---
 
-# 12. Hands-On Lab
+# 13. Hands-On Lab
 
 ## Lab Goal
 
-Deploy and manage a web server safely using:
+Deploy and manage a web server using:
 
 * Facts
 * Variables
 * Conditions
 * Loops
-* File management
+* Files
 * Static content
 * Jinja2 templates
-* Handler notifications
-* Idempotent service management
-* Ansible Navigator
+* Handlers
+* Idempotency
 
 ---
 
 ## Required Tasks
 
-1. Inspect the inventory with Ansible Navigator.
-2. Create `group_vars/web.yml`.
-3. Define a list of common packages.
-4. Install the packages using a loop.
-5. Detect Debian and Red Hat systems using facts.
-6. Run OS-specific tasks using `when`.
-7. Create `/etc/charter` using the `file` module.
-8. Create a static information file using `copy`.
-9. Generate an Apache configuration using `template`.
-10. Generate a host-specific HTML page.
-11. Notify a handler when the Apache configuration changes.
-12. Restart the service using the handler.
-13. Run the playbook again without changes.
-14. Confirm that the handler does not run.
-15. Change the Apache template.
-16. Confirm that the handler runs once.
-17. Run the playbook one final time and confirm idempotency.
+1. Create `group_vars/linux.yml`.
+2. Define a list of common packages.
+3. Install packages using a loop.
+4. Detect Debian and Red Hat systems using facts.
+5. Run OS-specific tasks using `when`.
+6. Create `/etc/charter` using the `file` module.
+7. Create a static information file using `copy`.
+8. Generate an Apache configuration using `template`.
+9. Generate a host-specific HTML page.
+10. Notify a handler when the Apache configuration changes.
+11. Restart the service using the handler.
+12. Run the playbook again without changes.
+13. Confirm that the handler does not run.
+14. Change the Apache configuration template.
+15. Confirm that the handler runs once.
+16. Run the playbook one final time.
+17. Confirm idempotency.
 
 ---
 
@@ -1154,8 +1114,7 @@ Deploy and manage a web server safely using:
 * [ ] I can notify a handler.
 * [ ] I understand why handlers normally run near the end.
 * [ ] I can prove that the playbook is idempotent.
-* [ ] I can run the playbook through Ansible Navigator.
-* [ ] I understand how this code can later move into an AAP project.
+* [ ] I can troubleshoot missing variables and templates.
 
 ---
 
@@ -1165,39 +1124,26 @@ Deploy and manage a web server safely using:
 1. **B** - Controls whether a task runs.
 2. **C** - The current value being processed.
 3. **C** - `ansible.builtin.template`.
-4. **B** - Only when the notifying task reports a change.
+4. **B** - When the notifying task reports a change.
 5. **C** - Most tasks report `ok` and the handler does not run.
 
 </details>
 
 ---
 
-# 13. Connection to Ansible Automation Platform
+# 14. Connection to Later Modules
 
-The same automation content can later be stored in Git and synchronized into Ansible Automation Platform.
+The playbook in this module is still written as a single file.
 
-```mermaid
-flowchart LR
-    A[Git repository] --> B[AAP project]
-    B --> C[Job template]
-    C --> D[Inventory]
-    D --> E[Execution Environment]
-    E --> F[Run Module 5 playbook]
-    F --> G[Managed hosts]
+In Module 6, the same content will begin moving into reusable roles.
+
+In Module 10, Ansible Navigator will be introduced as another method for running and inspecting the automation content.
+
+For now, all Module 5 commands use:
+
+```bash
+ansible-playbook
 ```
-
-The execution method changes, but the core content remains the same:
-
-* Inventory
-* Variables
-* Facts
-* Conditions
-* Loops
-* Templates
-* Handlers
-* Playbooks
-
-This is why the course teaches the code-first workflow before introducing the AAP interface.
 
 ---
 
