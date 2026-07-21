@@ -26,7 +26,7 @@
 
   # Target all web servers.
   # The web group includes both Ubuntu-based and Rocky/RHEL-based hosts.
-  hosts: web
+  hosts: rhel_web
 
   # become: true allows Ansible to use sudo.
   # Installing packages, writing to /var/www/html, and managing services require root access.
