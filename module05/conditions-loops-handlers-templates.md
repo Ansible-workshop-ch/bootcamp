@@ -1131,21 +1131,6 @@ Deploy and manage a web server using:
 
 ---
 
-# 14. Connection to Later Modules
-
-The playbook in this module is still written as a single file.
-
-In Module 6, the same content will begin moving into reusable roles.
-
-In Module 10, Ansible Navigator will be introduced as another method for running and inspecting the automation content.
-
-For now, all Module 5 commands use:
-
-```bash
-ansible-playbook
-```
-
----
 
 <p align="left">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module04/variables-and-facts.md" target="_blank">
