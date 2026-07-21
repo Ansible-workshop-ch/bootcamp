@@ -1,99 +1,18 @@
 ---
-# Module 3: Basic web server setup
-#
-# This playbook builds on Module 2.
-#
-# In Module 2, we only installed and started the web service.
-# In Module 3, we also create the web document root and deploy a simple index.html page.
-#
-# Flow:
-# 1. Target the web group.
-# 2. Use sudo because package, file, and service tasks need root access.
-# 3. Gather facts so we can display OS information.
-# 4. Install the correct web package.
-# 5. Make sure /var/www/html exists.
-# 6. Deploy a simple HTML page.
-# 7. Start the correct web service.
-#
-# This playbook works across Ubuntu and Rocky/RHEL because it uses variables:
-# - package_name
-# - service_name
-# - web_message
-#
-# The values come from inventories/group_vars/.
-
 - name: Module 3 - basic web server setup
-
-  # Target all web servers.
-  # The web group includes both Ubuntu-based and Rocky/RHEL-based hosts.
   hosts: rhel_web
-
-  # become: true allows Ansible to use sudo.
-  # Installing packages, writing to /var/www/html, and managing services require root access.
   become: true
-
-  # gather_facts: true collects system information from each host.
-  # We use facts later to show the OS family on the web page.
   gather_facts: true
 
   tasks:
-    # Install the correct web package for each operating system.
-    #
-    # Ubuntu/Debian:
-    # package_name: apache2
-    #
-    # Rocky/RHEL:
-    # package_name: httpd
+
     - name: Install the web package
       ansible.builtin.package:
-        name: "{{ package_name }}"
+        name: httpd
         state: present
 
-    # Make sure the web document root exists.
-    # This is where the web server reads index.html from.
-    #
-    # state: directory means Ansible will create it if it does not exist.
-    # If it already exists, Ansible will leave it in place.
-    - name: Ensure web document root exists
-      ansible.builtin.file:
-        path: /var/www/html
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-
-    # Create a simple index.html file directly from inline content.
-    #
-    # This task uses variables and facts to show:
-    # - custom web message
-    # - inventory hostname
-    # - package name
-    # - service name
-    # - OS family
-    #
-    # This helps students see how Ansible variables can be rendered into files.
-    - name: Deploy a simple index page
-      ansible.builtin.copy:
-        dest: /var/www/html/index.html
-        content: |
-          <h1>{{ web_message }}</h1>
-          <p>Host: {{ inventory_hostname }}</p>
-          <p>Package: {{ package_name }}</p>
-          <p>Service: {{ service_name }}</p>
-          <p>OS family: {{ ansible_facts["os_family"] }}</p>
-        owner: root
-        group: root
-        mode: "0644"
-
-    # Make sure the correct web service is running.
-    #
-    # Ubuntu/Debian:
-    # service_name: apache2
-    #
-    # Rocky/RHEL:
-    # service_name: httpd
     - name: Ensure the web service is running
       ansible.builtin.service:
-        name: "{{ service_name }}"
+        name: httpd
         state: started
 
