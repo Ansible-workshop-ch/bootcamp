@@ -1,9 +1,4 @@
----
-package_name: httpd
-service_name: httpd
-web_port: 80
-common_packages:
-  - vim
-  - git
-  - curl-minimal
-  - httpd
+ansible_user: ansible_test
+ansible_password: ansible
+ansible_become: true
+ansible_become_password: ansible
