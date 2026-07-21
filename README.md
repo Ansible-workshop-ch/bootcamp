@@ -357,13 +357,3 @@ Playbook: [`lab/bonus/podman_machine_provision.yaml`](lab/bonus/podman_machine_p
 Requires a pre-built Podman image (e.g. `ansible-target-rocky`) and an SSH keypair at `~/.ssh/ansible_lab_key` set up ahead of time.
 
 ---
-
-### Kept light
-
-* Windows / WinRM / PowerShell
-* Deep Puppet-to-Ansible migration
-* HashiCorp Vault / CyberArk
-* AAP installation
-* Execution environment creation (building your own image)
-
-AWS, NetBox, and Podman provisioning are included as **bonus topics**, not required beginner labs.
