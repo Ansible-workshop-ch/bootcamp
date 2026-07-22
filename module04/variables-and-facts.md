@@ -10,289 +10,191 @@
   </a>
 </p>
 
-# Module 4: Variables, Facts, group_vars, and host_vars
+Module 4: Variables, Facts, group_vars, and host_vars
 
-> 🧪 Lab commands run from [`bootcamp/lab/`](../lab/) — `cd bootcamp/lab` first. Diagrams render automatically on GitHub.
+Run all lab commands from bootcamp/lab/.
 
-**Day 2 · Core Skills** — the heaviest technical day. This module matters a lot for Charter: teams spend real time managing inventory variables and host-specific configuration.
+cd bootcamp/lab
 
----
+Day 2 - Core Skills
 
-## Definition
+Definition
 
-**Variables** make playbooks flexible. Instead of hardcoding values, Ansible reads them from different sources.
+Learning objectives
 
-A variable is a name that stores a value.
+By the end of this module, you should be able to:
 
-For example, instead of writing `httpd` directly inside every task, we create a variable:
+Explain why Ansible variables are useful.
 
-```yaml
+Use group_vars for values shared by a group.
+
+Use host_vars for values assigned to one host.
+
+Read system information from Ansible facts.
+
+Explain which value wins when the same variable is defined more than once.
+
+Variables
+
+A variable is a named value used by a playbook.
+
+Instead of hardcoding a package name in every task:
+
+name: httpd
+
+Define the value once:
+
 package_name: httpd
-```
 
-The playbook can then use:
+Then reference it in the playbook:
 
-```yaml
 name: "{{ package_name }}"
-```
 
-This allows us to change the package name in one place without editing every task.
+Variables make playbooks easier to reuse across different hosts, operating systems, and environments.
 
-Common variable sources:
+Common variable sources
 
-* Playbook variables
-* Inventory variables
-* `group_vars/` — values shared by a group of hosts
-* `host_vars/` — values for one specific host
-* **Facts** — system information collected from managed hosts
-* **Extra variables** — values passed at runtime (`-e`) or through an AAP survey
+Source
 
-A simple way to understand these sources:
+Purpose
 
-| Variable source    | Simple meaning                                 |
-| ------------------ | ---------------------------------------------- |
-| Playbook variable  | A value written directly inside the playbook   |
-| Inventory variable | A value connected to a host or group           |
-| `group_vars`       | Shared values for multiple hosts               |
-| `host_vars`        | Values for one specific host                   |
-| Facts              | Information discovered from the managed system |
-| Extra variables    | Values provided when launching the playbook    |
+Example
 
-**Facts** are collected automatically unless fact gathering is disabled.
+Play variables
 
-Examples of facts:
+Values defined inside a play
 
-* Operating system family
-* Hostname
-* IP addresses
-* CPU information
-* Memory information
-* Network interfaces
+vars:
 
-Example:
+Inventory variables
 
-```yaml
-ansible_facts['os_family']
-```
+Values attached to a host or group in inventory
 
-Ansible collects facts from the managed hosts when the playbook starts. We normally do not define these values ourselves.
+server1 web_port=8080
 
----
+group_vars
 
-## Diagram / Workflow
+Values shared by an inventory group
 
-Where values come from:
-
-```mermaid
-flowchart LR
-    INV[Inventory] --> GROUPS[Groups]
-    INV --> HOSTS[Hosts]
-
-    GROUPS --> GV[group_vars]
-    HOSTS --> HV[host_vars]
-
-    GV --> PB[Playbook]
-    HV --> PB
-    FACTS[Gathered facts] --> PB
-```
-
-### Understanding the diagram
-
-The inventory is the starting point.
-
-The inventory defines:
-
-* Which hosts exist
-* Which groups they belong to
-
-Example:
-
-```ini
-[web]
-server1
-server2
-```
-
-The inventory creates a group called `web` containing two hosts.
-
-Ansible then looks for matching variable files.
-
-The repository structure is:
-
-```text
-inventories/
-├── inventory.ini
-└── group_vars
-    ├── all.yml
-    ├── rhel_web.yml
-    ├── ubuntu_web.yml
-    └── web.yml
-```
-
-### Understanding this structure
-
-`inventory.ini` defines the hosts and groups.
-
-Example:
-
-```ini
-[web]
-server1
-server2
-```
-
-The `group_vars` directory stores variables connected to inventory groups.
-
-The files are loaded based on their names:
-
-```text
-group_vars/all.yml
-```
-
-Applies to every host in the inventory.
-
-```text
-group_vars/web.yml
-```
-
-Applies to every host in the `web` group.
-
-```text
 group_vars/rhel_web.yml
-```
 
-Applies to hosts in the `rhel_web` group.
+host_vars
 
-```text
-group_vars/ubuntu_web.yml
-```
+Values used by one host
 
-Applies to hosts in the `ubuntu_web` group.
+host_vars/server1.yml
 
-The important relationship is:
+Facts
 
-```text
-Inventory group name
+Information collected from a managed host
+
+ansible_facts['os_family']
+
+Extra variables
+
+Values supplied when a playbook is launched
+
+-e "web_message=Hello"
+
+group_vars and host_vars
+
+Ansible matches variable files to inventory names.
+
+inventory group: rhel_web
+variable file:   group_vars/rhel_web.yml
+
+inventory host:  server1
+variable file:   host_vars/server1.yml
+
+Use:
+
+group_vars/all.yml for values used by every host.
+
+group_vars/<group_name>.yml for values shared by one group.
+
+host_vars/<host_name>.yml for values used by one host.
+
+Facts
+
+Facts are system details gathered from managed hosts when a play starts.
+
+Common facts include:
+
+Hostname
+
+Operating system family
+
+IP addresses
+
+CPU count
+
+Memory
+
+Network interfaces
+
+Examples:
+
+ansible_facts['hostname']
+ansible_facts['os_family']
+ansible_facts['default_ipv4']['address']
+
+Fact gathering is enabled by default unless the play contains:
+
+gather_facts: false
+
+Variable precedence
+
+The same variable can be defined in more than one place. The more specific or higher-priority value wins.
+
+For this module, remember this simplified order from lower to higher priority:
+
+group_vars/all.yml
         |
         v
-Matching group_vars file
-```
+group_vars/<group>.yml
+        |
+        v
+host_vars/<host>.yml
+        |
+        v
+extra variables (-e or AAP survey)
 
 Example:
 
-```text
-[web]
-server1
-server2
-```
-
-loads:
-
-```text
-group_vars/web.yml
-```
-
----
-
-Variable precedence (lowest priority first, highest priority last):
-
-```mermaid
-flowchart LR
-    D[role defaults] --> A[group_vars/all.yml] --> G[group_vars/group.yml] --> H[host_vars] --> E[extra vars -e / survey]
-    style E fill:#cde,stroke:#369
-```
-
-### Understanding variable precedence
-
-The same variable can exist in multiple places.
-
-For example:
-
-```text
-group_vars/all.yml
-group_vars/web.yml
-host_vars/server1.yml
-```
-
-Ansible must decide which value to use.
-
-This is called **variable precedence**.
-
-The more specific value wins.
-
-Example:
-
-```yaml
-# group_vars/all.yml
-company: Charter
-```
-
-```yaml
 # group_vars/web.yml
 web_message: "Hello web servers"
-```
 
-```yaml
 # host_vars/server1.yml
 web_message: "Hello server1"
-```
 
 Result:
 
-```text
 server1 -> Hello server1
 server2 -> Hello web servers
-```
 
-`server1` receives the host-specific value.
+The host-specific value overrides the group value for server1.
 
-`server2` receives the group value.
+Hands-On Walkthrough
 
-Extra variables have the highest priority:
+1. Review the repository structure
 
-```bash
-ansible-playbook playbooks/module4_variables.yml -e "web_message=Runtime message"
-```
-
-AAP surveys also provide extra variables and override lower-priority values.
-
----
-
-## Hands-On Walkthrough
-
-Repo layout used here:
-
-```text
 inventories/
-├── inventory.ini
-└── group_vars
-    ├── all.yml
-    ├── rhel_web.yml
-    ├── ubuntu_web.yml
-    └── web.yml
+|-- inventory.ini
+|-- group_vars/
+|   |-- all.yml
+|   |-- web.yml
+|   |-- rhel_web.yml
+|   `-- ubuntu_web.yml
+`-- host_vars/
+    `-- server1.yml
 
 playbooks/
-└── module4_variables.yml
-```
+`-- module4_variables.yml
 
-### Files used in this module
+2. Define the inventory
 
-| File                                    | Purpose                           |
-| --------------------------------------- | --------------------------------- |
-| `inventories/inventory.ini`             | Defines hosts and groups          |
-| `inventories/group_vars/all.yml`        | Variables shared by every host    |
-| `inventories/group_vars/web.yml`        | Variables shared by web hosts     |
-| `inventories/group_vars/rhel_web.yml`   | Variables for RHEL web hosts      |
-| `inventories/group_vars/ubuntu_web.yml` | Variables for Ubuntu web hosts    |
-| `playbooks/module4_variables.yml`       | Uses variables and displays facts |
+Create or review inventories/inventory.ini:
 
----
-
-### File 1: `inventory.ini`
-
-Example:
-
-```ini
 [web]
 server1
 server2
@@ -302,282 +204,267 @@ server1
 
 [ubuntu_web]
 server2
-```
 
-This inventory creates three groups:
+The hosts belong to the following groups:
 
-```text
-web
-rhel_web
-ubuntu_web
-```
+Host
 
-Ansible uses these names to find matching variable files.
+Groups
 
----
+server1
 
-### File 2: `group_vars/all.yml`
+web, rhel_web
 
-Example:
+server2
 
-```yaml
+web, ubuntu_web
+
+3. Define variables for every host
+
+Create inventories/group_vars/all.yml:
+
 company: Charter
 environment_name: Training
-```
 
-This file applies to every host.
+These variables are available to every host in the inventory.
 
-Any host in the inventory can use these variables.
+4. Define variables for all web servers
 
----
+Create inventories/group_vars/web.yml:
 
-### File 3: `group_vars/web.yml`
+web_message: "Hello from {{ company }} {{ environment_name }}"
 
-Example:
+This value is available to hosts in the web group.
 
-```yaml
+5. Define operating-system-specific values
+
+Create inventories/group_vars/rhel_web.yml:
+
 package_name: httpd
 service_name: httpd
-web_message: "Hello from Ansible - {{ company }} {{ environment_name }}"
-```
 
-This file applies only to hosts in the `web` group.
+Create inventories/group_vars/ubuntu_web.yml:
 
-The variables are shared by all web servers.
-
----
-
-### File 4: `group_vars/rhel_web.yml`
-
-Example:
-
-```yaml
-package_name: httpd
-service_name: httpd
-```
-
-This file contains values specific to RHEL web servers.
-
----
-
-### File 5: `group_vars/ubuntu_web.yml`
-
-Example:
-
-```yaml
 package_name: apache2
 service_name: apache2
-```
 
-This file contains values specific to Ubuntu web servers.
+The same playbook can now use the correct package and service names for each group.
 
----
+6. Add one host-specific override
 
-### File 6: `playbooks/module4_variables.yml`
+Create inventories/host_vars/server1.yml:
 
-The playbook uses variables loaded from the inventory structure.
+web_message: "Hello specifically from server1"
 
-Example:
+This value overrides group_vars/web.yml only for server1.
 
-```yaml
-- name: Show package name
-  ansible.builtin.debug:
-    var: package_name
-```
+7. Create the playbook
 
-Ansible finds the correct value based on the host groups.
-
-For example:
-
-```text
-RHEL host:
-package_name = httpd
-
-Ubuntu host:
-package_name = apache2
-```
-
-The playbook does not need separate logic for each operating system.
+Create playbooks/module4_variables.yml:
 
 ---
+- name: Demonstrate variables and facts
+  hosts: web
+  gather_facts: true
 
-Run it:
+  tasks:
+    - name: Display resolved variables
+      ansible.builtin.debug:
+        msg:
+          - "Host: {{ inventory_hostname }}"
+          - "Package: {{ package_name }}"
+          - "Service: {{ service_name }}"
+          - "Message: {{ web_message }}"
 
-```bash
+    - name: Display selected facts
+      ansible.builtin.debug:
+        msg:
+          - "Hostname: {{ ansible_facts['hostname'] }}"
+          - "OS family: {{ ansible_facts['os_family'] }}"
+
+The debug module displays information without changing the managed host. It is useful for checking variables, facts, and precedence.
+
+8. Validate and run the playbook
+
+Check the syntax:
+
+ansible-playbook -i inventories/inventory.ini playbooks/module4_variables.yml --syntax-check
+
+Run the playbook:
+
 ansible-playbook -i inventories/inventory.ini playbooks/module4_variables.yml
-```
 
-### What happens when the command runs
+Expected variable behavior:
 
-Ansible performs these steps:
+Host
 
-```text
-1. Read the inventory.
-2. Identify hosts and groups.
-3. Load matching group_vars files.
-4. Connect to managed hosts.
-5. Gather facts.
-6. Resolve variable precedence.
-7. Run playbook tasks.
-8. Display results.
-```
+Package
 
-Students should compare output from different hosts.
+Service
 
-A RHEL web server receives:
+Message source
 
-```text
-group_vars/all.yml
+server1
+
+httpd
+
+httpd
+
+host_vars/server1.yml
+
+server2
+
+apache2
+
+apache2
+
 group_vars/web.yml
-group_vars/rhel_web.yml
-```
 
-An Ubuntu web server receives:
+9. Test an extra variable
 
-```text
-group_vars/all.yml
-group_vars/web.yml
-group_vars/ubuntu_web.yml
-```
+Run the playbook with a runtime value:
 
-The most specific matching value is used.
+ansible-playbook -i inventories/inventory.ini playbooks/module4_variables.yml \
+  -e "web_message=Runtime message"
 
----
+The extra variable overrides the values from both group_vars and host_vars.
 
-### Understanding `debug`
+AAP surveys also pass extra variables, so they follow the same behavior.
 
-The `debug` module displays information without changing the managed system.
+Quiz
 
-Useful for:
+What is the purpose of group_vars?
 
-* Checking variable values
-* Checking facts
-* Troubleshooting
-* Confirming precedence behavior
+A. Store values for inventory groups
 
-Example:
+B. Store playbook output
 
-```yaml
-- name: Print package variable
-  ansible.builtin.debug:
-    var: package_name
-```
+C. Replace the inventory
 
-Example:
+D. Store only encrypted passwords
 
-```yaml
-- name: Print operating system family
-  ansible.builtin.debug:
-    var: ansible_facts['os_family']
-```
+Which file applies variables to every host?
 
----
+A. group_vars/all.yml
 
-## Quiz
+B. host_vars/all.yml
 
-1. What is the purpose of `group_vars`?
+C. inventory/all.yml
 
-   * A. Store variables for inventory groups
-   * B. Store passwords only
-   * C. Store playbook output
-   * D. Replace inventory completely
+D. playbooks/all.yml
 
-2. What are Ansible facts?
+What are Ansible facts?
 
-   * A. Details collected from managed systems
-   * B. Git branches
-   * C. AAP job templates
-   * D. Encrypted files only
+A. Details collected from managed hosts
 
-3. Why are variables important?
+B. Git branch information
 
-   * A. They make automation flexible and reusable
-   * B. They remove the need for YAML
-   * C. They only work with Windows
-   * D. They only work in AAP
+C. AAP job templates
 
----
+D. Static values that must always be typed manually
 
-## Hands-On Lab — *Make a playbook flexible with variables*
+Which source has the highest priority in this module's simplified precedence order?
 
-**You will:**
+A. group_vars/all.yml
 
-1. Review the inventory structure.
-2. Edit a value in `group_vars/web.yml`.
-3. Add or modify values in OS-specific variable files.
-4. Use variables inside a playbook.
-5. Print facts using `debug`.
-6. Re-run the playbook and compare results.
+B. Group variables
 
-Run:
+C. Host variables
 
-```bash
-ansible-playbook -i inventories/inventory.ini playbooks/module4_variables.yml
-```
+D. Extra variables passed with -e or an AAP survey
 
-Edit:
+Which module is commonly used to display variable and fact values?
 
-```text
-inventories/group_vars/web.yml
-```
+A. ansible.builtin.copy
 
-Change:
+B. ansible.builtin.debug
 
-```yaml
-web_message: "New training message"
-```
+C. ansible.builtin.package
 
-Run again:
-
-```bash
-ansible-playbook -i inventories/inventory.ini playbooks/module4_variables.yml
-```
-
-Observe how the playbook behavior changes without changing the tasks.
-
-### Lab file flow
-
-```text
-inventory.ini
-      |
-      v
-inventory groups
-      |
-      +--> group_vars/all.yml
-      |
-      +--> group_vars/web.yml
-      |
-      +--> group_vars/rhel_web.yml
-      |
-      +--> group_vars/ubuntu_web.yml
-      |
-      v
-playbook/module4_variables.yml
-      |
-      v
-managed hosts
-```
-
-The key lesson:
-
-```text
-Change the data without rewriting the automation.
-```
-
-**Success check:**
-
-* [ ] You understand how Ansible loads variables from inventory structure.
-* [ ] You can explain the difference between all.yml and group-specific variables.
-* [ ] You understand why variable precedence matters.
+D. ansible.builtin.service
 
 <details>
 <summary>Instructor answer key</summary>
 
-1. **A** — Store variables for inventory groups
-2. **A** — Details collected from managed systems
-3. **A** — Flexible and reusable automation
+A - Store values for inventory groups
+
+A - group_vars/all.yml
+
+A - Details collected from managed hosts
+
+D - Extra variables passed with -e or an AAP survey
+
+B - ansible.builtin.debug
 
 </details>
+
+Hands-On Lab
+
+Goal
+
+Make one playbook behave differently for different hosts without duplicating its tasks.
+
+Tasks
+
+Confirm that the inventory contains the web, rhel_web, and ubuntu_web groups.
+
+Create or review these variable files:
+
+inventories/group_vars/all.yml
+inventories/group_vars/web.yml
+inventories/group_vars/rhel_web.yml
+inventories/group_vars/ubuntu_web.yml
+
+Create inventories/host_vars/server1.yml and override web_message for server1.
+
+Run the playbook and compare the values returned for each host.
+
+Add this task to the playbook:
+
+- name: Display host memory
+  ansible.builtin.debug:
+    msg: "Memory in MB: {{ ansible_facts['memtotal_mb'] }}"
+
+Run the playbook again:
+
+ansible-playbook -i inventories/inventory.ini playbooks/module4_variables.yml
+
+Override the message at runtime:
+
+ansible-playbook -i inventories/inventory.ini playbooks/module4_variables.yml \
+  -e "web_message=Message from extra vars"
+
+Explain why the runtime message appears on both hosts.
+
+Verification commands
+
+List the inventory structure:
+
+ansible-inventory -i inventories/inventory.ini --graph
+
+Display all resolved variables for server1:
+
+ansible-inventory -i inventories/inventory.ini --host server1
+
+Display gathered facts from the web hosts:
+
+ansible web -i inventories/inventory.ini -m ansible.builtin.setup
+
+Success check
+
+I can explain the difference between group_vars and host_vars.
+
+I can identify which variable value wins and why.
+
+I can display facts with ansible.builtin.debug.
+
+I can change playbook behavior without rewriting the tasks.
+
+I can use an extra variable to override lower-priority values.
+
+Key lesson
+
+Keep the automation in the playbook and keep changing data in variable files.
 
 <p align="left">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module03/playbook-basics.md" target="_blank">
