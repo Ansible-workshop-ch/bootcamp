@@ -1,2 +1,3 @@
 ---
-web_message: "Hello from Ansible - Charter training"
+web_port: 80
+web_message: "Hello from Ansible - {{ company }} {{ environment_name }}"
