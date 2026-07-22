@@ -2,6 +2,11 @@
 *.retry
 *.log
 
+# Local Ansible configuration
+lab/ansible.cfg
+lab/inventories/inventory.ini
+lab/inventories/group_vars/rhel_web.yml
+
 # Vault (never commit decrypted secrets)
 vault_pass.txt
 *.decrypted
