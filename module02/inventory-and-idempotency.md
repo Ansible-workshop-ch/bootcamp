@@ -166,17 +166,17 @@ Talking points:
 
 **You will:**
 
-1. Target the `web` group.
+1. Target the `rhel_web` group.
 2. Install `httpd` or `apache2` using the `package` module.
 3. Start `httpd` or `apache2` using the `service` module.
 4. Run the **same install command again**.
 5. Observe `changed` vs `ok` in the output.
 
 ```bash
-ansible web -m package -a "name=httpd state=restarted" --become
-ansible web -m service -a "name=httpd state=started" --become
+ansible rhel_web -m package -a "name=httpd state=restarted" --become
+ansible rhel_web -m service -a "name=httpd state=started" --become
 # run the install again and watch the result flip to "ok"
-ansible web -m package -a "name=httpd state=stopped" --become
+ansible rhel_web -m package -a "name=httpd state=stopped" --become
 ```
 
 **Success check:**
