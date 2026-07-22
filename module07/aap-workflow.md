@@ -12,44 +12,49 @@
 
 # Module 7: AAP Workflow for Operators
 
-> 🧪 This module uses the AAP 2.6 training environment and the automation created in [`bootcamp/lab/`](../lab/).
+> This module uses the AAP 2.6 training environment and the automation created in [`bootcamp/lab/`](../lab/).
 
 **Day 3 - AAP and Applied Workflow**
 
-The goal of this module is to understand how automation moves from Git into Ansible Automation Platform and runs as a controlled job.
+This module explains how approved automation moves from Git into Ansible Automation Platform and runs as a controlled, repeatable, and auditable job.
 
-This module is not intended to turn students into AAP platform administrators.
+The goal is not to make students AAP platform administrators.
 
----
-
-## Learning Objectives
-
-By the end of this module, you will be able to:
-
-* Explain what Ansible Automation Platform adds to Ansible automation.
-* Explain the relationship between Git, projects, playbooks, roles, inventories, credentials, execution environments, and job templates.
-* Locate and inspect an AAP project.
-* Synchronize automation content from Git.
-* Inspect the settings of a job template.
-* Launch an existing job template.
-* Follow a running job.
-* Read task and host results.
-* Distinguish between `ok`, `changed`, `failed`, `unreachable`, and `skipped`.
-* Relaunch an automation job.
-* Confirm idempotency through AAP.
-* Identify whether a failure belongs to the automation code, inventory, credential, or platform team.
+The goal is to help operators understand how to synchronize, launch, monitor, validate, and escalate AAP automation jobs.
 
 ---
-
-# 1. What Is Ansible Automation Platform?
 
 ## Definition
 
-Red Hat Ansible Automation Platform, or **AAP**, is an enterprise platform for running, controlling, delegating, scheduling, and auditing Ansible automation.
+### Learning objectives
+
+By the end of this module, you should be able to:
+
+* Explain what Ansible Automation Platform adds to Ansible automation.
+* Explain the relationship between Git, projects, playbooks, roles, inventories, credentials, execution environments, job templates, and jobs.
+* Locate and inspect an AAP project.
+* Synchronize automation content from Git.
+* Inspect an existing job template.
+* Launch an existing job template.
+* Follow a running job.
+* Read task and host results.
+* Understand `ok`, `changed`, `failed`, `unreachable`, and `skipped`.
+* Read the play recap.
+* Relaunch a job.
+* Confirm idempotency through AAP.
+* Compare an AAP project revision with a Git commit.
+* Identify the likely owner of a failure.
+* Escalate a failed job without exposing secrets.
+
+---
+
+### What is Ansible Automation Platform?
+
+Red Hat Ansible Automation Platform, or AAP, is an enterprise platform for running, controlling, delegating, scheduling, and auditing Ansible automation.
 
 The Ansible code remains in Git.
 
-AAP provides controlled services around that code, including:
+AAP adds controlled services around that code, including:
 
 * Centralized execution
 * Inventories
@@ -65,17 +70,21 @@ AAP provides controlled services around that code, including:
 * Workflow automation
 * Auditing
 
-The playbooks and roles do not need to be rewritten for AAP.
+Playbooks and roles do not need to be rewritten for AAP.
 
 The same automation tested from the command line can be synchronized from Git and executed through AAP.
 
 ---
 
-## Key Mental Model
+### Key mental model
 
-> Git stores the automation. AAP controls how, where, and by whom it runs.
+```text
+Git stores the automation.
 
-AAP is not a replacement for:
+AAP controls how, where, and by whom the automation runs.
+```
+
+AAP does not replace:
 
 * YAML
 * Playbooks
@@ -83,22 +92,23 @@ AAP is not a replacement for:
 * Variables
 * Git
 * Testing
-* Code review
+* Peer review
 
-AAP adds enterprise execution and control around those components.
+AAP adds controlled execution around those components.
 
 ---
 
-# 2. Operator Scope
+### Operator scope
 
-This module focuses on operator-level AAP usage.
+This module focuses on operator-level work.
 
-## Operators Usually Work With
+Operators commonly work with:
 
 * Projects
 * Project synchronization
 * Existing inventories
-* Existing credentials attached to templates
+* Existing credentials
+* Existing execution environments
 * Job templates
 * Job launches
 * Job output
@@ -106,54 +116,44 @@ This module focuses on operator-level AAP usage.
 * Relaunching jobs
 * Basic failure identification
 
----
+AAP administrators commonly manage:
 
-## Platform Administrators Usually Manage
-
-The following responsibilities remain with the AAP platform or infrastructure team:
-
-* Installing AAP
-* Upgrading AAP
-* Configuring platform gateway
-* Managing automation mesh
-* Managing execution and control nodes
-* Building execution environments
-* Managing container registries
-* Creating enterprise credentials
-* Configuring authentication
-* Configuring role-based access control
-* Configuring organizations and teams
-* Managing capacity
-* Backing up and restoring AAP
+* AAP installation and upgrades
+* Platform gateway
+* Automation mesh
+* Execution nodes
+* Control nodes
+* Execution environment images
+* Container registries
+* Enterprise credentials
+* Authentication
+* Role-based access control
+* Organizations and teams
+* Platform capacity
+* Backups and recovery
 * Deep platform troubleshooting
 
-For the Charter environment, these responsibilities remain with the designated AAP infrastructure team.
+Students should not modify platform-level settings during this module.
 
 ---
 
-## Developer, Operator, and Administrator Responsibilities
+### Responsibility model
 
-| Role                 | Primary responsibility                                                         |
-| -------------------- | ------------------------------------------------------------------------------ |
-| Automation developer | Creates and tests playbooks, roles, templates, and variables                   |
-| Automation operator  | Launches approved automation and reviews the result                            |
-| AAP administrator    | Maintains the platform, permissions, credentials, and execution infrastructure |
+| Role | Primary responsibility |
+| --- | --- |
+| Automation developer | Creates and tests playbooks, roles, templates, and variables |
+| Automation operator | Launches approved automation and reviews the result |
+| AAP administrator | Maintains the platform, permissions, credentials, and execution infrastructure |
 
-One person can hold multiple responsibilities, but the responsibilities should still be understood separately.
-
----
-
-# 3. AAP Core Objects
-
-Operators must understand how the main AAP objects connect.
+One person may perform more than one role, but the responsibilities remain separate.
 
 ---
 
-## Project
+### AAP project
 
-An AAP **project** connects automation controller to automation content.
+An AAP project connects automation controller to automation content.
 
-The content commonly comes from a Git repository.
+The content normally comes from a Git repository.
 
 A project can contain:
 
@@ -165,11 +165,7 @@ A project can contain:
 * Supporting files
 * Documentation
 
-In this course, the project connects to:
-
-```text
-Ansible-workshop-ch/bootcamp
-```
+This course project connects to the bootcamp repository.
 
 The playbook used in this module is:
 
@@ -177,7 +173,9 @@ The playbook used in this module is:
 lab/playbooks/module6_role_apply.yml
 ```
 
-Because AAP synchronizes the repository from its root, the playbook path includes:
+AAP synchronizes the repository from its root.
+
+Therefore, the AAP playbook path includes:
 
 ```text
 lab/
@@ -191,9 +189,9 @@ cd bootcamp/lab
 
 ---
 
-## Inventory
+### AAP inventory
 
-An AAP **inventory** defines the managed hosts targeted by automation.
+An AAP inventory defines the managed hosts available to automation jobs.
 
 An inventory can contain:
 
@@ -204,56 +202,138 @@ An inventory can contain:
 * Dynamic inventory sources
 * Constructed inventory rules
 
-Module 7 uses an inventory that has already been created.
+Module 7 uses an inventory prepared by the instructor or AAP administrator.
 
-Inventory creation and synchronization are covered in Module 8.
+Inventory creation and advanced inventory management are covered in Module 8.
+
+The Module 6 playbook targets:
+
+```yaml
+hosts: web
+```
+
+The selected AAP inventory must therefore contain a group named:
+
+```text
+web
+```
+
+The inventory should also contain the operating-system-specific groups used by the role:
+
+```text
+rhel_web
+ubuntu_web
+```
 
 ---
 
-## Credential
+### AAP inventory variables
 
-A **credential** provides protected authentication information.
+When AAP uses its own inventory, it does not automatically depend on the local static inventory file:
 
-Different credentials have different purposes.
+```text
+lab/inventories/inventory.ini
+```
 
-| Credential type               | Purpose                                                       |
-| ----------------------------- | ------------------------------------------------------------- |
-| Source control credential     | Allows an AAP project to access a protected Git repository    |
-| Machine credential            | Allows an automation job to connect to Linux or Windows hosts |
-| Vault credential              | Provides an Ansible Vault password                            |
-| Container registry credential | Allows AAP to pull a protected execution environment image    |
-| Cloud credential              | Allows modules to authenticate to a cloud provider            |
+The required host and group variables must be available through one of these sources:
 
-Students do not need to see or manage credential secrets.
+* AAP inventory variables
+* AAP group variables
+* AAP host variables
+* Role defaults
+* Job template extra variables
+* Survey variables
 
-A credential can be attached to a job template without exposing the secret value to the operator.
+For this module, the instructor should prepare the required AAP inventory groups and variables before the lab.
+
+Example variables for all hosts:
+
+```yaml
+company: "Charter"
+environment_name: "training"
+```
+
+Example variables for the `web` group:
+
+```yaml
+web_port: 80
+web_message: "Hello from Ansible - Charter training"
+```
+
+Example variables for the `rhel_web` group:
+
+```yaml
+package_name: httpd
+service_name: httpd
+
+common_packages:
+  - vim
+  - git
+  - curl-minimal
+  - httpd
+```
+
+Example variables for the `ubuntu_web` group:
+
+```yaml
+package_name: apache2
+service_name: apache2
+
+common_packages:
+  - vim
+  - git
+  - curl
+  - apache2
+```
+
+The role also contains fallback defaults and mappings, but the AAP inventory should provide environment-specific values.
 
 ---
 
-## Execution Environment
+### AAP credential
 
-An **execution environment** is the container image used to run Ansible automation.
+A credential provides protected authentication information.
+
+Different credential types have different purposes.
+
+| Credential type | Purpose |
+| --- | --- |
+| Source control credential | Allows AAP to access a protected Git repository |
+| Machine credential | Allows an automation job to connect to managed hosts |
+| Vault credential | Provides an Ansible Vault password |
+| Container registry credential | Allows AAP to pull a protected execution environment |
+| Cloud credential | Allows automation modules to authenticate to a cloud platform |
+
+Students do not need access to credential secrets.
+
+A credential can be attached to a job template without exposing its protected values.
+
+---
+
+### Execution environment
+
+An execution environment is the container image used to run Ansible automation.
 
 It can contain:
 
 * `ansible-core`
 * Ansible Runner
-* Collections
+* Ansible collections
 * Python libraries
 * System packages
-* Other automation dependencies
+* Automation dependencies
 
-In this module, students select or inspect an existing execution environment.
+Operators inspect or select an existing execution environment.
 
-Building execution environments is outside the scope of this course.
+Building execution environments is outside the scope of this module.
 
 ---
 
-## Job Template
+### Job template
 
-A **job template** defines how a playbook runs.
+A job template defines how a playbook runs.
 
-A job template connects the required execution inputs:
+A job template connects:
 
 * Project
 * Playbook
@@ -266,19 +346,19 @@ A job template connects the required execution inputs:
 * Verbosity
 * Other execution settings
 
-A job template makes the automation repeatable.
+A job template makes automation repeatable.
 
-Instead of entering all execution options manually, the operator launches a prepared template.
+The operator launches a prepared template instead of entering every execution setting manually.
 
 ---
 
-## Job
+### Job
 
-A **job** is one execution of a job template.
+A job is one execution of a job template.
 
-Each launch creates a new job record.
+Every launch creates a new job record.
 
-The job record includes:
+The job record can include:
 
 * Status
 * Start time
@@ -289,22 +369,25 @@ The job record includes:
 * Inventory
 * Credentials used
 * Execution environment
+* Playbook
 * Task output
 * Host results
 * Play recap
 
+The job record creates an audit trail for the execution.
+
 ---
 
-# 4. Correct AAP Workflow
+### AAP object relationship
 
 ```mermaid
 flowchart TD
     DEV[Automation developer] --> GIT[Git repository]
     GIT --> PROJECT[AAP project]
-    PROJECT --> PLAYBOOK[Playbook and roles]
+    PROJECT --> PLAYBOOK[Playbook and role]
 
     PLAYBOOK --> TEMPLATE[Job template]
-    INVENTORY[Inventory] --> TEMPLATE
+    INVENTORY[AAP inventory] --> TEMPLATE
     CREDENTIAL[Machine credential] --> TEMPLATE
     EE[Execution environment] --> TEMPLATE
     OPTIONS[Variables and options] --> TEMPLATE
@@ -318,204 +401,432 @@ flowchart TD
     EVENTS --> OUTPUT[Job output and history]
 ```
 
-The inventory and credential do not flow through each other.
+The inventory, credential, project, and execution environment are separate inputs to the job template.
 
-They are separate inputs attached to the job template.
-
----
-
-# 5. Module 6 to Module 7
-
-Module 6 created the following code-first structure:
-
-```text
-bootcamp/
-└── lab/
-    ├── group_vars/
-    │   └── linux.yml
-    ├── inventories/
-    │   └── inventory.ini
-    ├── playbooks/
-    │   └── module6_role_apply.yml
-    └── roles/
-        └── web_config/
-            ├── defaults/
-            │   └── main.yml
-            ├── handlers/
-            │   └── main.yml
-            ├── meta/
-            │   └── main.yml
-            ├── tasks/
-            │   └── main.yml
-            ├── templates/
-            │   ├── apache-hardening.conf.j2
-            │   └── index.html.j2
-            └── vars/
-                └── main.yml
-```
-
-Module 7 does not rewrite this automation in the AAP interface.
-
-AAP synchronizes and runs it from Git.
+They do not flow through each other.
 
 ---
 
-## Calling Playbook
+### Repository compatibility for AAP
 
-AAP runs:
-
-```text
-lab/playbooks/module6_role_apply.yml
-```
-
-The playbook remains small:
-
-```yaml
----
-- name: Module 6 - Apply the reusable web configuration role
-  hosts: linux
-  become: true
-  gather_facts: true
-
-  roles:
-    - web_config
-```
-
-The implementation remains inside:
-
-```text
-lab/roles/web_config/
-```
-
----
-
-# 6. Repository Compatibility for AAP
-
-Local commands in previous modules were run from:
+Local commands in the previous modules were run from:
 
 ```text
 bootcamp/lab/
 ```
 
-AAP synchronizes the complete repository and normally executes from the project root.
+AAP synchronizes the complete repository and runs from the project root.
 
-Because the role is stored under:
+The role is stored under:
 
 ```text
-lab/roles/
+lab/roles/web_config/
 ```
 
-The repository should include an `ansible.cfg` at the repository root.
-
-Create or verify:
+Therefore, the repository root should contain:
 
 ```text
 bootcamp/ansible.cfg
 ```
 
-Add:
+Use:
 
 ```ini
 [defaults]
 roles_path = ./lab/roles
 ```
 
-This allows the AAP project to locate:
+This allows AAP to locate:
 
 ```text
 lab/roles/web_config
 ```
 
-Do not place inventory credentials, passwords, or private keys in this file.
-
----
-
-## Why This Is Required
-
-From the local lab directory, the course can use:
-
-```text
-lab/ansible.cfg
-```
-
-AAP starts from the synchronized project root.
-
-A root-level configuration prevents this error:
+Without the root-level role path, AAP may report:
 
 ```text
 ERROR! the role 'web_config' was not found
 ```
 
+Do not place passwords, private keys, tokens, or credentials inside `ansible.cfg`.
+
 ---
 
-## Repository Structure for Both CLI and AAP
+### Repository structure
 
 ```text
 bootcamp/
-├── ansible.cfg
-├── module01/
-├── module02/
-├── module03/
-├── module04/
-├── module05/
-├── module06/
-├── module07/
-└── lab/
-    ├── ansible.cfg
-    ├── group_vars/
-    ├── inventories/
-    ├── playbooks/
-    └── roles/
+|-- ansible.cfg
+|-- module01/
+|-- module02/
+|-- module03/
+|-- module04/
+|-- module05/
+|-- module06/
+|-- module07/
+|-- module08/
+`-- lab/
+    |-- ansible.cfg
+    |-- inventories/
+    |   |-- inventory.ini
+    |   `-- group_vars/
+    |       |-- all.yml
+    |       |-- web.yml
+    |       |-- rhel_web.yml
+    |       `-- ubuntu_web.yml
+    |-- playbooks/
+    |   `-- module6_role_apply.yml
+    `-- roles/
+        `-- web_config/
 ```
 
 The root `ansible.cfg` supports AAP project execution.
 
-The `lab/ansible.cfg` supports local command-line execution from `bootcamp/lab/`.
+The `lab/ansible.cfg` supports local command-line execution from:
+
+```text
+bootcamp/lab/
+```
 
 ---
 
-# 7. Pre-Lab Requirements
+### Job statuses
 
-The instructor or AAP administrator should prepare the following objects before the operator lab.
+AAP jobs move through execution states.
 
-## Required AAP Objects
+| Status | Meaning |
+| --- | --- |
+| Pending | The job has been created but has not started |
+| Waiting | The job is waiting for a dependency or resource |
+| Running | The automation is executing |
+| Successful | The job completed successfully |
+| Failed | One or more automation tasks failed |
+| Canceled | A user or system canceled the job |
+| Error | A platform-level problem prevented normal execution |
 
-| Object                | Example name                       |
-| --------------------- | ---------------------------------- |
-| Organization          | `Charter Training`                 |
-| Project               | `Charter Ansible Bootcamp`         |
-| Inventory             | `Charter Linux Lab`                |
-| Machine credential    | `Charter Linux SSH`                |
-| Execution environment | `Default execution environment`    |
-| Job template          | `Module 7 - Apply Web Config Role` |
+The expected final status for this lab is:
 
----
-
-## Required Project Settings
-
-| Setting                   | Example                                  |
-| ------------------------- | ---------------------------------------- |
-| Name                      | `Charter Ansible Bootcamp`               |
-| Organization              | `Charter Training`                       |
-| Source control type       | `Git`                                    |
-| Source control URL        | Bootcamp Git repository                  |
-| Source control branch     | `main`                                   |
-| Source control credential | Only required for a protected repository |
+```text
+Successful
+```
 
 ---
 
-## Required Job Template Settings
+### Task result meanings
 
-| Setting               | Value                                  |
-| --------------------- | -------------------------------------- |
-| Name                  | `Module 7 - Apply Web Config Role`     |
-| Job type              | `Run`                                  |
-| Inventory             | `Charter Linux Lab`                    |
-| Project               | `Charter Ansible Bootcamp`             |
-| Playbook              | `lab/playbooks/module6_role_apply.yml` |
-| Execution environment | Environment provided by the AAP team   |
-| Credentials           | `Charter Linux SSH`                    |
-| Verbosity             | `0 - Normal`                           |
+#### `ok`
+
+```text
+ok: [rhel1]
+```
+
+The task completed successfully and did not need to change the host.
+
+Examples:
+
+* A package was already installed.
+* A directory already had the correct permissions.
+* A service was already running.
+* A generated file already matched its template.
+
+---
+
+#### `changed`
+
+```text
+changed: [rhel1]
+```
+
+The task completed successfully and modified the host.
+
+Examples:
+
+* A package was installed.
+* A file was created.
+* A template generated new content.
+* A service was restarted.
+* File permissions were corrected.
+
+`changed` does not mean the task failed.
+
+It means Ansible updated the managed state.
+
+---
+
+#### `failed`
+
+```text
+failed: [rhel1]
+```
+
+The task could not complete successfully.
+
+Common causes include:
+
+* Invalid module arguments
+* Missing package
+* Undefined variable
+* Permission denied
+* Invalid destination path
+* Missing service
+* Template syntax error
+
+Do not stop at the word `failed`.
+
+Read the detailed result fields, including:
+
+```text
+msg
+stderr
+stdout
+exception
+```
+
+---
+
+#### `unreachable`
+
+```text
+fatal: [rhel1]: UNREACHABLE!
+```
+
+AAP could not establish the required connection to the host.
+
+Common causes include:
+
+* Incorrect hostname
+* Network failure
+* Firewall rule
+* Incorrect SSH port
+* Invalid machine credential
+* SSH key rejection
+* Host offline
+* DNS failure
+
+An unreachable result normally occurs before the playbook can run normal tasks on that host.
+
+---
+
+#### `skipped`
+
+```text
+skipping: [ubuntu1]
+```
+
+The task was not executed for that host.
+
+A common reason is a condition:
+
+```yaml
+when: ansible_facts['os_family'] == "RedHat"
+```
+
+An Ubuntu host should skip a Red Hat-specific task.
+
+`skipped` is not automatically an error.
+
+---
+
+### Play recap
+
+The play recap summarizes the result for every host.
+
+Example:
+
+```text
+PLAY RECAP
+ubuntu1 : ok=10 changed=2 unreachable=0 failed=0 skipped=1 rescued=0 ignored=0
+rhel1   : ok=10 changed=2 unreachable=0 failed=0 skipped=1 rescued=0 ignored=0
+```
+
+A healthy result should normally contain:
+
+```text
+unreachable=0
+failed=0
+```
+
+A first run may contain changed tasks.
+
+These results require investigation:
+
+```text
+unreachable=1
+```
+
+or:
+
+```text
+failed=1
+```
+
+The recap identifies the affected host.
+
+The task output explains the cause.
+
+---
+
+### Idempotency in AAP
+
+AAP does not change Ansible idempotency behavior.
+
+The first launch may apply required configuration changes.
+
+Example:
+
+```text
+changed=4
+failed=0
+unreachable=0
+```
+
+The second launch, without code or host changes, should normally show:
+
+```text
+changed=0
+failed=0
+unreachable=0
+```
+
+The exact `ok` and `skipped` values can vary.
+
+The important result is that unchanged automation does not repeatedly modify hosts.
+
+Idempotency workflow:
+
+```mermaid
+flowchart LR
+    FIRST[First AAP launch] --> APPLY[Apply required changes]
+    APPLY --> RESULT1[Successful with changed tasks]
+    RESULT1 --> SECOND[Second AAP launch]
+    SECOND --> COMPARE[Compare desired and actual state]
+    COMPARE --> RESULT2[Successful with changed equals zero]
+```
+
+---
+
+### Failure ownership
+
+| Failure category | Common symptoms | Likely owner |
+| --- | --- | --- |
+| Project failure | Project sync fails, wrong revision, repository authentication fails | Git owner or AAP project administrator |
+| Inventory failure | No hosts matched, expected group missing, wrong hosts targeted | Inventory owner or automation operator |
+| Credential failure | Permission denied, authentication failure, privilege escalation failure | Credential or AAP administrator |
+| Automation code failure | Undefined variable, invalid module argument, missing role, template error | Automation developer or repository owner |
+| Managed host failure | Package repository unavailable, disk full, service missing, host offline | Managed system or infrastructure owner |
+| Platform failure | Job stays pending, execution environment cannot start, no capacity | AAP platform administrator |
+
+Operators should identify the category before escalating.
+
+---
+
+### Operator escalation information
+
+When escalating a failed job, provide:
+
+* Job template name
+* Job number or job URL
+* Date and time
+* Final status
+* Project revision
+* Inventory name
+* Failed host
+* Failed task
+* Exact error message
+* Whether the issue is repeatable
+* Whether the code worked locally
+* Whether the project synchronized successfully
+
+Do not send:
+
+* Passwords
+* Private keys
+* Tokens
+* Vault secrets
+* Credential contents
+
+---
+
+## Hands-On Walkthrough
+
+### Lab goal
+
+Run the `web_config` role created in Module 6 through AAP and understand every object involved in the execution.
+
+---
+
+### Required AAP objects
+
+The instructor or AAP administrator should prepare these objects before class.
+
+| Object | Example name |
+| --- | --- |
+| Organization | `Charter Training` |
+| Project | `Charter Ansible Bootcamp` |
+| Inventory | `Charter Linux Lab` |
+| Machine credential | `Charter Linux SSH` |
+| Execution environment | `Default execution environment` |
+| Job template | `Module 7 - Apply Web Config Role` |
+
+---
+
+### Required project settings
+
+| Setting | Example |
+| --- | --- |
+| Name | `Charter Ansible Bootcamp` |
+| Organization | `Charter Training` |
+| Source control type | `Git` |
+| Source control URL | Bootcamp Git repository |
+| Source control branch | `main` |
+| Source control credential | Required only for a protected repository |
+
+---
+
+### Required inventory structure
+
+The prepared AAP inventory should contain:
+
+```text
+web
+rhel_web
+ubuntu_web
+```
+
+Example group relationship:
+
+```text
+web
+|-- rhel1
+`-- ubuntu1
+
+rhel_web
+`-- rhel1
+
+ubuntu_web
+`-- ubuntu1
+```
+
+The `web` group is required because the calling playbook uses:
+
+```yaml
+hosts: web
+```
+
+---
+
+### Required job template settings
+
+| Setting | Value |
+| --- | --- |
+| Name | `Module 7 - Apply Web Config Role` |
+| Job type | `Run` |
+| Inventory | `Charter Linux Lab` |
+| Project | `Charter Ansible Bootcamp` |
+| Playbook | `lab/playbooks/module6_role_apply.yml` |
+| Execution environment | Environment provided by the AAP team |
+| Credential | `Charter Linux SSH` |
+| Verbosity | `0 - Normal` |
 
 Students need permission to:
 
@@ -526,21 +837,36 @@ Students need permission to:
 * View job output
 * Relaunch jobs
 
-Students do not need permission to inspect credential secrets.
+Students do not need permission to view protected credential values.
 
 ---
 
-# 8. Hands-On Walkthrough
+### Step 1: Verify the root Ansible configuration
 
-## Lab Goal
+From the repository root, verify:
 
-Run the role created in Module 6 through AAP and understand every object involved in the execution.
+```text
+ansible.cfg
+```
+
+Content:
+
+```ini
+[defaults]
+roles_path = ./lab/roles
+```
+
+This setting allows AAP to locate:
+
+```text
+lab/roles/web_config
+```
 
 ---
 
-## Step 1: Validate the Code Before AAP
+### Step 2: Validate the code locally
 
-Before using AAP, validate the code locally from:
+From the repository root:
 
 ```bash
 cd bootcamp/lab
@@ -573,9 +899,38 @@ This confirms that the automation code works before AAP executes it.
 
 ---
 
-## Step 2: Review the Git Revision
+### Step 3: Confirm the calling playbook
 
-From the repository:
+Review:
+
+```text
+lab/playbooks/module6_role_apply.yml
+```
+
+It should contain:
+
+```yaml
+---
+- name: Module 6 - Apply the reusable web configuration role
+  hosts: web
+  become: true
+  gather_facts: true
+
+  roles:
+    - web_config
+```
+
+The implementation remains inside:
+
+```text
+lab/roles/web_config/
+```
+
+---
+
+### Step 4: Review the Git revision
+
+Run:
 
 ```bash
 git status
@@ -597,23 +952,23 @@ a82c917 Add reusable web_config role
 
 Record the commit identifier.
 
-This makes it possible to compare Git with the AAP project revision.
+You will compare it with the AAP project revision.
 
 ---
 
-## Step 3: Log In to AAP
+### Step 5: Log in to AAP
 
 Open the AAP 2.6 training environment.
 
-Sign in using the operator account provided by the instructor.
+Sign in with the operator account provided by the instructor.
 
-Operators should not use shared administrator accounts.
+Do not use a shared administrator account.
 
 ---
 
-## Step 4: Locate the Project
+### Step 6: Locate the project
 
-From the navigation panel, open:
+Open:
 
 ```text
 Automation Execution > Projects
@@ -635,33 +990,19 @@ Review:
 * Last update status
 * Last updated time
 * Source control revision
-* Execution environment, if configured at the project level
+* Execution environment, if configured
 
----
-
-## Project Questions
-
-Before continuing, answer:
+Answer these questions:
 
 1. Which Git repository is connected?
 2. Which branch is configured?
-3. Was the most recent project update successful?
-4. Does the project revision match the latest expected Git commit?
-5. Is the project using a source control credential?
+3. Was the latest project update successful?
+4. Does the project revision match the expected Git commit?
+5. Is a source control credential attached?
 
 ---
 
-# 9. Synchronize the Project
-
-## Definition
-
-A **project synchronization** downloads the configured revision of the Git repository into AAP.
-
-It makes the current playbooks, roles, and related content available for execution.
-
----
-
-## Start a Project Sync
+### Step 7: Synchronize the project
 
 From:
 
@@ -675,25 +1016,30 @@ Locate:
 Charter Ansible Bootcamp
 ```
 
-Select the sync icon.
+Select the synchronization icon.
 
 AAP creates a project update job.
 
+Project synchronization downloads the configured Git revision into AAP.
+
+It does not configure managed hosts.
+
 ---
 
-## Review the Project Update
+### Step 8: Review the project update
 
 Open the project update output.
 
 Look for:
 
 * Successful repository connection
-* Selected Git branch
-* Revision or commit
-* Updated files
+* Selected branch
+* Git revision
 * Project update status
 * Authentication errors
 * Repository access errors
+* Branch errors
+* TLS errors
 
 Expected final status:
 
@@ -701,47 +1047,64 @@ Expected final status:
 Successful
 ```
 
----
+Common project synchronization failures:
 
-## Common Project Sync Results
-
-| Result                   | Meaning                                              |
-| ------------------------ | ---------------------------------------------------- |
-| Successful               | AAP downloaded the project content                   |
-| Failed authentication    | The source control credential is invalid or missing  |
-| Repository not found     | The source control URL is wrong or inaccessible      |
-| Branch not found         | The configured branch, tag, or commit does not exist |
-| TLS or certificate error | AAP cannot validate the Git server certificate       |
-| Permission denied        | The project credential cannot access the repository  |
-
-Project synchronization does not configure managed hosts.
-
-It only updates the automation content available to AAP.
+| Result | Meaning |
+| --- | --- |
+| Authentication failed | Source control credential is invalid or missing |
+| Repository not found | Source control URL is wrong or inaccessible |
+| Branch not found | Configured branch, tag, or commit does not exist |
+| TLS error | AAP cannot validate the Git certificate |
+| Permission denied | Source control credential cannot access the repository |
 
 ---
 
-# 10. Confirm the Playbook Is Available
+### Step 9: Confirm the playbook is available
 
-After a successful project sync, confirm that AAP can locate:
+After the successful project sync, confirm that AAP can locate:
 
 ```text
 lab/playbooks/module6_role_apply.yml
 ```
 
-If the playbook is missing from a job template selection list, check:
+If the playbook is missing, verify:
 
-* The project sync completed successfully.
 * The file is committed to Git.
+* The project synchronized successfully.
 * The correct branch is configured.
-* The YAML file has a valid playbook structure.
-* The path is inside the synchronized repository.
-* The job template is using the correct project.
+* The file contains valid playbook YAML.
+* The path is inside the repository.
+* The job template uses the correct project.
 
 ---
 
-# 11. Inspect the Job Template
+### Step 10: Inspect the AAP inventory
 
-From the navigation panel, open:
+Open the inventory attached to the job template.
+
+Confirm that it contains:
+
+```text
+web
+rhel_web
+ubuntu_web
+```
+
+Confirm the correct hosts belong to each group.
+
+The `web` group must contain all web server hosts.
+
+The `rhel_web` group should contain Red Hat hosts.
+
+The `ubuntu_web` group should contain Ubuntu hosts.
+
+Do not create or modify the inventory during this module unless the instructor directs you to do so.
+
+---
+
+### Step 11: Inspect the job template
+
+Open:
 
 ```text
 Automation Execution > Templates
@@ -753,89 +1116,45 @@ Select:
 Module 7 - Apply Web Config Role
 ```
 
-Do not launch it immediately.
+Do not launch it yet.
 
-First inspect its configuration.
+Confirm:
 
----
-
-## Required Fields
-
-Confirm the following:
-
-| Field                 | Expected value                         |
-| --------------------- | -------------------------------------- |
-| Job type              | `Run`                                  |
-| Inventory             | `Charter Linux Lab`                    |
-| Project               | `Charter Ansible Bootcamp`             |
-| Playbook              | `lab/playbooks/module6_role_apply.yml` |
-| Execution environment | Approved training environment          |
-| Credential            | Approved machine credential            |
-| Verbosity             | Normal                                 |
+| Field | Expected value |
+| --- | --- |
+| Job type | `Run` |
+| Inventory | `Charter Linux Lab` |
+| Project | `Charter Ansible Bootcamp` |
+| Playbook | `lab/playbooks/module6_role_apply.yml` |
+| Execution environment | Approved training environment |
+| Credential | Approved machine credential |
+| Verbosity | Normal |
 
 ---
 
-## Job Type
+### Step 12: Understand the selected inputs
 
-For this lab, the job type should be:
+#### Project
 
-```text
-Run
-```
+The project provides the synchronized Git content.
 
-A run job applies the playbook normally.
+#### Playbook
 
-A check job attempts to predict changes without applying them.
-
-Check mode behavior depends on module support and is not a replacement for testing.
-
----
-
-## Inventory
-
-The inventory determines which hosts and groups are available to the playbook.
-
-The playbook targets:
-
-```yaml
-hosts: linux
-```
-
-The selected AAP inventory must therefore include a group named:
-
-```text
-linux
-```
-
-Otherwise, the job may report:
-
-```text
-skipping: no hosts matched
-```
-
----
-
-## Project and Playbook
-
-The project supplies the Git content.
-
-The playbook field selects:
+The selected playbook is:
 
 ```text
 lab/playbooks/module6_role_apply.yml
 ```
 
-The job template does not copy the playbook.
+#### Inventory
 
-It references the playbook supplied by the project.
+The inventory provides the hosts, groups, and inventory variables.
 
----
+#### Machine credential
 
-## Machine Credential
+The machine credential allows AAP to connect to the managed hosts.
 
-The machine credential allows AAP to connect to managed hosts.
-
-It may include:
+It may contain:
 
 * SSH username
 * SSH private key
@@ -843,19 +1162,15 @@ It may include:
 * Privilege escalation username
 * Privilege escalation password
 
-The operator uses the credential without viewing its protected values.
+The operator uses the credential without seeing its secret values.
+
+#### Execution environment
+
+The execution environment provides the runtime containing Ansible and its dependencies.
 
 ---
 
-## Execution Environment
-
-The execution environment supplies the runtime used for the job.
-
-The operator should verify which environment is selected but does not build or modify it in this module.
-
----
-
-# 12. Launch the Job Template
+### Step 13: Launch the job template
 
 Select:
 
@@ -863,69 +1178,56 @@ Select:
 Launch template
 ```
 
-If the template does not request additional information, the job starts immediately.
+If no prompts are configured, the job begins immediately.
 
-If prompts appear, review them before selecting:
+If prompts appear:
 
-```text
-Next
-```
-
-Then select:
-
-```text
-Launch
-```
+1. Review the values.
+2. Select `Next`.
+3. Review the launch summary.
+4. Select `Launch`.
 
 AAP opens the job output page.
 
 ---
 
-## Job Launch Workflow
+### Step 14: Follow the running job
 
-```mermaid
-flowchart LR
-    OP[Operator selects Launch] --> VALIDATE[AAP validates permissions and inputs]
-    VALIDATE --> PROJECT[AAP prepares project revision]
-    PROJECT --> EE[Start execution environment]
-    EE --> CONNECT[Connect to inventory hosts]
-    CONNECT --> PLAYBOOK[Run playbook]
-    PLAYBOOK --> EVENTS[Record task events]
-    EVENTS --> RESULT[Display result]
+Watch the job status move through states such as:
+
+```text
+Pending
+Running
+Successful
 ```
 
----
-
-# 13. Follow the Running Job
-
-The job progresses through execution states.
-
-Common states include:
-
-| Status     | Meaning                                              |
-| ---------- | ---------------------------------------------------- |
-| Pending    | Job has been created but has not started             |
-| Waiting    | Job is waiting for a required dependency or resource |
-| Running    | Automation is executing                              |
-| Successful | Job completed successfully                           |
-| Failed     | One or more failures caused the job to fail          |
-| Canceled   | A user or system canceled the job                    |
-| Error      | A platform-level problem prevented normal execution  |
-
-For this lab, the expected final status is:
+The expected final status is:
 
 ```text
 Successful
 ```
 
+Job launch workflow:
+
+```mermaid
+flowchart LR
+    OP[Operator selects Launch] --> VALIDATE[AAP validates permissions and inputs]
+    VALIDATE --> PROJECT[AAP prepares project revision]
+    PROJECT --> EE[AAP starts execution environment]
+    EE --> CONNECT[AAP connects to inventory hosts]
+    CONNECT --> PLAYBOOK[AAP runs playbook]
+    PLAYBOOK --> EVENTS[AAP records task events]
+    EVENTS --> RESULT[AAP displays result]
+```
+
 ---
 
-# 14. Read Job Details
+### Step 15: Review the job details
 
-Open the job's details and identify:
+Identify:
 
 * Job name
-* Status
+* Final status
 * Launched by
 * Start time
 * Finish time
@@ -941,17 +1243,13 @@ Open the job's details and identify:
 * Job tags
 * Extra variables
 
-The project revision is important.
-
-It identifies the Git content used for that specific execution.
+The project revision identifies the exact Git content used for the job.
 
 ---
 
-# 15. Read Job Output
+### Step 16: Read the job output
 
-The output view displays the playbook execution events.
-
-Look for the following sections:
+Look for:
 
 ```text
 PLAY
@@ -969,248 +1267,90 @@ RUNNING HANDLER
 PLAY RECAP
 ```
 
----
-
-## Example Output
+Example:
 
 ```text
 PLAY [Module 6 - Apply the reusable web configuration role]
 
 TASK [Gathering Facts]
 ok: [rhel1]
-ok: [container1]
+ok: [ubuntu1]
 
-TASK [web_config : Install the web server package]
+TASK [web_config : Install managed packages]
 ok: [rhel1]
-ok: [container1]
+ok: [ubuntu1]
 
 TASK [web_config : Deploy the website]
 changed: [rhel1]
-changed: [container1]
+changed: [ubuntu1]
 
 RUNNING HANDLER [web_config : Restart web service]
 changed: [rhel1]
-changed: [container1]
+changed: [ubuntu1]
 
 PLAY RECAP
-container1 : ok=10 changed=2 unreachable=0 failed=0 skipped=1
-rhel1      : ok=10 changed=2 unreachable=0 failed=0 skipped=1
+ubuntu1 : ok=10 changed=2 unreachable=0 failed=0 skipped=1
+rhel1   : ok=10 changed=2 unreachable=0 failed=0 skipped=1
 ```
+
+The exact numbers may differ.
 
 ---
 
-# 16. Understand Task Results
+### Step 17: Interpret task results
 
-## `ok`
-
-```text
-ok: [rhel1]
-```
-
-The task completed successfully and did not need to change the host.
-
-Example:
-
-* A package was already installed.
-* A directory already had the correct permissions.
-* A service was already running.
-* A generated file already matched the template.
-
----
-
-## `changed`
+Find at least one example of each result that appears:
 
 ```text
-changed: [rhel1]
+ok
+changed
+skipped
 ```
 
-The task completed successfully and modified the host.
-
-Example:
-
-* A package was installed.
-* A file was created.
-* A template produced new content.
-* A service was restarted.
-* A directory permission was corrected.
-
-Changed does not mean failed.
-
-It means the managed state was updated.
-
----
-
-## `failed`
+Confirm that:
 
 ```text
-failed: [rhel1]
-```
-
-The task could not complete successfully.
-
-Common causes include:
-
-* Invalid module arguments
-* Missing package
-* Missing variable
-* Permission denied
-* Invalid destination path
-* Service does not exist
-* Template syntax error
-
-Read the failure message attached to the task.
-
-Do not stop at the word `failed`.
-
-The useful information is usually in:
-
-```text
-msg
-```
-
-```text
-stderr
-```
-
-```text
-stdout
-```
-
-```text
-exception
-```
-
----
-
-## `unreachable`
-
-```text
-fatal: [rhel1]: UNREACHABLE!
-```
-
-AAP could not establish the required connection to the host.
-
-Common causes include:
-
-* Incorrect hostname
-* Network failure
-* Firewall rule
-* Incorrect SSH port
-* Invalid machine credential
-* SSH key rejection
-* Host is offline
-* DNS failure
-
-An unreachable result usually happens before normal playbook tasks can run on that host.
-
----
-
-## `skipped`
-
-```text
-skipping: [container1]
-```
-
-The task was not executed for that host.
-
-A common reason is a condition such as:
-
-```yaml
-when: ansible_facts['os_family'] == "RedHat"
-```
-
-A Debian host skips that Red Hat-specific task.
-
-Skipped is not automatically an error.
-
----
-
-# 17. Read the Play Recap
-
-The play recap summarizes each host.
-
-Example:
-
-```text
-PLAY RECAP
-container1 : ok=10 changed=2 unreachable=0 failed=0 skipped=1 rescued=0 ignored=0
-rhel1      : ok=10 changed=2 unreachable=0 failed=0 skipped=1 rescued=0 ignored=0
-```
-
----
-
-## Healthy Result
-
-A healthy result should normally show:
-
-```text
-unreachable=0
 failed=0
+unreachable=0
 ```
 
-Changed values are acceptable during the first run.
+If a task failed, open its detailed event and review:
 
----
-
-## Unhealthy Result
-
-These values require investigation:
-
-```text
-unreachable=1
-```
-
-Or:
-
-```text
-failed=1
-```
-
-The recap identifies which host had a problem.
-
-The task output explains why.
-
----
-
-# 18. Inspect a Host Event
-
-Select a task event in the output.
-
-Review the detailed host event information.
-
-Depending on the task, it can include:
-
-* Hostname
 * Task name
-* Module arguments
+* Hostname
 * Result
 * Message
-* Return code
 * Standard output
 * Standard error
-* Start time
-* Finish time
+* Return code
 * Duration
 
-This helps connect an AAP result back to the playbook task that generated it.
-
 ---
 
-# 19. Prove Idempotency Through AAP
+### Step 18: Read the play recap
 
-## First Run
+Start troubleshooting from the play recap.
 
-The first job may report changes because it configures the hosts.
-
-Example:
+Healthy example:
 
 ```text
-changed=4
+PLAY RECAP
+ubuntu1 : ok=10 changed=2 unreachable=0 failed=0 skipped=1
+rhel1   : ok=10 changed=2 unreachable=0 failed=0 skipped=1
 ```
+
+Confirm:
+
+```text
+failed=0
+unreachable=0
+```
+
+Changes are acceptable during the first execution.
 
 ---
 
-## Second Run
+### Step 19: Prove idempotency
 
 Relaunch the same job without changing Git or the managed hosts.
 
@@ -1220,7 +1360,7 @@ Use:
 Relaunch job
 ```
 
-Or return to the job template and select:
+Or return to the template and select:
 
 ```text
 Launch template
@@ -1230,63 +1370,33 @@ Expected second-run result:
 
 ```text
 changed=0
-unreachable=0
 failed=0
+unreachable=0
 ```
+
+Confirm:
+
+* The templates report `ok`.
+* The handler does not run.
+* The web service is not restarted.
+* The job finishes successfully.
 
 The exact `ok` and `skipped` numbers may vary.
 
-The important result is that unchanged automation should not repeatedly modify the host.
-
 ---
 
-## Idempotency Workflow
-
-```mermaid
-flowchart LR
-    FIRST[First AAP launch] --> APPLY[Apply required changes]
-    APPLY --> FIRSTRESULT[Successful with changed tasks]
-    FIRSTRESULT --> SECOND[Second AAP launch]
-    SECOND --> COMPARE[Compare desired and actual state]
-    COMPARE --> SECONDRESULT[Successful with changed=0]
-```
-
----
-
-## Handler Check
-
-On the first run, the web service handler may run if the Apache configuration changes.
-
-On the second unchanged run:
-
-* The template should report `ok`.
-* The handler should not be notified.
-* The service should not restart.
-
-This is the same handler behavior observed from the command line in Module 5 and Module 6.
-
-AAP does not change Ansible's idempotency behavior.
-
----
-
-# 20. Git Change to AAP Execution
-
-This exercise demonstrates the complete code-first workflow.
-
----
-
-## Step 1: Change the Role
+### Step 20: Update automation through Git
 
 Edit:
 
 ```text
-lab/group_vars/linux.yml
+lab/inventories/group_vars/web.yml
 ```
 
 Change:
 
 ```yaml
-web_message: "Charter Ansible Role Deployment"
+web_message: "Hello from Ansible - {{ company }} {{ environment_name }}"
 ```
 
 To:
@@ -1295,9 +1405,11 @@ To:
 web_message: "Charter AAP Deployment Successful"
 ```
 
+This change demonstrates the code-first workflow.
+
 ---
 
-## Step 2: Validate Locally
+### Step 21: Validate the Git change locally
 
 From:
 
@@ -1314,9 +1426,7 @@ ansible-playbook \
   --syntax-check
 ```
 
----
-
-## Step 3: Review the Change
+Review the change:
 
 ```bash
 git diff
@@ -1326,22 +1436,17 @@ Confirm that only the intended variable changed.
 
 ---
 
-## Step 4: Commit the Change
+### Step 22: Commit and push the change
+
+From the repository root or with the correct file path, run:
 
 ```bash
-git add group_vars/linux.yml
+git add lab/inventories/group_vars/web.yml
 git commit -m "Update Module 7 web message"
-```
-
-Push the approved branch according to the course Git workflow:
-
-```bash
 git push
 ```
 
----
-
-## Step 5: Record the Commit
+Record the new commit:
 
 ```bash
 git log -1 --oneline
@@ -1355,9 +1460,38 @@ c7133fa Update Module 7 web message
 
 ---
 
-## Step 6: Synchronize the AAP Project
+### Step 23: Update the AAP inventory variable
 
-In AAP, open:
+The local file:
+
+```text
+lab/inventories/group_vars/web.yml
+```
+
+is used by the local static inventory.
+
+AAP uses its configured inventory and inventory variables.
+
+For the AAP job to use the same new value, one of these must be true:
+
+* The AAP `web` group variable is updated to the new value.
+* The job template provides the value as an extra variable.
+* A survey provides the value.
+* The role default is changed instead.
+
+For this module, the instructor may update the prepared AAP `web` group variable to:
+
+```yaml
+web_message: "Charter AAP Deployment Successful"
+```
+
+Creating surveys and editing inventory variables are covered more deeply in Module 8.
+
+---
+
+### Step 24: Synchronize the AAP project
+
+Open:
 
 ```text
 Automation Execution > Projects
@@ -1369,13 +1503,21 @@ Synchronize:
 Charter Ansible Bootcamp
 ```
 
-Wait for the project update to complete successfully.
+Wait for the update to complete successfully.
 
-Confirm that the AAP project revision matches the new Git commit.
+Confirm that the project revision matches the new Git commit.
+
+Remember:
+
+```text
+Project sync updates Git content.
+
+Project sync does not update AAP inventory variables.
+```
 
 ---
 
-## Step 7: Launch the Job Template
+### Step 25: Launch the updated job
 
 Open:
 
@@ -1389,30 +1531,20 @@ Launch:
 Module 7 - Apply Web Config Role
 ```
 
----
+Expected behavior:
 
-## Step 8: Review the Result
-
-The website template should report:
-
-```text
-changed
-```
-
-The Apache configuration handler should not run because the Apache configuration did not change.
-
-The job should complete with:
-
-```text
-failed=0
-unreachable=0
-```
+* The website template reports `changed`.
+* The generated website contains the new message.
+* The Apache configuration does not change.
+* The restart handler does not run.
+* The job finishes with `failed=0`.
+* The job finishes with `unreachable=0`.
 
 ---
 
-## Step 9: Relaunch
+### Step 26: Relaunch the updated job
 
-Launch the same template again.
+Launch the same job again without another change.
 
 Expected result:
 
@@ -1425,16 +1557,22 @@ unreachable=0
 This completes the workflow:
 
 ```text
-Edit -> Validate -> Commit -> Push -> Sync -> Launch -> Review -> Relaunch
+Edit
+Validate
+Review
+Commit
+Push
+Sync
+Launch
+Review
+Relaunch
 ```
 
 ---
 
-# 21. Job Output Search and Filters
+### Step 27: Search and filter job output
 
-AAP job output can contain many events.
-
-Use output searching and filtering to locate useful information.
+Large AAP jobs can contain many events.
 
 Useful searches include:
 
@@ -1462,13 +1600,14 @@ Restart web service
 rhel1
 ```
 
-Use event filters to focus on:
+Use filters to locate:
 
 * Failed events
-* Host failures
 * Unreachable hosts
 * Changed tasks
 * Skipped tasks
+* Specific hosts
+* Specific roles
 
 Do not read a long job only from the top.
 
@@ -1482,351 +1621,542 @@ Start with:
 
 ---
 
-# 22. Basic Failure Identification
+### Step 28: Classify a failure
 
-Module 7 focuses on identifying the failure category.
+Use the following guide:
 
-Module 8 covers deeper troubleshooting.
+| Symptom | Likely category |
+| --- | --- |
+| Project sync fails | Project or source control |
+| New playbook is missing | Project revision or Git |
+| No hosts matched | Inventory |
+| SSH authentication fails | Credential |
+| Undefined variable | Automation code or inventory variable |
+| Role not found | Repository structure or `roles_path` |
+| Package repository unavailable | Managed host |
+| Job remains pending | AAP platform capacity |
+| Execution environment cannot start | Platform or registry |
+
+Identify the likely owner before escalating.
 
 ---
 
-## Project Failure
+### Step 29: Prepare an escalation
 
-Symptoms:
-
-* Project sync fails.
-* New playbook is missing.
-* Old Git revision remains.
-* Repository authentication fails.
-
-Likely owner:
+For a failed job, record:
 
 ```text
-Git, project configuration, or AAP platform team
+Job template:
+Job number:
+Date and time:
+Final status:
+Project revision:
+Inventory:
+Failed host:
+Failed task:
+Exact error:
+Repeatable:
+Worked locally:
+Project sync successful:
 ```
 
----
-
-## Inventory Failure
-
-Symptoms:
-
-* No hosts matched.
-* Expected group is missing.
-* Host variables are missing.
-* Wrong hosts are targeted.
-
-Likely owner:
-
-```text
-Inventory owner or automation operator
-```
+Do not include credential secrets.
 
 ---
 
-## Credential Failure
+### Common problems
 
-Symptoms:
-
-* Permission denied
-* Authentication failed
-* SSH key rejected
-* Privilege escalation failed
-
-Likely owner:
-
-```text
-Credential or AAP platform administrator
-```
-
-Operators should report the error without requesting or exposing the secret.
+| Problem | Likely cause | Check |
+| --- | --- | --- |
+| Project synchronization fails | Git URL, branch, credential, or network issue | Project update output |
+| Playbook is missing | File not committed or wrong branch | Git commit and project revision |
+| Role is not found | Root `roles_path` is missing or wrong | Repository root `ansible.cfg` |
+| No hosts matched | AAP inventory does not contain `web` | Inventory groups |
+| Variable undefined | Required AAP group or host variable is missing | Inventory variables and role defaults |
+| Host is unreachable | Hostname, network, port, or machine credential issue | Detailed host event |
+| Privilege escalation fails | Missing or invalid become configuration | Machine credential |
+| Package task fails | Package name or repository problem | Task error and host package repositories |
+| Job stays pending | No execution capacity | AAP platform team |
+| Project revision is old | Project was not synchronized | Project update and revision |
 
 ---
 
-## Automation Code Failure
+## Quiz
 
-Symptoms:
+1. What does an AAP project normally connect to?
 
-* Undefined variable
-* Template syntax error
-* Invalid module parameter
-* Missing role
-* Incorrect service name
-* Incorrect file path
+   * A. A source control repository containing automation code
+   * B. A managed host service
+   * C. A local PDF file
+   * D. A user password file
 
-Likely owner:
+2. What is the purpose of a job template?
 
-```text
-Automation developer or repository owner
-```
+   * A. It defines how a playbook runs in AAP
+   * B. It replaces the Git repository
+   * C. It creates Ansible roles automatically
+   * D. It installs operating systems
 
----
+3. Which objects are normally connected by a job template?
 
-## Managed Host Failure
+   * A. Project, playbook, inventory, credential, and execution environment
+   * B. PDF, browser, keyboard, and Git password
+   * C. Source control password and machine password only
+   * D. Survey and schedule only
 
-Symptoms:
+4. What does an AAP inventory provide?
 
-* Package repository unavailable
-* Disk full
-* Service missing
-* Operating system unsupported
-* Host offline
-* Firewall blocking access
+   * A. Managed hosts, groups, and inventory variables
+   * B. Git commits
+   * C. Execution environment images
+   * D. User interface themes
 
-Likely owner:
+5. What does `ok` mean in job output?
 
-```text
-Managed system or infrastructure owner
-```
+   * A. The task succeeded without changing the host
+   * B. The task failed
+   * C. The host was unreachable
+   * D. The project was deleted
 
----
+6. What does `changed` mean in job output?
 
-## Platform Failure
+   * A. The task succeeded and modified the host
+   * B. The task failed
+   * C. The host was unreachable
+   * D. The job was canceled
 
-Symptoms:
+7. What does `unreachable` usually mean?
 
-* Job remains pending.
-* Execution environment cannot start.
-* Container image cannot be pulled.
-* AAP reports no available capacity.
-* Platform service errors occur.
+   * A. AAP could not connect to the managed host
+   * B. The task condition was false
+   * C. The project synchronized successfully
+   * D. The service restarted
 
-Likely owner:
+8. What does `skipped` commonly mean?
 
-```text
-AAP platform administrator
-```
+   * A. A task condition evaluated to false
+   * B. The entire job failed
+   * C. The credential was exposed
+   * D. The Git repository was deleted
 
----
+9. What should normally happen when an idempotent job is launched again without changes?
 
-# 23. Operator Escalation Checklist
+   * A. Most tasks report `ok`, and unnecessary handlers do not run
+   * B. Every task reports `changed`
+   * C. Every service restarts
+   * D. The project uses another repository
 
-When escalating a failed AAP job, provide:
+10. What does project synchronization update?
 
-* Job template name
-* Job number or job URL
-* Date and time
-* Final status
-* Project revision
-* Inventory name
-* Failed host
-* Failed task
-* Exact error message
-* Whether the problem is repeatable
-* Whether the same code worked locally
-* Whether the project synchronized successfully
+    * A. Git project content available to AAP
+    * B. Managed host operating systems
+    * C. AAP inventory variables
+    * D. Machine credential secrets
 
-Do not send:
+11. Why is the project revision important?
 
-* Passwords
-* Private keys
-* Tokens
-* Vault secrets
-* Full credential contents
+    * A. It identifies the exact Git content used by the job
+    * B. It reveals the machine credential
+    * C. It replaces the playbook
+    * D. It changes the inventory automatically
 
----
+12. Which information should never be included in an escalation?
 
-# 24. What Module 7 Does Not Cover
-
-The following topics are intentionally reserved for Module 8:
-
-* Creating inventories
-* Adding inventory hosts and groups
-* Dynamic inventory sources
-* NetBox inventory synchronization
-* Creating surveys
-* Prompt-on-launch behavior
-* Creating schedules
-* Inventory variable troubleshooting
-* Credential troubleshooting in depth
-* Failed-host relaunch strategies
-* Template troubleshooting in depth
-* Job limits and variable overrides in depth
-
-This separation keeps Module 7 focused on the basic AAP execution workflow.
+    * A. Passwords, private keys, tokens, or credential contents
+    * B. Failed task name
+    * C. Project revision
+    * D. Job number
 
 ---
 
-# 25. Talking Points
+## Hands-On Lab - Run approved automation through AAP
 
-* Git remains the source of truth.
-* AAP projects synchronize automation from Git.
-* A project contains playbooks and supporting automation content.
-* A job template defines how a playbook runs.
-* Inventory, project, credential, and execution environment are separate job template inputs.
-* A credential is used without exposing its secret.
-* An execution environment supplies the automation runtime.
-* Each job launch creates a new execution record.
-* Job output connects directly to playbook tasks.
-* `ok` means successful without a change.
-* `changed` means successful with a change.
-* `failed` means a task could not complete.
-* `unreachable` means AAP could not connect to the host.
-* `skipped` commonly means a task condition was false.
-* The play recap is the fastest place to see host-level results.
-* A second unchanged run should normally report no changes.
-* AAP does not fix bad automation code.
-* AAP makes execution controlled, repeatable, visible, and auditable.
-
----
-
-# 26. Quiz
-
-## Question 1
-
-What does an AAP project normally connect to?
-
-* A. A source control repository containing automation code
-* B. A managed host service
-* C. A local PDF
-* D. A user password file
-
----
-
-## Question 2
-
-What is the purpose of a job template?
-
-* A. It defines how a playbook runs in AAP
-* B. It replaces the Git repository
-* C. It writes Ansible roles automatically
-* D. It installs managed operating systems
-
----
-
-## Question 3
-
-Which objects are normally connected by a job template?
-
-* A. Project, playbook, inventory, credential, and execution environment
-* B. Git commit, PDF, keyboard, and browser
-* C. Host password and source code password only
-* D. Survey and schedule only
-
----
-
-## Question 4
-
-What does `changed` mean in job output?
-
-* A. The task completed successfully and modified the host
-* B. The task failed
-* C. The host was unreachable
-* D. The project was deleted
-
----
-
-## Question 5
-
-What should normally happen when an idempotent job is launched again without any changes?
-
-* A. Most tasks report `ok`, and unnecessary handlers do not run
-* B. Every task fails
-* C. Every service restarts
-* D. The project synchronizes a different repository
-
----
-
-# 27. Hands-On Lab
-
-## Lab Goal
+### Goal
 
 Run the Module 6 `web_config` role through AAP and understand the complete Git-to-execution workflow.
 
 ---
 
-## Required Tasks
+### You will
 
-1. Validate `module6_role_apply.yml` locally.
+1. Validate the role playbook locally.
 2. Review the latest Git commit.
-3. Log in to the AAP training environment.
-4. Locate the `Charter Ansible Bootcamp` project.
-5. Identify its Git repository and branch.
-6. Synchronize the project.
-7. Confirm the project update completed successfully.
-8. Confirm the expected Git revision.
-9. Locate the `Module 7 - Apply Web Config Role` job template.
-10. Inspect the selected project.
-11. Inspect the selected playbook.
-12. Inspect the selected inventory.
-13. Inspect the attached machine credential.
-14. Inspect the selected execution environment.
-15. Launch the job template.
-16. Follow the running job.
-17. Review the job details.
-18. Find the play recap.
-19. Identify `ok` tasks.
-20. Identify `changed` tasks.
-21. Identify skipped OS-specific tasks.
-22. Confirm `failed=0`.
-23. Confirm `unreachable=0`.
-24. Relaunch the job.
-25. Confirm idempotency.
-26. Change `web_message` in Git.
-27. Validate and commit the change.
-28. Push the approved change.
-29. Synchronize the AAP project.
-30. Confirm the new project revision.
-31. Launch the job template again.
-32. Confirm that the website changes.
-33. Relaunch one final time.
-34. Confirm that no unnecessary changes occur.
+3. Log in to AAP.
+4. Inspect the project.
+5. Synchronize the project.
+6. Confirm the project revision.
+7. Inspect the inventory.
+8. Inspect the job template.
+9. Launch the job.
+10. Follow the job output.
+11. Read task results.
+12. Read the play recap.
+13. Confirm `failed=0`.
+14. Confirm `unreachable=0`.
+15. Relaunch the job.
+16. Confirm idempotency.
+17. Change a Git-managed value.
+18. Commit and push the change.
+19. Synchronize AAP.
+20. Launch the updated automation.
+21. Relaunch it again.
+22. Classify and escalate a failure.
 
 ---
 
-## Success Checklist
+### Task 1: Validate locally
+
+Run:
+
+```bash
+cd bootcamp/lab
+
+ansible-playbook \
+  -i inventories/inventory.ini \
+  playbooks/module6_role_apply.yml \
+  --syntax-check
+```
+
+---
+
+### Task 2: Review Git
+
+Run:
+
+```bash
+git status
+git log -1 --oneline
+```
+
+Record the latest commit identifier.
+
+---
+
+### Task 3: Inspect the AAP project
+
+Open:
+
+```text
+Automation Execution > Projects
+```
+
+Select:
+
+```text
+Charter Ansible Bootcamp
+```
+
+Record:
+
+```text
+Repository:
+Branch:
+Last update status:
+Project revision:
+```
+
+---
+
+### Task 4: Synchronize the project
+
+Select the project synchronization icon.
+
+Confirm:
+
+```text
+Status: Successful
+```
+
+Confirm that the project revision matches the expected Git commit.
+
+---
+
+### Task 5: Inspect the inventory
+
+Confirm the inventory contains:
+
+```text
+web
+rhel_web
+ubuntu_web
+```
+
+Confirm that the correct hosts belong to each group.
+
+---
+
+### Task 6: Inspect the job template
+
+Open:
+
+```text
+Automation Execution > Templates
+```
+
+Select:
+
+```text
+Module 7 - Apply Web Config Role
+```
+
+Confirm:
+
+```text
+Inventory: Charter Linux Lab
+Project: Charter Ansible Bootcamp
+Playbook: lab/playbooks/module6_role_apply.yml
+Credential: Charter Linux SSH
+Execution environment: Approved training environment
+```
+
+---
+
+### Task 7: Launch the job
+
+Select:
+
+```text
+Launch template
+```
+
+Follow the job until it reaches a final status.
+
+Expected:
+
+```text
+Successful
+```
+
+---
+
+### Task 8: Review the output
+
+Find:
+
+```text
+PLAY
+TASK
+RUNNING HANDLER
+PLAY RECAP
+```
+
+Identify examples of:
+
+```text
+ok
+changed
+skipped
+```
+
+Confirm:
+
+```text
+failed=0
+unreachable=0
+```
+
+---
+
+### Task 9: Confirm idempotency
+
+Relaunch the job without changing anything.
+
+Expected:
+
+```text
+changed=0
+failed=0
+unreachable=0
+```
+
+Confirm that the restart handler does not run.
+
+---
+
+### Task 10: Change the web message
+
+Edit:
+
+```text
+lab/inventories/group_vars/web.yml
+```
+
+Set:
+
+```yaml
+web_message: "Charter AAP Deployment Successful"
+```
+
+Validate:
+
+```bash
+cd bootcamp/lab
+
+ansible-playbook \
+  -i inventories/inventory.ini \
+  playbooks/module6_role_apply.yml \
+  --syntax-check
+```
+
+---
+
+### Task 11: Commit and push
+
+From the repository root:
+
+```bash
+git add lab/inventories/group_vars/web.yml
+git commit -m "Update Module 7 web message"
+git push
+```
+
+Record:
+
+```bash
+git log -1 --oneline
+```
+
+---
+
+### Task 12: Update the AAP runtime value
+
+Confirm that the AAP `web` group variable or another approved AAP variable source contains:
+
+```yaml
+web_message: "Charter AAP Deployment Successful"
+```
+
+Project synchronization alone does not update AAP inventory variables.
+
+---
+
+### Task 13: Synchronize and launch
+
+Synchronize:
+
+```text
+Charter Ansible Bootcamp
+```
+
+Confirm the new project revision.
+
+Launch:
+
+```text
+Module 7 - Apply Web Config Role
+```
+
+Confirm:
+
+* The website changes.
+* The job succeeds.
+* `failed=0`.
+* `unreachable=0`.
+* The Apache restart handler does not run if only the HTML message changed.
+
+---
+
+### Task 14: Relaunch the updated job
+
+Launch the same job again without changing anything.
+
+Expected:
+
+```text
+changed=0
+failed=0
+unreachable=0
+```
+
+---
+
+### Task 15: Practice failure classification
+
+Review a failed job provided by the instructor.
+
+Record:
+
+```text
+Failure category:
+Failed host:
+Failed task:
+Exact error:
+Likely owner:
+Recommended escalation:
+```
+
+Do not include secrets.
+
+---
+
+### Success check
 
 * [ ] I can explain what AAP adds to Ansible automation.
 * [ ] I understand that Git remains the source of truth.
 * [ ] I can explain what an AAP project does.
 * [ ] I can synchronize a project.
 * [ ] I can explain what a job template does.
-* [ ] I understand how inventory, credential, project, playbook, and execution environment connect.
+* [ ] I understand how the project, playbook, inventory, credential, and execution environment connect.
 * [ ] I can launch an existing job template.
-* [ ] I can locate the project revision used by a job.
+* [ ] I can locate the Git project revision used by a job.
 * [ ] I can read the play recap.
 * [ ] I understand `ok`, `changed`, `failed`, `unreachable`, and `skipped`.
 * [ ] I can relaunch a job.
-* [ ] I can confirm idempotency in AAP.
+* [ ] I can confirm idempotency through AAP.
+* [ ] I understand that project synchronization does not update AAP inventory variables.
 * [ ] I can identify the likely owner of a failure.
-* [ ] I know not to expose credential secrets.
+* [ ] I can escalate a job without exposing secrets.
+
+---
+
+### Key lesson
+
+```text
+Git defines the approved automation. AAP provides controlled execution, visibility, history, and accountability.
+```
 
 ---
 
 <details>
-<summary>Instructor Answer Key</summary>
+<summary>Instructor answer key</summary>
 
-1. **A** - A source control repository containing automation code.
-2. **A** - It defines how a playbook runs in AAP.
-3. **A** - Project, playbook, inventory, credential, and execution environment.
-4. **A** - The task completed successfully and modified the host.
-5. **A** - Most tasks report `ok`, and unnecessary handlers do not run.
+1. **A** - A source control repository containing automation code
+2. **A** - It defines how a playbook runs in AAP
+3. **A** - Project, playbook, inventory, credential, and execution environment
+4. **A** - Managed hosts, groups, and inventory variables
+5. **A** - The task succeeded without changing the host
+6. **A** - The task succeeded and modified the host
+7. **A** - AAP could not connect to the managed host
+8. **A** - A task condition evaluated to false
+9. **A** - Most tasks report `ok`, and unnecessary handlers do not run
+10. **A** - Git project content available to AAP
+11. **A** - It identifies the exact Git content used by the job
+12. **A** - Passwords, private keys, tokens, or credential contents
 
 </details>
 
 ---
 
-# 28. Instructor Demonstration Checklist
-
-Before the class:
+### Instructor preparation checklist
 
 * [ ] Confirm the Git repository is reachable from AAP.
+* [ ] Confirm the configured branch exists.
 * [ ] Confirm the project synchronizes successfully.
-* [ ] Confirm the required Git branch exists.
-* [ ] Confirm the repository root contains the required role path configuration.
+* [ ] Confirm the repository root contains `ansible.cfg`.
+* [ ] Confirm the root configuration contains `roles_path = ./lab/roles`.
 * [ ] Confirm `lab/playbooks/module6_role_apply.yml` appears in AAP.
-* [ ] Confirm the inventory contains the `linux` group.
+* [ ] Confirm the AAP inventory contains the `web` group.
+* [ ] Confirm the AAP inventory contains `rhel_web` and `ubuntu_web`.
+* [ ] Confirm the required inventory variables exist.
 * [ ] Confirm managed hosts are reachable.
 * [ ] Confirm the machine credential works.
 * [ ] Confirm privilege escalation works.
-* [ ] Confirm the execution environment can run the required modules.
-* [ ] Confirm students have launch and view permissions.
+* [ ] Confirm the execution environment contains the required Ansible modules.
+* [ ] Confirm students have view and launch permissions.
 * [ ] Run the job template once before class.
-* [ ] Prepare one successful job for demonstration.
-* [ ] Prepare one simple failed job for output review.
+* [ ] Prepare one successful job for output review.
+* [ ] Prepare one simple failed job for failure classification.
 * [ ] Confirm the second successful run is idempotent.
-
----
 
 <p align="left">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module06/roles-and-code-first.md" target="_blank">
