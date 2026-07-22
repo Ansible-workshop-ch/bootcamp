@@ -12,42 +12,44 @@
 
 # Module 6: Roles and Code-First Repository Structure
 
-> 🧪 Lab commands run from [`bootcamp/lab/`](../lab/)
-> Run `cd bootcamp/lab` before beginning.
+> Lab commands run from [`bootcamp/lab/`](../lab/). Run `cd bootcamp/lab` before beginning.
 
 **Day 2 - Core Skills**
 
 In Module 5, the conditions, loops, templates, variables, and handlers were stored in one playbook.
 
-That structure works for small examples, but it becomes difficult to maintain as automation grows.
+That structure works for small automation, but it becomes difficult to maintain as automation grows.
 
-In this module, you will convert the Module 5 automation into an Ansible role named `web_config`.
+In this module, you will move the Module 5 implementation into a reusable Ansible role named `web_config`.
 
 ---
 
-## Learning Objectives
+## Definition
 
-By the end of this module, you will be able to:
+### Learning objectives
+
+By the end of this module, you should be able to:
 
 * Explain what an Ansible role is.
 * Explain why teams use roles.
 * Understand the standard role directory structure.
-* Create a role using `ansible-galaxy`.
-* Move tasks, templates, handlers, defaults, and variables into a role.
+* Create a role with `ansible-galaxy`.
+* Move tasks, templates, handlers, defaults, and internal variables into a role.
 * Call a role from a small playbook.
-* Override role defaults from inventory variables.
-* Validate that the role remains idempotent.
-* Explain how a code-first repository supports review, reuse, and AAP execution.
+* Override role defaults using inventory variables.
+* Validate role syntax and task loading.
+* Confirm that a role remains idempotent.
+* Explain how Git supports code-first automation.
 
 ---
 
-# 1. What Is an Ansible Role?
+### What is an Ansible role?
 
-## Definition
+An Ansible role is a standard directory structure used to organize related automation.
 
-An Ansible **role** is a standard directory structure used to organize related automation.
+Instead of placing everything inside one large playbook, a role separates content into dedicated locations.
 
-Instead of placing everything inside one large playbook, a role separates content into dedicated directories:
+A role can contain:
 
 * Tasks
 * Handlers
@@ -56,22 +58,24 @@ Instead of placing everything inside one large playbook, a role separates conten
 * Default variables
 * Internal variables
 * Metadata
+* Documentation
 
-A role represents a reusable automation capability.
+A role represents one reusable automation capability.
 
 Examples include:
 
 * Configuring a web server
-* Creating users
+* Installing a monitoring agent
+* Managing user accounts
 * Applying security settings
-* Installing monitoring agents
-* Managing operating system packages
-* Configuring an application
+* Deploying an application
 * Performing compliance remediation
 
 ---
 
-## Playbook Without a Role
+### Playbook without a role
+
+Without a role, most implementation details are kept in one playbook.
 
 ```mermaid
 flowchart TD
@@ -82,24 +86,25 @@ flowchart TD
     PB --> C[Conditions and loops]
 ```
 
-Everything is defined in or referenced directly by one playbook.
-
-This works for small automation, but it becomes harder to:
+This works for small examples, but it becomes harder to:
 
 * Read
-* Test
 * Review
+* Test
 * Reuse
+* Maintain
 * Assign ownership
-* Maintain across teams
+* Share across teams
 
 ---
 
-## Playbook With a Role
+### Playbook with a role
+
+With a role, the calling playbook becomes small.
 
 ```mermaid
 flowchart TD
-    PB[Small playbook] --> R[Role web_config]
+    PB[Small playbook] --> R[web_config role]
 
     R --> T[tasks]
     R --> H[handlers]
@@ -114,17 +119,16 @@ The playbook defines:
 
 * Which hosts are targeted
 * Whether privilege escalation is required
+* Whether facts should be gathered
 * Which roles should run
 
 The role contains the implementation.
 
 ---
 
-# 2. Why Roles Matter
+### Why roles matter
 
-Roles provide several benefits.
-
-## Reusability
+#### Reusability
 
 The same role can be called from multiple playbooks.
 
@@ -134,68 +138,70 @@ playbooks/testing.yml
 playbooks/production.yml
 ```
 
-All three playbooks can call:
+Each playbook can call:
 
 ```yaml
 roles:
   - web_config
 ```
 
-The environment-specific behavior can be controlled through variables.
+Different environments can change the role's behavior through variables.
 
 ---
 
-## Organization
+#### Organization
 
-A role separates different types of content.
+Roles separate different types of content.
 
 Tasks are not mixed with:
 
 * Templates
 * Handlers
 * Static files
-* Default values
+* Defaults
 * Metadata
+* Documentation
 
 This makes the repository easier to understand.
 
 ---
 
-## Team Ownership
+#### Team ownership
 
-A role can represent a service or capability owned by a specific team.
+A role should have one clear responsibility.
 
-For example:
+Example:
 
 ```text
 roles/
-├── web_config/
-├── monitoring_agent/
-├── security_baseline/
-├── user_management/
-└── application_deploy/
+|-- web_config/
+|-- monitoring_agent/
+|-- security_baseline/
+|-- user_management/
+`-- application_deploy/
 ```
 
-Each role has a clear responsibility.
+Each role represents a specific service or automation capability.
 
 ---
 
-## Testing
+#### Testing
 
-A role can be tested independently before it is included in larger automation workflows.
+A role can be validated before it becomes part of a larger workflow.
 
-At minimum, teams can test:
+Teams should test:
 
 * YAML syntax
 * Variable availability
+* Task loading
 * Task execution
-* Idempotency
-* Expected configuration
 * Handler behavior
+* Generated content
+* Idempotency
 
 ---
 
-## Code Review
+#### Code review
 
 Role changes can be committed to Git and reviewed before execution.
 
@@ -206,89 +212,56 @@ A reviewer can clearly identify whether a change affects:
 * Templates
 * Handlers
 * Metadata
+* Documentation
 
 ---
 
-# 3. Code-First Automation
+### Standard role structure
 
-## Definition
-
-**Code-first automation** means that automation is created, reviewed, tested, and versioned as code before it is executed through a platform.
-
-The Git repository becomes the source of truth.
-
-```mermaid
-flowchart LR
-    DEV[Engineer] --> BRANCH[Git branch]
-    BRANCH --> CHANGE[Automation change]
-    CHANGE --> REVIEW[Peer review]
-    REVIEW --> MERGE[Merge to approved branch]
-    MERGE --> RUN[Run automation]
-    RUN -.Next module.-> AAP[AAP project]
-```
-
-A code-first workflow provides:
-
-* Version history
-* Peer review
-* Change tracking
-* Rollback capability
-* Reusable automation
-* Consistent execution
-* Clear ownership
-
-AAP does not replace the repository.
-
-AAP consumes and executes the approved automation stored in the repository.
-
----
-
-# 4. Standard Role Structure
-
-A standard role can contain the following directories:
+A standard role may contain:
 
 ```text
 roles/
-└── web_config/
-    ├── README.md
-    ├── defaults/
-    │   └── main.yml
-    ├── files/
-    ├── handlers/
-    │   └── main.yml
-    ├── meta/
-    │   └── main.yml
-    ├── tasks/
-    │   └── main.yml
-    ├── templates/
-    │   ├── apache-hardening.conf.j2
-    │   └── index.html.j2
-    └── vars/
-        └── main.yml
+`-- web_config/
+    |-- README.md
+    |-- defaults/
+    |   `-- main.yml
+    |-- files/
+    |-- handlers/
+    |   `-- main.yml
+    |-- meta/
+    |   `-- main.yml
+    |-- tasks/
+    |   `-- main.yml
+    |-- templates/
+    |   |-- apache-hardening.conf.j2
+    |   `-- index.html.j2
+    `-- vars/
+        `-- main.yml
 ```
 
 Not every role must use every directory.
 
-Ansible loads the `main.yml` file from the directories that are present and used by the role.
+Ansible automatically loads `main.yml` from the standard role directories.
 
 ---
 
-## Role Directory Reference
+### Role directory reference
 
-| Directory    | Purpose                                        |
-| ------------ | ---------------------------------------------- |
-| `tasks/`     | Tasks performed by the role                    |
-| `handlers/`  | Handlers notified by changed tasks             |
-| `templates/` | Jinja2 templates                               |
-| `files/`     | Static files copied by the role                |
-| `defaults/`  | Default variables that are easy to override    |
-| `vars/`      | Internal role variables with higher precedence |
-| `meta/`      | Role metadata and dependencies                 |
-| `README.md`  | Documentation for users of the role            |
+| Directory | Purpose |
+| --- | --- |
+| `tasks/` | Tasks performed by the role |
+| `handlers/` | Handlers notified by changed tasks |
+| `templates/` | Jinja2 templates |
+| `files/` | Static files copied by the role |
+| `defaults/` | User-configurable default values |
+| `vars/` | Internal role values and mappings |
+| `meta/` | Role metadata and dependencies |
+| `README.md` | Role documentation |
 
 ---
 
-# 5. Role Tasks
+### Role tasks
 
 Role tasks normally begin in:
 
@@ -302,19 +275,11 @@ Example:
 ---
 - name: Install the web server
   ansible.builtin.package:
-    name: "{{ web_package }}"
+    name: "{{ web_package_resolved }}"
     state: present
-
-- name: Deploy the web page
-  ansible.builtin.template:
-    src: index.html.j2
-    dest: /var/www/html/index.html
-    owner: root
-    group: root
-    mode: "0644"
 ```
 
-The role task file does not need to define:
+A role task file does not normally contain:
 
 ```yaml
 hosts:
@@ -322,11 +287,11 @@ become:
 gather_facts:
 ```
 
-Those settings normally remain in the calling playbook.
+Those settings belong in the calling playbook.
 
 ---
 
-# 6. Role Templates
+### Role templates
 
 Role templates are stored in:
 
@@ -334,13 +299,7 @@ Role templates are stored in:
 roles/web_config/templates/
 ```
 
-Example:
-
-```text
-roles/web_config/templates/index.html.j2
-```
-
-Inside the role task, reference only the template filename:
+Inside a role task, reference a template by filename:
 
 ```yaml
 - name: Deploy the website
@@ -355,11 +314,11 @@ Do not use the Module 5 path:
 src: ../templates/index.html.j2
 ```
 
-That path is no longer required because Ansible searches the role's `templates/` directory.
+Ansible automatically searches the role's `templates/` directory.
 
 ---
 
-# 7. Role Handlers
+### Role handlers
 
 Role handlers normally begin in:
 
@@ -373,21 +332,21 @@ Example:
 ---
 - name: Restart web service
   ansible.builtin.service:
-    name: "{{ web_service_name }}"
+    name: "{{ web_service_resolved }}"
     state: restarted
 ```
 
-Tasks inside the role can notify the handler:
+Role tasks can notify this handler:
 
 ```yaml
 notify: Restart web service
 ```
 
-The notification name must match the handler name.
+The notification name must exactly match the handler name.
 
 ---
 
-# 8. Role Defaults
+### Role defaults
 
 Role defaults are stored in:
 
@@ -401,19 +360,16 @@ Example:
 
 ```yaml
 ---
-web_message: "Managed by Ansible"
-web_environment: "default"
+company: "Example Organization"
+environment_name: "default"
+web_message: "Managed by the web_config role"
 web_owner: "Platform Engineering"
-
-common_packages:
-  - vim
-  - git
-  - curl
+web_port: 80
 ```
 
 Role defaults have low variable precedence.
 
-That means another variable source can replace them, including:
+They can be overridden by:
 
 * `group_vars`
 * `host_vars`
@@ -421,85 +377,65 @@ That means another variable source can replace them, including:
 * Variables passed when calling the role
 * Extra variables
 
----
-
-## Default Override Example
-
-Role default:
-
-```yaml
-web_environment: "default"
-```
-
-Inventory group variable:
-
-```yaml
-web_environment: "training"
-```
-
-The value from the inventory group is used:
-
-```text
-training
-```
-
-This is why configurable values should normally be stored in `defaults/main.yml`.
+Your existing inventory variables will override matching role defaults.
 
 ---
 
-# 9. Role Variables
+### Role variables
 
-Role variables are stored in:
+Internal role variables are stored in:
 
 ```text
 roles/web_config/vars/main.yml
 ```
 
-Role variables have higher precedence than role defaults.
+These variables are useful for internal mappings.
 
-They should be used carefully.
-
-Good examples include internal mappings that users normally should not need to change:
+Example:
 
 ```yaml
 ---
 web_package_map:
-  Debian: apache2
   RedHat: httpd
+  Debian: apache2
 
 web_service_map:
-  Debian: apache2
   RedHat: httpd
-
-web_config_path_map:
-  Debian: /etc/apache2/conf-available/charter-module6.conf
-  RedHat: /etc/httpd/conf.d/charter-module6.conf
+  Debian: apache2
 ```
 
-Do not put every variable in `vars/main.yml`.
+Role variables have higher precedence than role defaults.
 
-Values that users are expected to configure belong in:
+Do not place every variable in `vars/main.yml`.
+
+Values users should configure belong in:
 
 ```text
 defaults/main.yml
 ```
 
----
+Internal implementation values can belong in:
 
-## Defaults Versus Vars
-
-| Location            | Purpose                            | Easy to override? |
-| ------------------- | ---------------------------------- | ----------------- |
-| `defaults/main.yml` | User-configurable defaults         | Yes               |
-| `vars/main.yml`     | Internal role values and constants | No, not easily    |
-| `group_vars/`       | Values for an inventory group      | Yes               |
-| `host_vars/`        | Values for a specific host         | Yes               |
-
-A strong role exposes configurable behavior through defaults and keeps internal implementation values limited.
+```text
+vars/main.yml
+```
 
 ---
 
-# 10. Role Metadata
+### Defaults versus vars
+
+| Location | Purpose | Easy to override? |
+| --- | --- | --- |
+| `defaults/main.yml` | User-configurable default values | Yes |
+| `vars/main.yml` | Internal mappings and constants | No, not easily |
+| `group_vars/` | Values for an inventory group | Yes |
+| `host_vars/` | Values for one inventory host | Yes |
+
+A strong role exposes configurable behavior through defaults and keeps internal variables limited.
+
+---
+
+### Role metadata
 
 Role metadata is stored in:
 
@@ -512,155 +448,248 @@ Metadata can describe:
 * Author
 * Description
 * License
+* Minimum Ansible version
 * Supported platforms
 * Role dependencies
-* Galaxy information
 
-A simple lab example:
+Metadata documents the role. It does not perform configuration tasks.
 
-```yaml
 ---
-galaxy_info:
-  author: Charter Ansible Training
-  description: Configure a basic Apache web server
-  license: MIT
-  min_ansible_version: "2.15"
 
-dependencies: []
+### Code-first automation
+
+Code-first automation means automation is created, tested, reviewed, and versioned before it is executed.
+
+The Git repository becomes the source of truth.
+
+```mermaid
+flowchart LR
+    DEV[Engineer] --> BRANCH[Git branch]
+    BRANCH --> CHANGE[Change role]
+    CHANGE --> TEST[Test automation]
+    TEST --> REVIEW[Peer review]
+    REVIEW --> MERGE[Merge approved code]
+    MERGE --> RUN[Execute automation]
+    RUN --> AAP[AAP project]
 ```
 
-The metadata file does not execute tasks.
+A code-first workflow provides:
 
-It documents the role and can define dependencies on other roles.
+* Version history
+* Peer review
+* Change tracking
+* Rollback capability
+* Reusable automation
+* Clear ownership
+* Consistent execution
+
+AAP does not replace the repository.
+
+AAP consumes and executes approved automation stored in Git.
 
 ---
 
-# 11. Complete Repository Structure
+### Security note
 
-After converting Module 5 into a role, the lab structure should look similar to this:
+Do not store readable secrets directly in:
+
+* Playbooks
+* Role defaults
+* Role variables
+* Templates
+* Inventory files
+* Git repositories
+
+Wrong:
+
+```yaml
+database_password: SuperSecretPassword123
+```
+
+Sensitive values should be encrypted with Ansible Vault or retrieved from an approved secret management system.
+
+---
+
+### Module workflow
+
+```mermaid
+flowchart TD
+    A[Run calling playbook] --> B[Load inventory]
+    B --> C[Gather facts]
+    C --> D[Load role defaults]
+    D --> E[Apply inventory overrides]
+    E --> F[Load role tasks]
+
+    F --> G{Supported OS family?}
+    G -->|No| H[Stop with error]
+    G -->|Yes| I[Resolve package and service values]
+
+    I --> J[Install packages]
+    J --> K[Create files and directories]
+    K --> L[Render templates]
+    L --> M{Configuration changed?}
+
+    M -->|No| N[Do not restart service]
+    M -->|Yes| O[Notify handler]
+
+    O --> P[Complete remaining tasks]
+    P --> Q[Run handler once]
+    Q --> R[Restart web service]
+```
+
+---
+
+## Hands-On Walkthrough
+
+### Repository structure
+
+This module reuses the inventory and group variables created in Modules 4 and 5.
 
 ```text
-bootcamp/
-└── lab/
-    ├── ansible.cfg
-    ├── inventories/
-    │   └── inventory.ini
-    ├── group_vars/
-    │   └── linux.yml
-    ├── playbooks/
-    │   ├── module5_template_deploy.yml
-    │   └── module6_role_apply.yml
-    └── roles/
-        └── web_config/
-            ├── README.md
-            ├── defaults/
-            │   └── main.yml
-            ├── files/
-            ├── handlers/
-            │   └── main.yml
-            ├── meta/
-            │   └── main.yml
-            ├── tasks/
-            │   └── main.yml
-            ├── templates/
-            │   ├── apache-hardening.conf.j2
-            │   └── index.html.j2
-            └── vars/
-                └── main.yml
+lab/
+|-- ansible.cfg
+|-- inventories/
+|   |-- inventory.ini
+|   `-- group_vars/
+|       |-- all.yml
+|       |-- web.yml
+|       |-- rhel_web.yml
+|       `-- ubuntu_web.yml
+|-- playbooks/
+|   |-- module5_template_deploy.yml
+|   `-- module6_role_apply.yml
+`-- roles/
+    `-- web_config/
+        |-- README.md
+        |-- defaults/
+        |   `-- main.yml
+        |-- files/
+        |-- handlers/
+        |   `-- main.yml
+        |-- meta/
+        |   `-- main.yml
+        |-- tasks/
+        |   `-- main.yml
+        |-- templates/
+        |   |-- apache-hardening.conf.j2
+        |   `-- index.html.j2
+        `-- vars/
+            `-- main.yml
 ```
 
 Module 5 remains available for comparison.
 
-Module 6 calls the role instead of repeating all the implementation tasks.
+Module 6 calls the role instead of repeating the complete implementation in the playbook.
 
 ---
 
-# 12. Role Search Path
+### Step 1: Verify the existing inventory variables
 
-Because this lab stores playbooks and roles in separate directories, Ansible must know where to find the roles.
-
-The course commands run from:
+Verify:
 
 ```text
-bootcamp/lab/
+inventories/group_vars/all.yml
 ```
 
-Verify that `ansible.cfg` contains:
-
-```ini
-[defaults]
-roles_path = ./roles
+```yaml
+---
+company: "Charter"
+environment_name: "training"
 ```
 
-A fuller lab configuration might look like:
-
-```ini
-[defaults]
-inventory = ./inventories/inventory.ini
-roles_path = ./roles
-host_key_checking = False
-retry_files_enabled = False
-```
-
-The important Module 6 setting is:
-
-```ini
-roles_path = ./roles
-```
-
-Without the correct role path, Ansible may report:
+Verify:
 
 ```text
-ERROR! the role 'web_config' was not found
+inventories/group_vars/web.yml
 ```
+
+```yaml
+---
+web_port: 80
+web_message: "Hello from Ansible - {{ company }} {{ environment_name }}"
+```
+
+Verify:
+
+```text
+inventories/group_vars/rhel_web.yml
+```
+
+```yaml
+---
+package_name: httpd
+service_name: httpd
+
+common_packages:
+  - vim
+  - git
+  - curl-minimal
+  - httpd
+```
+
+Verify:
+
+```text
+inventories/group_vars/ubuntu_web.yml
+```
+
+```yaml
+---
+package_name: apache2
+service_name: apache2
+
+common_packages:
+  - vim
+  - git
+  - curl
+  - apache2
+```
+
+The role will use these values when they are available.
+
+It will also contain fallback mappings so it can still resolve operating-system-specific values.
 
 ---
 
-# 13. Hands-On Walkthrough
+### Step 2: Verify the inventory groups
 
-## Goal
-
-Convert the Module 5 playbook into the following role:
-
-```text
-roles/web_config/
-```
-
-The original Module 5 playbook will not be deleted.
-
-It will remain available so students can compare:
-
-* A large playbook
-* A small playbook calling a role
-
----
-
-## Step 1: Verify the Lab Directory
-
-From the repository root:
+Run:
 
 ```bash
-cd bootcamp/lab
-pwd
+ansible-inventory -i inventories/inventory.ini --graph
 ```
 
-Expected path:
+Confirm that:
 
 ```text
-bootcamp/lab
+RHEL hosts belong to rhel_web and web
+Ubuntu hosts belong to ubuntu_web and web
 ```
 
-Verify the current files:
+Example:
 
-```bash
-find . -maxdepth 3 -type f | sort
+```text
+@all:
+  |--@web:
+  |  |--server1
+  |  |--server2
+  |--@rhel_web:
+  |  |--server1
+  |--@ubuntu_web:
+     |--server2
+```
+
+The calling playbook will target:
+
+```yaml
+hosts: web
 ```
 
 ---
 
-## Step 2: Create the Role Skeleton
+### Step 3: Create the role skeleton
 
-Use `ansible-galaxy` to create the standard directory structure:
+Run:
 
 ```bash
 ansible-galaxy role init web_config --init-path roles
@@ -672,7 +701,9 @@ Expected result:
 - Role web_config was created successfully
 ```
 
-Inspect the generated structure:
+Do not run the command again if the role already exists.
+
+Inspect the generated files:
 
 ```bash
 find roles/web_config -maxdepth 2 -type f | sort
@@ -689,18 +720,16 @@ roles/web_config/tasks/main.yml
 roles/web_config/vars/main.yml
 ```
 
-The command also creates empty directories such as:
+The command also creates directories such as:
 
 ```text
 roles/web_config/files/
 roles/web_config/templates/
 ```
 
-Do not run the initialization command again if the role already exists.
-
 ---
 
-## Step 3: Configure the Role Search Path
+### Step 4: Configure the role search path
 
 Open:
 
@@ -718,21 +747,33 @@ host_key_checking = False
 retry_files_enabled = False
 ```
 
+The important Module 6 setting is:
+
+```ini
+roles_path = ./roles
+```
+
 Verify the active configuration:
 
 ```bash
 ansible-config dump --only-changed
 ```
 
-Look for a role path that points to:
+Look for a role path pointing to:
 
 ```text
 bootcamp/lab/roles
 ```
 
+Without the correct role path, Ansible may report:
+
+```text
+ERROR! the role 'web_config' was not found
+```
+
 ---
 
-## Step 4: Create Role Defaults
+### Step 5: Create role defaults
 
 Edit:
 
@@ -744,26 +785,39 @@ Add:
 
 ```yaml
 ---
+company: "Example Organization"
+environment_name: "default"
 web_message: "Managed by the web_config role"
-web_environment: "default"
 web_owner: "Platform Engineering"
-
-common_packages:
-  - vim
-  - git
-  - curl
+web_port: 80
 
 web_document_root: /var/www/html
 web_index_file: index.html
+web_config_filename: charter-module6.conf
+web_role_info_path: /etc/charter/web_config_role.txt
 ```
 
-These values define the default behavior of the role.
+These values define the default role behavior.
 
-They can be overridden without changing the role tasks.
+Your existing inventory variables override matching defaults.
+
+For example:
+
+```text
+roles/web_config/defaults/main.yml
+company: "Example Organization"
+```
+
+is overridden by:
+
+```text
+inventories/group_vars/all.yml
+company: "Charter"
+```
 
 ---
 
-## Step 5: Create Internal Role Variables
+### Step 6: Create internal role variables
 
 Edit:
 
@@ -776,26 +830,49 @@ Add:
 ```yaml
 ---
 web_package_map:
-  Debian: apache2
   RedHat: httpd
+  Debian: apache2
 
 web_service_map:
-  Debian: apache2
   RedHat: httpd
+  Debian: apache2
 
-web_config_path_map:
-  Debian: /etc/apache2/conf-available/charter-module6.conf
-  RedHat: /etc/httpd/conf.d/charter-module6.conf
+web_common_packages_map:
+  RedHat:
+    - vim
+    - git
+    - curl-minimal
+    - httpd
 
-web_config_enabled_path_map:
-  Debian: /etc/apache2/conf-enabled/charter-module6.conf
+  Debian:
+    - vim
+    - git
+    - curl
+    - apache2
+
+web_config_directory_map:
+  RedHat: /etc/httpd/conf.d
+  Debian: /etc/apache2/conf-available
+
+web_config_enabled_directory_map:
+  Debian: /etc/apache2/conf-enabled
 ```
 
-These mappings support both Debian and Red Hat systems.
+These mappings are internal role implementation values.
+
+The role will prefer existing inventory variables such as:
+
+```yaml
+package_name
+service_name
+common_packages
+```
+
+If those variables are missing, it will use the internal maps.
 
 ---
 
-## Step 6: Create the Apache Template
+### Step 7: Create the Apache configuration template
 
 Create:
 
@@ -809,7 +886,8 @@ Add:
 # Managed by Ansible
 # Role: web_config
 # Host: {{ inventory_hostname }}
-# Environment: {{ web_environment }}
+# Company: {{ company }}
+# Environment: {{ environment_name }}
 
 ServerTokens Prod
 ServerSignature Off
@@ -817,11 +895,15 @@ TraceEnable Off
 AddDefaultCharset UTF-8
 ```
 
-The template is now stored inside the role.
+Inside the role task, this template will be referenced as:
+
+```yaml
+src: apache-hardening.conf.j2
+```
 
 ---
 
-## Step 7: Create the Website Template
+### Step 8: Create the website template
 
 Create:
 
@@ -842,24 +924,29 @@ Add:
   <h1>{{ web_message }}</h1>
 
   <p><strong>Managed host:</strong> {{ inventory_hostname }}</p>
-  <p><strong>Environment:</strong> {{ web_environment }}</p>
+  <p><strong>Company:</strong> {{ company }}</p>
+  <p><strong>Environment:</strong> {{ environment_name }}</p>
   <p><strong>Owner:</strong> {{ web_owner }}</p>
   <p><strong>Operating system:</strong> {{ ansible_facts['distribution'] }}</p>
   <p><strong>OS family:</strong> {{ ansible_facts['os_family'] }}</p>
+  <p><strong>Architecture:</strong> {{ ansible_facts['architecture'] }}</p>
+  <p><strong>Package:</strong> {{ web_package_resolved }}</p>
+  <p><strong>Service:</strong> {{ web_service_resolved }}</p>
+  <p><strong>Web port:</strong> {{ web_port }}</p>
   <p><strong>Ansible role:</strong> web_config</p>
 
   {% if ansible_facts['os_family'] == "RedHat" %}
-  <p>This system uses the Red Hat web server structure.</p>
+  <p>This host uses the Red Hat Apache structure.</p>
   {% elif ansible_facts['os_family'] == "Debian" %}
-  <p>This system uses the Debian web server structure.</p>
+  <p>This host uses the Debian Apache structure.</p>
   {% else %}
-  <p>This operating system family is not supported by this role.</p>
+  <p>This operating system family is not supported.</p>
   {% endif %}
 
-  <h2>Common Packages</h2>
+  <h2>Managed Packages</h2>
 
   <ul>
-  {% for package in common_packages %}
+  {% for package in web_packages_resolved %}
     <li>{{ package }}</li>
   {% endfor %}
   </ul>
@@ -869,9 +956,18 @@ Add:
 </html>
 ```
 
+The template demonstrates:
+
+* Role defaults
+* Inventory overrides
+* Gathered facts
+* Resolved role variables
+* A Jinja2 condition
+* A Jinja2 loop
+
 ---
 
-## Step 8: Create the Role Handler
+### Step 9: Create the role handler
 
 Edit:
 
@@ -885,15 +981,15 @@ Add:
 ---
 - name: Restart web service
   ansible.builtin.service:
-    name: "{{ web_service_map[ansible_facts['os_family']] }}"
+    name: "{{ web_service_resolved }}"
     state: restarted
 ```
 
-The handler will be notified when the Apache configuration changes.
+The handler uses the service name resolved for each managed host.
 
 ---
 
-## Step 9: Create the Role Tasks
+### Step 10: Create the role tasks
 
 Edit:
 
@@ -909,6 +1005,9 @@ Add:
   ansible.builtin.assert:
     that:
       - ansible_facts['os_family'] in web_package_map
+      - ansible_facts['os_family'] in web_service_map
+      - ansible_facts['os_family'] in web_common_packages_map
+      - ansible_facts['os_family'] in web_config_directory_map
     fail_msg: >-
       The web_config role does not support the
       {{ ansible_facts['os_family'] }} operating system family.
@@ -916,22 +1015,40 @@ Add:
       The web_config role supports the
       {{ ansible_facts['os_family'] }} operating system family.
 
-- name: Display selected web server package
-  ansible.builtin.debug:
-    msg: >-
-      {{ inventory_hostname }} will use the
-      {{ web_package_map[ansible_facts['os_family']] }} package.
+- name: Resolve operating-system-specific values
+  ansible.builtin.set_fact:
+    web_package_resolved: >-
+      {{
+        package_name
+        | default(web_package_map[ansible_facts['os_family']])
+      }}
+    web_service_resolved: >-
+      {{
+        service_name
+        | default(web_service_map[ansible_facts['os_family']])
+      }}
+    web_packages_resolved: >-
+      {{
+        common_packages
+        | default(web_common_packages_map[ansible_facts['os_family']])
+      }}
 
-- name: Install common packages
+- name: Display resolved role values
+  ansible.builtin.debug:
+    msg:
+      - "Host: {{ inventory_hostname }}"
+      - "Package: {{ web_package_resolved }}"
+      - "Service: {{ web_service_resolved }}"
+      - "Packages: {{ web_packages_resolved }}"
+      - "Environment: {{ environment_name }}"
+
+- name: Install managed packages
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
-  loop: "{{ common_packages }}"
-
-- name: Install the web server package
-  ansible.builtin.package:
-    name: "{{ web_package_map[ansible_facts['os_family']] }}"
-    state: present
+  loop: "{{ web_packages_resolved }}"
+  loop_control:
+    label: "{{ item }}"
 
 - name: Create the Charter configuration directory
   ansible.builtin.file:
@@ -943,13 +1060,19 @@ Add:
 
 - name: Create the role information file
   ansible.builtin.copy:
-    dest: /etc/charter/web_config_role.txt
+    dest: "{{ web_role_info_path }}"
     content: |
       Managed by Ansible
       Role: web_config
       Host: {{ inventory_hostname }}
-      Environment: {{ web_environment }}
+      Company: {{ company }}
+      Environment: {{ environment_name }}
+      Owner: {{ web_owner }}
+      Operating system: {{ ansible_facts['distribution'] }}
       Operating system family: {{ ansible_facts['os_family'] }}
+      Package: {{ web_package_resolved }}
+      Service: {{ web_service_resolved }}
+      Web port: {{ web_port }}
     owner: root
     group: root
     mode: "0644"
@@ -957,7 +1080,10 @@ Add:
 - name: Deploy the Apache configuration
   ansible.builtin.template:
     src: apache-hardening.conf.j2
-    dest: "{{ web_config_path_map[ansible_facts['os_family']] }}"
+    dest: >-
+      {{
+        web_config_directory_map[ansible_facts['os_family']]
+      }}/{{ web_config_filename }}
     owner: root
     group: root
     mode: "0644"
@@ -965,8 +1091,14 @@ Add:
 
 - name: Enable the Apache configuration on Debian systems
   ansible.builtin.file:
-    src: "{{ web_config_path_map['Debian'] }}"
-    dest: "{{ web_config_enabled_path_map['Debian'] }}"
+    src: >-
+      {{
+        web_config_directory_map['Debian']
+      }}/{{ web_config_filename }}
+    dest: >-
+      {{
+        web_config_enabled_directory_map['Debian']
+      }}/{{ web_config_filename }}
     state: link
   when: ansible_facts['os_family'] == "Debian"
   notify: Restart web service
@@ -981,12 +1113,18 @@ Add:
 
 - name: Ensure the web service is enabled and running
   ansible.builtin.service:
-    name: "{{ web_service_map[ansible_facts['os_family']] }}"
+    name: "{{ web_service_resolved }}"
     state: started
     enabled: true
+
+- name: Verify that the website responds
+  ansible.builtin.uri:
+    url: "http://localhost:{{ web_port }}"
+    status_code: 200
+    return_content: false
 ```
 
-Notice that the role task file does not contain:
+Notice that this role task file does not contain:
 
 ```yaml
 hosts:
@@ -994,11 +1132,27 @@ become:
 gather_facts:
 ```
 
-Those settings belong in the calling playbook.
+Those values belong in the calling playbook.
+
+The role also avoids installing the web server twice.
+
+The existing `common_packages` lists already contain:
+
+```text
+httpd
+```
+
+or:
+
+```text
+apache2
+```
+
+Therefore, a separate web package installation task is unnecessary.
 
 ---
 
-## Step 10: Add Role Metadata
+### Step 11: Create role metadata
 
 Edit:
 
@@ -1030,13 +1184,13 @@ galaxy_info:
 dependencies: []
 ```
 
-The metadata does not configure the web server.
+The metadata documents the intended role purpose and supported platforms.
 
-It documents the intended purpose and supported platforms of the role.
+It does not configure the managed hosts.
 
 ---
 
-## Step 11: Document the Role
+### Step 12: Document the role
 
 Edit:
 
@@ -1046,40 +1200,53 @@ roles/web_config/README.md
 
 Add:
 
-````markdown
+```markdown
 # web_config
 
-The `web_config` role installs and configures an Apache web server on supported Debian and Red Hat systems.
+The `web_config` role installs and configures an Apache web server on supported Red Hat and Debian systems.
 
 ## Requirements
 
-- Ansible facts must be gathered.
-- Privilege escalation is required.
-- The managed host must belong to the `Debian` or `RedHat` OS family.
+* Ansible facts must be gathered.
+* Privilege escalation is required.
+* The managed host must use the `RedHat` or `Debian` operating system family.
 
-## Role Variables
+## Default Variables
 
 | Variable | Default | Purpose |
-|---|---|---|
-| `web_message` | `Managed by the web_config role` | Main website heading |
-| `web_environment` | `default` | Environment displayed on the website |
+| --- | --- | --- |
+| `company` | `Example Organization` | Organization displayed in generated files |
+| `environment_name` | `default` | Environment displayed in generated files |
+| `web_message` | `Managed by the web_config role` | Website heading |
 | `web_owner` | `Platform Engineering` | Team displayed on the website |
-| `common_packages` | `vim`, `git`, `curl` | Packages installed by the role |
+| `web_port` | `80` | Port used to validate the website |
 | `web_document_root` | `/var/www/html` | Website destination directory |
 | `web_index_file` | `index.html` | Website index filename |
+| `web_config_filename` | `charter-module6.conf` | Apache configuration filename |
+| `web_role_info_path` | `/etc/charter/web_config_role.txt` | Role information file |
+
+## Optional Inventory Overrides
+
+The role can use these inventory variables when they are defined:
+
+| Variable | Purpose |
+| --- | --- |
+| `package_name` | Operating-system-specific Apache package |
+| `service_name` | Operating-system-specific Apache service |
+| `common_packages` | Packages installed by the role |
 
 ## Example Playbook
 
 ```yaml
 ---
 - name: Apply the web_config role
-  hosts: linux
+  hosts: web
   become: true
   gather_facts: true
 
   roles:
     - web_config
-````
+```
 
 ## Validation
 
@@ -1091,53 +1258,21 @@ ansible-playbook \
   playbooks/module6_role_apply.yml
 ```
 
-The second run should not restart the web service unless the configuration changed.
-
-````
+The second run should not restart the web service unless the Apache configuration changed.
+```
 
 Every reusable role should explain:
 
-- What it does
-- What it requires
-- Which variables users can configure
-- How to call it
-- How to validate it
+* What it does
+* What it requires
+* Which variables users can configure
+* How inventory variables affect it
+* How to call it
+* How to validate it
 
 ---
 
-## Step 12: Override Role Defaults
-
-Edit:
-
-```text
-group_vars/linux.yml
-````
-
-Use environment-specific values:
-
-```yaml
----
-web_message: "Charter Ansible Role Deployment"
-web_environment: "training"
-web_owner: "Charter Platform Engineering"
-
-common_packages:
-  - vim
-  - git
-  - curl
-```
-
-These group variables override values from:
-
-```text
-roles/web_config/defaults/main.yml
-```
-
-The role implementation does not need to change.
-
----
-
-## Step 13: Create the Calling Playbook
+### Step 13: Create the calling playbook
 
 Create:
 
@@ -1150,7 +1285,7 @@ Add:
 ```yaml
 ---
 - name: Module 6 - Apply the reusable web configuration role
-  hosts: linux
+  hosts: web
   become: true
   gather_facts: true
 
@@ -1175,73 +1310,26 @@ roles/web_config/
 
 ---
 
-# 14. Compare Module 5 and Module 6
+### Module 5 compared with Module 6
 
-## Module 5
-
-The playbook contains most of the implementation:
-
-```yaml
----
-- name: Configure web servers
-  hosts: linux
-  become: true
-
-  vars:
-    # Variables
-
-  tasks:
-    # Conditions
-    # Loops
-    # File management
-    # Templates
-    # Service management
-
-  handlers:
-    # Restart handler
-```
-
----
-
-## Module 6
-
-The playbook calls the role:
-
-```yaml
----
-- name: Apply web role
-  hosts: linux
-  become: true
-  gather_facts: true
-
-  roles:
-    - web_config
-```
-
-The playbook becomes easier to read because the implementation has been organized into the role.
-
----
-
-## Comparison
-
-| Module 5                                     | Module 6                                      |
-| -------------------------------------------- | --------------------------------------------- |
-| Logic is concentrated in one playbook        | Logic is separated into role directories      |
-| Templates are outside the playbook directory | Templates belong to the role                  |
-| Handlers are defined in the playbook         | Handlers belong to the role                   |
-| Variables may be mixed together              | Defaults and internal variables are separated |
-| Harder to reuse cleanly                      | Designed for reuse                            |
-| Suitable for learning task behavior          | Suitable for team-scale organization          |
+| Module 5 | Module 6 |
+| --- | --- |
+| Logic is concentrated in one playbook | Logic is separated into role directories |
+| Templates are outside the role | Templates belong to the role |
+| Handlers are defined in the playbook | Handlers belong to the role |
+| Implementation and execution are combined | Implementation and execution are separated |
+| Harder to reuse | Designed for reuse |
+| Useful for learning task behavior | Better for team-scale organization |
 
 Module 5 was not wrong.
 
-Module 6 improves how the same automation is organized.
+Module 6 improves how the same automation is organized and reused.
 
 ---
 
-# 15. Validate the Role
+### Step 14: Validate the inventory
 
-## Step 1: Check Inventory
+Run:
 
 ```bash
 ansible-inventory \
@@ -1252,12 +1340,16 @@ ansible-inventory \
 Confirm that the inventory contains:
 
 ```text
-@linux:
+@web:
 ```
+
+Confirm that the web hosts also belong to the correct OS-specific groups.
 
 ---
 
-## Step 2: Check Playbook Syntax
+### Step 15: Check the role playbook syntax
+
+Run:
 
 ```bash
 ansible-playbook \
@@ -1274,7 +1366,9 @@ playbook: playbooks/module6_role_apply.yml
 
 ---
 
-## Step 3: List the Role Tasks
+### Step 16: List the role tasks
+
+Run:
 
 ```bash
 ansible-playbook \
@@ -1287,20 +1381,23 @@ Expected tasks include:
 
 ```text
 web_config : Verify that the operating system is supported
-web_config : Install common packages
-web_config : Install the web server package
+web_config : Resolve operating-system-specific values
+web_config : Install managed packages
+web_config : Create the Charter configuration directory
 web_config : Deploy the Apache configuration
 web_config : Deploy the website
 web_config : Ensure the web service is enabled and running
 ```
 
-The role name appears before each task name.
+The role name appears before each task.
 
-This makes it easier to identify where a task came from.
+This makes it easier to identify where the task is defined.
 
 ---
 
-## Step 4: Perform the First Run
+### Step 17: Perform the first run
+
+Run:
 
 ```bash
 ansible-playbook \
@@ -1311,24 +1408,31 @@ ansible-playbook \
 The first run should:
 
 1. Gather facts.
-2. Load the role defaults.
-3. Apply overrides from `group_vars/linux.yml`.
-4. Load the role's internal mappings.
-5. Install common packages.
-6. Install the correct web server package.
-7. Create the Charter directory.
+2. Load role defaults.
+3. Apply inventory overrides.
+4. Verify the operating system.
+5. Resolve package and service values.
+6. Install the correct packages.
+7. Create `/etc/charter`.
 8. Create the role information file.
-9. Render the Apache configuration.
+9. Generate the Apache configuration.
 10. Enable the Debian configuration when required.
-11. Render the website.
+11. Generate the website.
 12. Start and enable the web service.
-13. Run the handler if the configuration changed.
+13. Verify that the website returns status code 200.
+14. Run the handler if the configuration changed.
+
+Some tasks should report:
+
+```text
+changed
+```
 
 ---
 
-## Step 5: Perform the Second Run
+### Step 18: Perform the second run
 
-Run the playbook again without changing anything:
+Run the same command again without changing anything:
 
 ```bash
 ansible-playbook \
@@ -1336,30 +1440,32 @@ ansible-playbook \
   playbooks/module6_role_apply.yml
 ```
 
-Expected result:
+Expected behavior:
 
 * Most tasks report `ok`.
-* No unnecessary files are changed.
+* Packages remain installed.
+* Files remain unchanged.
 * The Apache configuration remains unchanged.
 * The handler does not run.
 * The web service is not unnecessarily restarted.
+* The website still returns status code 200.
 
-This proves that moving the tasks into a role did not remove idempotency.
+This confirms that moving the automation into a role did not break idempotency.
 
 ---
 
-# 16. Test Variable Overrides
+### Step 19: Test a role default override
 
-Change the following value in:
+Edit:
 
 ```text
-group_vars/linux.yml
+inventories/group_vars/web.yml
 ```
 
-From:
+Change:
 
 ```yaml
-web_message: "Charter Ansible Role Deployment"
+web_message: "Hello from Ansible - {{ company }} {{ environment_name }}"
 ```
 
 To:
@@ -1368,7 +1474,7 @@ To:
 web_message: "Charter Role Override Successful"
 ```
 
-Run the playbook:
+Run:
 
 ```bash
 ansible-playbook \
@@ -1376,19 +1482,20 @@ ansible-playbook \
   playbooks/module6_role_apply.yml
 ```
 
-Expected result:
+Expected behavior:
 
 * The website template reports `changed`.
-* The generated web page contains the new message.
-* The Apache configuration handler does not run because only the HTML page changed.
+* The generated page contains the new message.
+* The Apache configuration does not change.
+* The restart handler does not run.
 
 Validate the page:
 
 ```bash
-ansible linux \
+ansible web \
   -i inventories/inventory.ini \
   -m ansible.builtin.uri \
-  -a "url=http://localhost return_content=true"
+  -a "url=http://localhost:{{ web_port }} return_content=true"
 ```
 
 Look for:
@@ -1397,11 +1504,11 @@ Look for:
 Charter Role Override Successful
 ```
 
-This demonstrates that role defaults can be changed without editing role tasks.
+This demonstrates that inventory variables override role defaults without changing role tasks.
 
 ---
 
-# 17. Test the Handler
+### Step 20: Test the handler
 
 Edit:
 
@@ -1409,13 +1516,13 @@ Edit:
 roles/web_config/templates/apache-hardening.conf.j2
 ```
 
-Add a comment:
+Add:
 
-```apache
+```jinja2
 # Module 6 handler validation
 ```
 
-Run the role playbook:
+Run:
 
 ```bash
 ansible-playbook \
@@ -1426,10 +1533,10 @@ ansible-playbook \
 Expected behavior:
 
 1. The Apache configuration task reports `changed`.
-2. The task notifies the role handler.
+2. The task notifies `Restart web service`.
 3. Ansible completes the remaining tasks.
-4. The handler runs once near the end.
-5. The web service restarts.
+4. The role handler runs once near the end.
+5. The correct service restarts on each host.
 
 Run the playbook again without another change:
 
@@ -1439,16 +1546,16 @@ ansible-playbook \
   playbooks/module6_role_apply.yml
 ```
 
-The handler should not run.
+The handler should not run again.
 
 ---
 
-# 18. Validate Generated Content
+### Step 21: Validate the generated content
 
-## Check the Role Information File
+Check the role information file:
 
 ```bash
-ansible linux \
+ansible web \
   -i inventories/inventory.ini \
   -b \
   -m ansible.builtin.command \
@@ -1460,30 +1567,37 @@ Expected content includes:
 ```text
 Managed by Ansible
 Role: web_config
+Company: Charter
 Environment: training
 ```
 
----
-
-## Check the Generated Website
+Check the generated website:
 
 ```bash
-ansible linux \
+ansible web \
   -i inventories/inventory.ini \
   -b \
   -m ansible.builtin.command \
   -a "cat /var/www/html/index.html"
 ```
 
----
-
-## Test the Web Server
+Check the service state:
 
 ```bash
-ansible linux \
+ansible web \
+  -i inventories/inventory.ini \
+  -b \
+  -m ansible.builtin.command \
+  -a "systemctl is-active {{ service_name }}"
+```
+
+Test the web server:
+
+```bash
+ansible web \
   -i inventories/inventory.ini \
   -m ansible.builtin.uri \
-  -a "url=http://localhost status_code=200"
+  -a "url=http://localhost:{{ web_port }} status_code=200"
 ```
 
 Expected result:
@@ -1494,43 +1608,41 @@ status: 200
 
 ---
 
-# 19. Code-First Git Workflow
+### Step 22: Review the Git changes
 
-After validating the role, inspect the repository changes:
+Check the repository state:
 
 ```bash
 git status
 ```
 
-Review the changes:
+Review tracked changes:
 
 ```bash
 git diff
 ```
 
-Review the new role files:
+Review the role files:
 
 ```bash
 find roles/web_config -maxdepth 3 -type f | sort
 ```
 
-A typical team workflow is:
+A typical code-first workflow is:
 
 ```mermaid
 flowchart LR
     C[Create branch] --> E[Edit role]
     E --> S[Syntax check]
-    S --> T[Test]
+    S --> T[Test role]
     T --> D[Review diff]
-    D --> PR[Pull request]
+    D --> PR[Create pull request]
     PR --> R[Peer review]
     R --> M[Merge]
     M --> A[Approved automation]
 ```
 
-The important point is not memorizing Git commands.
-
-The important point is that automation changes should be:
+Automation changes should be:
 
 * Visible
 * Reviewable
@@ -1540,276 +1652,101 @@ The important point is that automation changes should be:
 
 ---
 
-# 20. Ansible Vault Mention
+### Common problems
 
-Do not store secrets directly in:
-
-* Playbooks
-* Role defaults
-* Role variables
-* Templates
-* Inventory files
-* Git repositories
-
-Wrong:
-
-```yaml
-database_password: SuperSecretPassword123
-```
-
-Ansible Vault can encrypt sensitive values before they are committed.
-
-Example encrypted content begins with:
-
-```text
-$ANSIBLE_VAULT;1.1;AES256
-```
-
-This module does not perform a deep Ansible Vault lab.
-
-The important rule is:
-
-> Secrets must not be committed to Git as readable plain text.
-
-Enterprise secret management integrations such as CyberArk and HashiCorp Vault are outside the scope of this module.
+| Problem | Likely cause | Check |
+| --- | --- | --- |
+| Role not found | Incorrect `roles_path` or wrong working directory | Check `ansible.cfg` and `pwd` |
+| Variable undefined | Missing default or inventory variable | Check `defaults/main.yml` and `group_vars` |
+| Template not found | Template is outside the role or filename is wrong | Check `roles/web_config/templates/` |
+| Handler not found | Notification and handler names do not match | Compare `notify` and handler `name` |
+| Package not found | Wrong package value for the OS | Check resolved variables |
+| Service not found | Wrong service value for the OS | Check `web_service_resolved` |
+| Role cannot be overridden | Configurable value was placed in `vars/main.yml` | Move it to `defaults/main.yml` |
+| Handler runs every time | Notifying task always reports changed | Check template content and permissions |
+| Website validation fails | Service is stopped or port is wrong | Check service state and `web_port` |
 
 ---
 
-# 21. Troubleshooting
+## Quiz
 
-## Error: Role Was Not Found
+1. Why are Ansible roles used?
 
-Example:
+   * A. To organize and reuse related automation
+   * B. To replace inventories
+   * C. To avoid using playbooks
+   * D. To install AAP
 
-```text
-ERROR! the role 'web_config' was not found
-```
+2. Where do the main role tasks normally live?
 
-Confirm that the role exists:
+   * A. `roles/<role_name>/tasks/main.yml`
+   * B. `roles/<role_name>/README.md`
+   * C. `group_vars/main.yml`
+   * D. `inventories/main.yml`
 
-```bash
-find roles/web_config -maxdepth 2 -type f
-```
+3. Where do role handlers normally live?
 
-Confirm that `ansible.cfg` contains:
+   * A. `roles/<role_name>/handlers/main.yml`
+   * B. `roles/<role_name>/tasks/handlers.yml`
+   * C. `playbooks/handlers.yml`
+   * D. `inventories/handlers.yml`
 
-```ini
-[defaults]
-roles_path = ./roles
-```
+4. Where should user-configurable defaults normally be stored?
 
-Confirm you are running the command from:
+   * A. `handlers/main.yml`
+   * B. `defaults/main.yml`
+   * C. `templates/main.yml`
+   * D. `meta/main.yml`
 
-```text
-bootcamp/lab/
-```
+5. What is an appropriate use for `vars/main.yml`?
 
-Check the active role path:
+   * A. Internal operating-system mappings
+   * B. User passwords
+   * C. Inventory hostnames
+   * D. Playbook output
 
-```bash
-ansible-config dump | grep -i roles_path
-```
+6. How should a template inside a role normally be referenced?
 
----
+   * A. By filename, such as `index.html.j2`
+   * B. With an absolute path on the managed host
+   * C. Through the inventory file
+   * D. Through an AAP credential
 
-## Error: Variable Is Undefined
+7. What belongs in the calling playbook?
 
-Example:
+   * A. Target hosts, privilege escalation, fact gathering, and role names
+   * B. Every role template
+   * C. Every role handler
+   * D. Every internal role mapping
 
-```text
-'web_message' is undefined
-```
+8. Why does `group_vars/web.yml` override a value in `defaults/main.yml`?
 
-Check:
+   * A. Inventory group variables have higher precedence than role defaults
+   * B. Role defaults cannot contain variables
+   * C. Templates always override variables
+   * D. Handlers change variable precedence
 
-```text
-roles/web_config/defaults/main.yml
-```
+9. What should happen during the second role execution when nothing changed?
 
-Confirm the variable is defined:
+   * A. Every task reports changed
+   * B. The role is recreated
+   * C. Most tasks report ok and the handler does not run
+   * D. Every service restarts
 
-```yaml
-web_message: "Managed by the web_config role"
-```
+10. What is a main benefit of code-first automation?
 
-Also check the YAML indentation.
-
----
-
-## Error: Template Was Not Found
-
-Confirm that the template exists inside the role:
-
-```text
-roles/web_config/templates/index.html.j2
-```
-
-The role task should use:
-
-```yaml
-src: index.html.j2
-```
-
-Do not use:
-
-```yaml
-src: ../templates/index.html.j2
-```
+    * A. Changes are versioned, reviewable, and reusable
+    * B. Git is no longer required
+    * C. Variables stop working
+    * D. Engineers can bypass review
 
 ---
 
-## Error: Handler Was Not Found
+## Hands-On Lab - Build a reusable web server role
 
-Confirm the handler exists in:
+### Goal
 
-```text
-roles/web_config/handlers/main.yml
-```
-
-Confirm the handler name:
-
-```yaml
-- name: Restart web service
-```
-
-Confirm the task notification matches exactly:
-
-```yaml
-notify: Restart web service
-```
-
----
-
-## Role Variables Do Not Override Correctly
-
-Check where the variable is defined.
-
-User-configurable variables should normally be in:
-
-```text
-roles/web_config/defaults/main.yml
-```
-
-Do not place user-configurable values in:
-
-```text
-roles/web_config/vars/main.yml
-```
-
-Role variables have higher precedence and are harder to override.
-
----
-
-## Playbook Works but Is Not Idempotent
-
-Run the playbook twice:
-
-```bash
-ansible-playbook \
-  -i inventories/inventory.ini \
-  playbooks/module6_role_apply.yml
-```
-
-Investigate any task that reports `changed` during every run.
-
-Common causes include:
-
-* Dynamic timestamps inside templates
-* Random values
-* Shell commands without change detection
-* Incorrect file permissions
-* Files generated differently during every run
-* Tasks using non-idempotent commands
-
-A role is not automatically idempotent simply because it is a role.
-
-The tasks inside the role must still be written correctly.
-
----
-
-# 22. Talking Points
-
-* A role is an organizational structure, not a replacement for a playbook.
-* A playbook decides where and how a role runs.
-* A role contains the reusable implementation.
-* Role tasks live in `tasks/main.yml`.
-* Role handlers live in `handlers/main.yml`.
-* Role templates live in `templates/`.
-* Static role files live in `files/`.
-* Configurable values belong in `defaults/main.yml`.
-* Internal mappings can live in `vars/main.yml`.
-* Role defaults are designed to be overridden.
-* Templates inside roles are referenced by filename.
-* Roles should have a clear purpose.
-* Roles should be documented.
-* Roles should remain idempotent.
-* Git provides version history and review.
-* AAP later executes the approved automation from Git.
-
----
-
-# 23. Quiz
-
-## Question 1
-
-Why are Ansible roles used?
-
-* A. To organize and reuse related automation
-* B. To replace inventories
-* C. To avoid using playbooks
-* D. To install AAP
-
----
-
-## Question 2
-
-Where do the main tasks of a role normally live?
-
-* A. `roles/<role_name>/tasks/main.yml`
-* B. `roles/<role_name>/README.md`
-* C. `group_vars/main.yml`
-* D. `inventories/main.yml`
-
----
-
-## Question 3
-
-Where should user-configurable default values normally be stored?
-
-* A. `handlers/main.yml`
-* B. `defaults/main.yml`
-* C. `templates/main.yml`
-* D. `meta/main.yml`
-
----
-
-## Question 4
-
-How should a template inside a role normally be referenced?
-
-* A. By its filename, such as `index.html.j2`
-* B. With the absolute path on the managed host
-* C. Through the inventory file
-* D. Through an AAP credential
-
----
-
-## Question 5
-
-What is a main benefit of code-first automation?
-
-* A. Changes are versioned, reviewable, and reusable
-* B. Git is no longer required
-* C. Variables stop working
-* D. Every engineer can change production directly
-
----
-
-# 24. Hands-On Lab
-
-## Lab Goal
-
-Convert the Module 5 web server playbook into a reusable role named:
+Convert the Module 5 web server automation into a reusable role named:
 
 ```text
 web_config
@@ -1817,34 +1754,414 @@ web_config
 
 ---
 
-## Required Tasks
+### You will
 
-1. Run `cd bootcamp/lab`.
-2. Create the role with `ansible-galaxy role init`.
-3. Configure `roles_path` in `ansible.cfg`.
-4. Move configurable variables into `defaults/main.yml`.
-5. Move internal operating system mappings into `vars/main.yml`.
-6. Move web server tasks into `tasks/main.yml`.
-7. Move the restart handler into `handlers/main.yml`.
-8. Move the Jinja2 templates into the role's `templates/` directory.
-9. Add basic role metadata.
-10. Document the role in `README.md`.
-11. Create `playbooks/module6_role_apply.yml`.
-12. Call the `web_config` role from the playbook.
-13. Run a syntax check.
-14. List the role tasks.
-15. Run the role playbook.
-16. Run it again to confirm idempotency.
-17. Override `web_message` from `group_vars/linux.yml`.
-18. Confirm that the generated website changes.
-19. Change the Apache configuration template.
-20. Confirm that the restart handler runs once.
-21. Run the playbook again without changes.
-22. Confirm that the handler does not run.
+1. Create a standard role structure.
+2. Configure the role search path.
+3. Add user-configurable defaults.
+4. Add internal operating-system mappings.
+5. Move templates into the role.
+6. Move the restart handler into the role.
+7. Move implementation tasks into the role.
+8. Add metadata and documentation.
+9. Create a small calling playbook.
+10. Validate task loading and syntax.
+11. Test inventory variable overrides.
+12. Confirm handler behavior.
+13. Confirm idempotency.
+14. Review the role through Git.
 
 ---
 
-## Success Checklist
+### Task 1: Create the role
+
+Run:
+
+```bash
+ansible-galaxy role init web_config --init-path roles
+```
+
+Do not run the command if:
+
+```text
+roles/web_config/
+```
+
+already exists.
+
+---
+
+### Task 2: Configure Ansible
+
+Confirm that `ansible.cfg` contains:
+
+```ini
+[defaults]
+inventory = ./inventories/inventory.ini
+roles_path = ./roles
+host_key_checking = False
+retry_files_enabled = False
+```
+
+Verify:
+
+```bash
+ansible-config dump --only-changed
+```
+
+---
+
+### Task 3: Create role defaults
+
+Add configurable values to:
+
+```text
+roles/web_config/defaults/main.yml
+```
+
+Include:
+
+```text
+company
+environment_name
+web_message
+web_owner
+web_port
+web_document_root
+web_index_file
+web_config_filename
+web_role_info_path
+```
+
+---
+
+### Task 4: Create internal mappings
+
+Add operating-system mappings to:
+
+```text
+roles/web_config/vars/main.yml
+```
+
+Include maps for:
+
+```text
+Package names
+Service names
+Package lists
+Apache configuration directories
+Debian enabled configuration directory
+```
+
+---
+
+### Task 5: Move the templates
+
+Create:
+
+```text
+roles/web_config/templates/apache-hardening.conf.j2
+roles/web_config/templates/index.html.j2
+```
+
+Reference them inside role tasks by filename only.
+
+Correct:
+
+```yaml
+src: index.html.j2
+```
+
+Wrong:
+
+```yaml
+src: ../templates/index.html.j2
+```
+
+---
+
+### Task 6: Create the role handler
+
+Create:
+
+```text
+roles/web_config/handlers/main.yml
+```
+
+Add a handler named:
+
+```text
+Restart web service
+```
+
+The handler must restart:
+
+```yaml
+web_service_resolved
+```
+
+---
+
+### Task 7: Create the role tasks
+
+Create the role implementation in:
+
+```text
+roles/web_config/tasks/main.yml
+```
+
+The tasks must:
+
+1. Verify the operating system.
+2. Resolve package, service, and package list values.
+3. Install packages.
+4. Create `/etc/charter`.
+5. Create a role information file.
+6. Deploy the Apache configuration.
+7. Enable the configuration on Debian.
+8. Generate the website.
+9. Start and enable the web service.
+10. Validate the website.
+
+Do not add:
+
+```yaml
+hosts:
+become:
+gather_facts:
+```
+
+to the role task file.
+
+---
+
+### Task 8: Add metadata and documentation
+
+Create:
+
+```text
+roles/web_config/meta/main.yml
+```
+
+Document:
+
+* Role author
+* Role description
+* License
+* Minimum Ansible version
+* Supported platforms
+
+Update:
+
+```text
+roles/web_config/README.md
+```
+
+Document:
+
+* Role purpose
+* Requirements
+* Default variables
+* Optional inventory overrides
+* Example playbook
+* Validation command
+
+---
+
+### Task 9: Create the calling playbook
+
+Create:
+
+```text
+playbooks/module6_role_apply.yml
+```
+
+Add:
+
+```yaml
+---
+- name: Module 6 - Apply the reusable web configuration role
+  hosts: web
+  become: true
+  gather_facts: true
+
+  roles:
+    - web_config
+```
+
+---
+
+### Task 10: Validate the role
+
+Run a syntax check:
+
+```bash
+ansible-playbook \
+  -i inventories/inventory.ini \
+  playbooks/module6_role_apply.yml \
+  --syntax-check
+```
+
+List the tasks:
+
+```bash
+ansible-playbook \
+  -i inventories/inventory.ini \
+  playbooks/module6_role_apply.yml \
+  --list-tasks
+```
+
+---
+
+### Task 11: Run the role
+
+Run:
+
+```bash
+ansible-playbook \
+  -i inventories/inventory.ini \
+  playbooks/module6_role_apply.yml
+```
+
+Confirm that:
+
+* RHEL hosts use `httpd`.
+* Ubuntu hosts use `apache2`.
+* Packages install through a loop.
+* The role information file is created.
+* The Apache configuration is generated.
+* The website is generated.
+* The service is active.
+* The website returns status code 200.
+
+---
+
+### Task 12: Confirm idempotency
+
+Run the same playbook again without changing anything:
+
+```bash
+ansible-playbook \
+  -i inventories/inventory.ini \
+  playbooks/module6_role_apply.yml
+```
+
+Confirm that:
+
+* Most tasks report `ok`.
+* Packages are not reinstalled.
+* Templates remain unchanged.
+* The handler does not run.
+* The service is not unnecessarily restarted.
+
+---
+
+### Task 13: Test an inventory override
+
+Edit:
+
+```text
+inventories/group_vars/web.yml
+```
+
+Change `web_message`.
+
+Run the role again.
+
+Confirm that:
+
+* The website changes.
+* The Apache configuration does not change.
+* The restart handler does not run.
+
+---
+
+### Task 14: Test the handler
+
+Edit:
+
+```text
+roles/web_config/templates/apache-hardening.conf.j2
+```
+
+Add:
+
+```jinja2
+# Handler test
+```
+
+Run the role.
+
+Confirm that:
+
+* The configuration task reports `changed`.
+* The handler is notified.
+* The handler runs once.
+
+Run the role again without another edit.
+
+Confirm that the handler does not run.
+
+---
+
+### Task 15: Review the code-first changes
+
+Run:
+
+```bash
+git status
+git diff
+find roles/web_config -maxdepth 3 -type f | sort
+```
+
+Confirm that the role structure is clear and reviewable.
+
+---
+
+### Validation commands
+
+Check the role information file:
+
+```bash
+ansible web \
+  -i inventories/inventory.ini \
+  -b \
+  -m ansible.builtin.command \
+  -a "cat /etc/charter/web_config_role.txt"
+```
+
+Check the website:
+
+```bash
+ansible web \
+  -i inventories/inventory.ini \
+  -b \
+  -m ansible.builtin.command \
+  -a "cat /var/www/html/index.html"
+```
+
+Check the service:
+
+```bash
+ansible web \
+  -i inventories/inventory.ini \
+  -b \
+  -m ansible.builtin.command \
+  -a "systemctl is-active {{ service_name }}"
+```
+
+Test the website:
+
+```bash
+ansible web \
+  -i inventories/inventory.ini \
+  -m ansible.builtin.uri \
+  -a "url=http://localhost:{{ web_port }} status_code=200"
+```
+
+---
+
+### Success check
 
 * [ ] I can explain what an Ansible role is.
 * [ ] I understand the standard role directory structure.
@@ -1854,25 +2171,38 @@ web_config
 * [ ] I know where role templates are stored.
 * [ ] I understand the difference between role defaults and role variables.
 * [ ] I can override a role default from `group_vars`.
-* [ ] I can call a role from a playbook.
+* [ ] I can call a role from a small playbook.
 * [ ] I can troubleshoot a missing role.
-* [ ] I can validate role idempotency.
+* [ ] I can validate role syntax and task loading.
+* [ ] I can test role handler behavior.
+* [ ] I can confirm role idempotency.
 * [ ] I can explain why code-first automation matters.
 
 ---
 
-<details>
-<summary>Instructor Answer Key</summary>
+### Key lesson
 
-1. **A** - Organize and reuse related automation.
-2. **A** - `roles/<role_name>/tasks/main.yml`.
-3. **B** - `defaults/main.yml`.
-4. **A** - Reference the template by its filename.
-5. **A** - Changes are versioned, reviewable, and reusable.
-
-</details>
+```text
+The playbook decides where automation runs. The role contains the reusable implementation.
+```
 
 ---
+
+<details>
+<summary>Instructor answer key</summary>
+
+1. **A** - Organize and reuse related automation
+2. **A** - `roles/<role_name>/tasks/main.yml`
+3. **A** - `roles/<role_name>/handlers/main.yml`
+4. **B** - `defaults/main.yml`
+5. **A** - Internal operating-system mappings
+6. **A** - Reference the template by filename
+7. **A** - Target hosts, privilege escalation, fact gathering, and role names
+8. **A** - Inventory group variables have higher precedence than role defaults
+9. **C** - Most tasks report `ok` and the handler does not run
+10. **A** - Changes are versioned, reviewable, and reusable
+
+</details>
 
 <p align="left">
   <a href="https://github.com/Ansible-workshop-ch/bootcamp/blob/main/module05/conditions-loops-handlers-templates.md" target="_blank">
