@@ -1,9 +1,6 @@
 ---
-package_name: httpd
-service_name: httpd
+ansible_user: ansible_test
+ansible_password: ansible
+ansible_become: true
+ansible_become_password: ansible
 
-common_packages:
-  - vim
-  - git
-  - curl-minimal
-  - httpd
