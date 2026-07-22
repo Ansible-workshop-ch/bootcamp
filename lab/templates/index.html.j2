@@ -1,10 +1,37 @@
 <!DOCTYPE html>
-<html>
-  <head><title>{{ inventory_hostname }}</title></head>
-  <body>
-    <h1>{{ web_message }}</h1>
-    <p>Host: {{ inventory_hostname }}</p>
-    <p>OS family: {{ ansible_facts['os_family'] | default('unknown') }}</p>
-    <p>Managed by Ansible. Do not edit by hand.</p>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ web_message }}</title>
+</head>
+<body>
+  <h1>{{ web_message }}</h1>
+
+  <p><strong>Managed host:</strong> {{ inventory_hostname }}</p>
+  <p><strong>Company:</strong> {{ company }}</p>
+  <p><strong>Environment:</strong> {{ environment_name }}</p>
+  <p><strong>Operating system:</strong> {{ ansible_facts['distribution'] }}</p>
+  <p><strong>OS family:</strong> {{ ansible_facts['os_family'] }}</p>
+  <p><strong>Package:</strong> {{ package_name }}</p>
+  <p><strong>Service:</strong> {{ service_name }}</p>
+  <p><strong>Web port:</strong> {{ web_port }}</p>
+
+  {% if ansible_facts['os_family'] == "RedHat" %}
+  <p>This host uses the Red Hat httpd package and service structure.</p>
+  {% elif ansible_facts['os_family'] == "Debian" %}
+  <p>This host uses the Debian Apache package and service structure.</p>
+  {% else %}
+  <p>This operating system family is not supported by this module.</p>
+  {% endif %}
+
+  <h2>Managed Packages</h2>
+
+  <ul>
+  {% for package in common_packages %}
+    <li>{{ package }}</li>
+  {% endfor %}
+  </ul>
+
+  <p>This page was generated from a Jinja2 template.</p>
+</body>
 </html>

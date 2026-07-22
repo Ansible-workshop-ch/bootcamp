@@ -1,86 +1,22 @@
 ---
-# Module 5: Conditions, loops, templates, and handlers
-#
-# This playbook shows multiple important Ansible concepts working together:
-# - loops
-# - conditions
-# - templates
-# - handlers
-#
-# Flow:
-# 1. Target the web group.
-# 2. Install a list of common packages using a loop.
-# 3. Use a condition to run a task only on RedHat-family systems.
-# 4. Deploy an index.html file from a Jinja2 template.
-# 5. Notify a handler if the template changes.
-# 6. Restart the web service only when needed.
-#
-# This module is important because it teaches safe configuration management.
-# The web service should restart only if the deployed template changes.
-
 - name: Module 5 - deploy a config safely
-
-  # Target all web servers.
-  # The web group includes both Ubuntu-based and Rocky/RHEL-based hosts.
   hosts: web
-
-  # become: true allows Ansible to use sudo.
-  # Installing packages, writing to /var/www/html, and restarting services require root access.
   become: true
-
-  # gather_facts: true collects system information from each host.
-  # We need facts here because the condition checks ansible_facts['os_family'].
   gather_facts: true
 
   tasks:
-    # Install multiple common packages using a loop.
-    #
-    # common_packages is defined in group_vars.
-    # Ansible will run this task once for each item in the list.
-    #
-    # Example:
-    # common_packages:
-    #   - vim
-    #   - git
-    #   - curl
-    #   - tree
-    #
-    # item represents the current package in the loop.
     - name: Install common packages (loop)
       ansible.builtin.package:
         name: "{{ item }}"
         state: present
       loop: "{{ common_packages }}"
 
-    # This task runs only on RedHat-family systems.
-    #
-    # The when statement is the condition.
-    # If the OS family is RedHat, Ansible runs this task.
-    # If the OS family is Debian, Ansible skips this task.
-    #
-    # This is useful when different Linux families need different handling.
     - name: Install the web package (RedHat family only - condition)
       ansible.builtin.package:
         name: "{{ package_name }}"
         state: present
       when: ansible_facts['os_family'] == "RedHat"
 
-    # Deploy an index.html file from a Jinja2 template.
-    #
-    # The source template is:
-    # ../templates/index.html.j2
-    #
-    # The destination on the managed host is:
-    # /var/www/html/index.html
-    #
-    # The template can use variables such as:
-    # - web_message
-    # - inventory_hostname
-    # - package_name
-    # - service_name
-    # - ansible_facts
-    #
-    # If the rendered file changes, this task notifies the handler below.
     - name: Deploy the index page from a template
       ansible.builtin.template:
         src: ../templates/index.html.j2
@@ -88,17 +24,105 @@
         owner: root
         group: root
         mode: "0644"
-
-      # notify does not restart the service immediately.
-      # It tells Ansible to run the handler at the end of the play,
-      # but only if this task changed something.
       notify: Restart web service
 
+    - name: Deploy Apache configuration on Red Hat systems
+      ansible.builtin.template:
+        src: ../templates/apache-hardening.conf.j2
+        dest: /etc/httpd/conf.d/charter-module5.conf
+        owner: root
+        group: root
+        mode: "0644"
+      when: ansible_facts['os_family'] == "RedHat"
+      notify: Restart web service
+
+    - name: Deploy Apache configuration on Debian systems
+      ansible.builtin.template:
+        src: ../templates/apache-hardening.conf.j2
+        dest: /etc/apache2/conf-available/charter-module5.conf
+        owner: root
+        group: root
+        mode: "0644"
+      when: ansible_facts['os_family'] == "Debian"
+      notify: Restart web service
+
+    - name: Verify the website responds
+      ansible.builtin.uri:
+        url: "http://localhost:{{ web_port }}"
+        status_code: 200
+        return_content: false
+
+    - name: Verify that the operating system is supported
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['os_family'] in ['RedHat', 'Debian']
+        fail_msg: >-
+          Unsupported operating system family:
+          {{ ansible_facts['os_family'] }}
+        success_msg: >-
+          Supported operating system family:
+          {{ ansible_facts['os_family'] }}
+    - name: Remove stale APT lists
+      ansible.builtin.file:
+        path: /var/lib/apt/lists
+        state: absent
+      when: ansible_facts["os_family"] == "Debian"
+
+    - name: Recreate APT lists directory
+      ansible.builtin.file:
+        path: /var/lib/apt/lists
+        state: directory
+        mode: "0755"
+      when: ansible_facts["os_family"] == "Debian"
+
+    - name: Update APT cache and install Apache
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+        update_cache: true
+      when: ansible_facts["os_family"] == "Debian"
+    - name: Refresh Ubuntu package cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 0
+      when: ansible_facts["os_family"] == "Debian"
+
+    - name: Install Ubuntu packages
+      ansible.builtin.apt:
+        name:
+          - apache2
+          - vim
+          - curl
+        state: present
+      when: ansible_facts["os_family"] == "Debian"
+
+    - name: Install RHEL packages
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - vim
+          - curl-minimal
+        state: present
+      when: ansible_facts["os_family"] == "RedHat"
+    - name: Create Charter directory
+      ansible.builtin.file:
+        path: /etc/charter
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Create Module 5 file
+      ansible.builtin.copy:
+        content: |
+          Module 5 completed on {{ inventory_hostname }}
+        dest: /etc/charter/module5.txt
+        owner: root
+        group: root
+        mode: "0644"
+
+
   handlers:
-    # A handler is a special task that runs only when notified.
-    #
-    # In this playbook, the web service restarts only if the template changed.
-    # This prevents unnecessary service restarts.
     - name: Restart web service
       ansible.builtin.service:
         name: "{{ service_name }}"
