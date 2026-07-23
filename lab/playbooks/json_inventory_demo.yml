@@ -1,0 +1,18 @@
+---
+- name: Test Ubuntu hosts
+  hosts: ubuntu_web
+  gather_facts: true
+
+  tasks:
+    - name: Show Ubuntu host details
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+- name: Test RHEL hosts
+  hosts: rhel_web
+  gather_facts: true
+
+  tasks:
+    - name: Show RHEL host details
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is {{ ansible_distribution }} {{ ansible_distribution_version }}"
