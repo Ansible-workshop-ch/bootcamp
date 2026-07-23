@@ -1,4 +1,28 @@
 ---
-# Role-internal constants that should NOT normally be overridden.
-web_root: /var/www/html
-index_path: /var/www/html/index.html
+web_package_map:
+  RedHat: httpd
+  Ubuntu: apache2
+
+web_service_map:
+  RedHat: httpd
+  Ubuntu: apache2
+
+web_common_packages_map:
+  RedHat:
+    - vim
+    - git
+    - curl-minimal
+    - httpd
+
+  Ubuntu:
+    - vim
+    - git
+    - curl
+    - apache2
+
+web_config_directory_map:
+  RedHat: /etc/httpd/conf.d
+  Ubuntu: /etc/apache2/conf-available
+
+web_config_enabled_directory_map:
+  Ubuntu: /etc/apache2/conf-enabled

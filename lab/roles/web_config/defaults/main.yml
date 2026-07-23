@@ -1,10 +1,11 @@
 ---
-# Safe, overridable defaults. group_vars/host_vars/survey can override these.
-package_name: httpd
-service_name: httpd
+company: "Example Organization"
+environment_name: "default"
+web_message: "Managed by the web_config role"
+web_owner: "Platform Engineering"
 web_port: 80
-web_message: "Hello from the web_config role"
-common_packages:
-  - vim
-  - git
-  - curl
+
+web_document_root: /var/www/html
+web_index_file: index.html
+web_config_filename: charter-module6.conf
+web_role_info_path: /etc/charter/web_config_role.txt

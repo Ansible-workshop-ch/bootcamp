@@ -1,13 +1,19 @@
 ---
 galaxy_info:
-  role_name: web_config
-  author: Charter Automation Team
-  description: Installs and configures a simple web server for training.
+  author: Charter Ansible Training
+  description: Install and configure an Apache web server
   license: MIT
-  min_ansible_version: "2.14"
+  min_ansible_version: "2.15"
+
   platforms:
     - name: EL
       versions:
         - "8"
         - "9"
+
+    - name: Ubuntu
+      versions:
+        - "11"
+        - "12"
+
 dependencies: []

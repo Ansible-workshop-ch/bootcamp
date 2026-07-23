@@ -1,27 +1,122 @@
 ---
-- name: Install common packages
+- name: Verify that the operating system is supported
+  ansible.builtin.assert:
+    that:
+      - ansible_facts['os_family'] in web_package_map
+      - ansible_facts['os_family'] in web_service_map
+      - ansible_facts['os_family'] in web_common_packages_map
+      - ansible_facts['os_family'] in web_config_directory_map
+    fail_msg: >-
+      The web_config role does not support the
+      {{ ansible_facts['os_family'] }} operating system family.
+    success_msg: >-
+      The web_config role supports the
+      {{ ansible_facts['os_family'] }} operating system family.
+
+- name: Resolve operating-system-specific values
+  ansible.builtin.set_fact:
+    web_package_resolved: >-
+      {{
+        package_name
+        | default(web_package_map[ansible_facts['os_family']])
+      }}
+    web_service_resolved: >-
+      {{
+        service_name
+        | default(web_service_map[ansible_facts['os_family']])
+      }}
+    web_packages_resolved: >-
+      {{
+        common_packages
+        | default(web_common_packages_map[ansible_facts['os_family']])
+      }}
+
+- name: Display resolved role values
+  ansible.builtin.debug:
+    msg:
+      - "Host: {{ inventory_hostname }}"
+      - "Package: {{ web_package_resolved }}"
+      - "Service: {{ web_service_resolved }}"
+      - "Packages: {{ web_packages_resolved }}"
+      - "Environment: {{ environment_name }}"
+
+- name: Install managed packages
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
-  loop: "{{ common_packages }}"
+  loop: "{{ web_packages_resolved }}"
+  loop_control:
+    label: "{{ item }}"
 
-- name: Install the web package (RedHat family)
-  ansible.builtin.package:
-    name: "{{ package_name }}"
-    state: present
-  when: ansible_facts['os_family'] == "RedHat"
+- name: Create the Charter configuration directory
+  ansible.builtin.file:
+    path: /etc/charter
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
 
-- name: Ensure the web service is running and enabled
-  ansible.builtin.service:
-    name: "{{ service_name }}"
-    state: started
-    enabled: true
+- name: Create the role information file
+  ansible.builtin.copy:
+    dest: "{{ web_role_info_path }}"
+    content: |
+      Managed by Ansible
+      Role: web_config
+      Host: {{ inventory_hostname }}
+      Company: {{ company }}
+      Environment: {{ environment_name }}
+      Owner: {{ web_owner }}
+      Operating system: {{ ansible_facts['distribution'] }}
+      Operating system family: {{ ansible_facts['os_family'] }}
+      Package: {{ web_package_resolved }}
+      Service: {{ web_service_resolved }}
+      Web port: {{ web_port }}
+    owner: root
+    group: root
+    mode: "0644"
 
-- name: Deploy index page from template
+- name: Deploy the Apache configuration
   ansible.builtin.template:
-    src: index.html.j2
-    dest: "{{ index_path }}"
+    src: apache-hardening.conf.j2
+    dest: >-
+      {{
+        web_config_directory_map[ansible_facts['os_family']]
+      }}/{{ web_config_filename }}
     owner: root
     group: root
     mode: "0644"
   notify: Restart web service
+
+- name: Enable the Apache configuration on Debian systems
+  ansible.builtin.file:
+    src: >-
+      {{
+        web_config_directory_map['Debian']
+      }}/{{ web_config_filename }}
+    dest: >-
+      {{
+        web_config_enabled_directory_map['Debian']
+      }}/{{ web_config_filename }}
+    state: link
+  when: ansible_facts['os_family'] == "Debian"
+  notify: Restart web service
+
+- name: Deploy the website
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ web_document_root }}/{{ web_index_file }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure the web service is enabled and running
+  ansible.builtin.service:
+    name: "{{ web_service_resolved }}"
+    state: started
+    enabled: true
+
+- name: Verify that the website responds
+  ansible.builtin.uri:
+    url: "http://localhost:{{ web_port }}"
+    status_code: 200
+    return_content: false
