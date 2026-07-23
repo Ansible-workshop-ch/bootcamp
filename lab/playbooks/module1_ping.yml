@@ -11,7 +11,7 @@
 # 4. Print the hostname Ansible sees for each target.
 
 - name: Module 1 - verify connectivity
-  hosts: web
+  hosts: rhel_web
 
   # gather_facts: true tells Ansible to collect system information
   # such as hostname, OS, IP addresses, Python version, and more.
