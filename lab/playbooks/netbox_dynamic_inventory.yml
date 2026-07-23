@@ -7,10 +7,12 @@
     - name: Verify Ansible connectivity
       ansible.builtin.ping:
 
-    - name: Show NetBox host information
+    - name: Show merged inventory information
       ansible.builtin.debug:
         msg:
           - "Inventory name: {{ inventory_hostname }}"
-          - "Connection address: {{ ansible_host | default('not defined') }}"
+          - "Connection address: {{ ansible_host | default(inventory_hostname) }}"
+          - "SSH port: {{ ansible_port | default(22) }}"
+          - "SSH user: {{ ansible_user | default('not defined') }}"
           - "Operating system: {{ ansible_distribution | default('unknown') }}"
-          - "Platform group: {{ group_names | join(', ') }}"
+          - "Groups: {{ group_names | join(', ') }}"

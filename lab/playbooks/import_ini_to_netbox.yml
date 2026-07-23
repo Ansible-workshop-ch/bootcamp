@@ -1,0 +1,144 @@
+---
+- name: Import INI connection data into NetBox
+  hosts: ubuntu_web
+  gather_facts: false
+  connection: local
+
+  vars:
+    netbox_api: "{{ lookup('env', 'NETBOX_API') | regex_replace('/$', '') }}"
+    netbox_token: "{{ lookup('env', 'NETBOX_TOKEN') }}"
+
+  tasks:
+    - name: Search NetBox devices
+      ansible.builtin.uri:
+        url: "{{ netbox_api }}/api/dcim/devices/?name={{ inventory_hostname | urlencode }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ netbox_token }}"
+          Accept: application/json
+        return_content: true
+        validate_certs: false
+      register: netbox_device
+      no_log: true
+
+    - name: Search NetBox virtual machines
+      ansible.builtin.uri:
+        url: "{{ netbox_api }}/api/virtualization/virtual-machines/?name={{ inventory_hostname | urlencode }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ netbox_token }}"
+          Accept: application/json
+        return_content: true
+        validate_certs: false
+      register: netbox_vm
+      no_log: true
+
+    - name: Verify exactly one matching NetBox object exists
+      ansible.builtin.assert:
+        that:
+          - netbox_device.json.count + netbox_vm.json.count == 1
+        fail_msg: >-
+          {{ inventory_hostname }} must exist exactly once as either a
+          NetBox device or virtual machine.
+
+    - name: Select the correct NetBox API endpoint
+      ansible.builtin.set_fact:
+        netbox_object_url: >-
+          {{
+            netbox_api + '/api/dcim/devices/' +
+            (netbox_device.json.results[0].id | string) + '/'
+            if netbox_device.json.count == 1
+            else
+            netbox_api + '/api/virtualization/virtual-machines/' +
+            (netbox_vm.json.results[0].id | string) + '/'
+          }}
+
+    - name: Store INI connection values in NetBox
+      ansible.builtin.uri:
+        url: "{{ netbox_object_url }}"
+        method: PATCH
+        headers:
+          Authorization: "Bearer {{ netbox_token }}"
+          Content-Type: application/json
+          Accept: application/json
+        body_format: json
+        body:
+          local_context_data:
+            ansible_host: "{{ ansible_host | default(inventory_hostname) }}"
+            ansible_port: "{{ ansible_port | default(22) | int }}"
+            ansible_user: "{{ ansible_user | default('ansible') }}"
+            inventory_groups: "{{ group_names }}"
+          changelog_message: "Imported Ansible INI connection data"
+        status_code: 200
+        validate_certs: false
+      no_log: true
+
+    - name: Search NetBox devices
+      ansible.builtin.uri:
+        url: "{{ netbox_api }}/api/dcim/devices/?q={{ inventory_hostname | urlencode }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ netbox_token }}"
+          Accept: application/json
+        return_content: true
+        validate_certs: false
+      register: netbox_device_search
+
+    - name: Search NetBox virtual machines
+      ansible.builtin.uri:
+        url: "{{ netbox_api }}/api/virtualization/virtual-machines/?q={{ inventory_hostname | urlencode }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ netbox_token }}"
+          Accept: application/json
+        return_content: true
+        validate_certs: false
+      register: netbox_vm_search
+
+    - name: Select exact name matches
+      ansible.builtin.set_fact:
+        device_matches: >-
+          {{
+            netbox_device_search.json.results
+            | selectattr('name', 'equalto', inventory_hostname)
+            | list
+          }}
+        vm_matches: >-
+          {{
+            netbox_vm_search.json.results
+            | selectattr('name', 'equalto', inventory_hostname)
+            | list
+          }}
+
+    - name: Show matching NetBox objects
+      ansible.builtin.debug:
+        msg:
+          - "Host: {{ inventory_hostname }}"
+          - "Device matches: {{ device_matches | length }}"
+          - "VM matches: {{ vm_matches | length }}"
+
+    - name: Verify exactly one matching NetBox object exists
+      ansible.builtin.assert:
+        that:
+          - (device_matches | length) + (vm_matches | length) == 1
+        fail_msg: >-
+          {{ inventory_hostname }} was not found uniquely.
+          Device matches={{ device_matches | length }},
+          VM matches={{ vm_matches | length }}.
+
+    - name: Select matching NetBox object URL
+      ansible.builtin.set_fact:
+        netbox_object_url: >-
+          {{
+            netbox_api
+            ~ (
+                '/api/dcim/devices/'
+                ~ (device_matches[0].id | string)
+                ~ '/'
+                if device_matches | length == 1
+                else
+                '/api/virtualization/virtual-machines/'
+                ~ (vm_matches[0].id | string)
+                ~ '/'
+              )
+          }}

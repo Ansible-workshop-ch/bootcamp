@@ -1,0 +1,89 @@
+---
+
+  # Show which host is being cleaned up.
+  - name: Show cleanup target
+    ansible.builtin.debug:
+      msg: "Cleaning {{ inventory_hostname }} - OS family is {{ ansible_facts['os_family'] }}"
+
+  # Stop apache2 on Ubuntu/Debian hosts before removing the package.
+  #
+  # failed_when: false is used because some containers may not run systemd,
+  # or the service may already be stopped/missing.
+  - name: Stop apache2 on Ubuntu/Debian hosts
+    ansible.builtin.service:
+      name: apache2
+      state: stopped
+      enabled: false
+    when: ansible_facts['os_family'] == "Debian"
+    failed_when: false
+
+  # Remove apache2 from Ubuntu/Debian hosts.
+  - name: Remove apache2 from Ubuntu/Debian hosts
+    ansible.builtin.apt:
+      name: apache2
+      state: absent
+      purge: true
+    when: ansible_facts['os_family'] == "Debian"
+
+  # Stop httpd on Rocky/RHEL hosts before removing the package.
+  #
+  # failed_when: false protects the playbook if the service is already gone.
+  - name: Stop httpd on Rocky/RHEL hosts
+    ansible.builtin.service:
+      name: httpd
+      state: stopped
+      enabled: false
+    when: ansible_facts['os_family'] == "RedHat"
+    failed_when: false
+
+  # Remove httpd from Rocky/RHEL hosts.
+  - name: Remove httpd from Rocky/RHEL hosts
+    ansible.builtin.dnf:
+      name: httpd
+      state: absent
+    when: ansible_facts['os_family'] == "RedHat"
+
+  # Find the demo text files created by the loops lab.
+  - name: Find loop demo text files
+    ansible.builtin.find:
+      paths: /tmp
+      patterns: "{{ demo_txt_pattern }}"
+      file_type: file
+    register: demo_txt_files
+
+  # Delete the demo text files.
+  - name: Delete loop demo text files
+    ansible.builtin.file:
+      path: "{{ item.path }}"
+      state: absent
+    loop: "{{ demo_txt_files.files }}"
+    loop_control:
+      label: "{{ item.path }}"
+
+  # Verify apache2 is removed from Ubuntu/Debian hosts.
+  - name: Verify apache2 package is removed
+    ansible.builtin.command:
+      cmd: dpkg -s apache2
+    register: apache2_check
+    changed_when: false
+    failed_when: false
+    when: ansible_facts['os_family'] == "Debian"
+
+  # Verify httpd is removed from Rocky/RHEL hosts.
+  - name: Verify httpd package is removed
+    ansible.builtin.command:
+      cmd: rpm -q httpd
+    register: httpd_check
+    changed_when: false
+    failed_when: false
+    when: ansible_facts['os_family'] == "RedHat"
+
+  # Show cleanup summary.
+  - name: Cleanup summary
+    ansible.builtin.debug:
+      msg:
+        host: "{{ inventory_hostname }}"
+        os_family: "{{ ansible_facts['os_family'] }}"
+        deleted_txt_files: "{{ demo_txt_files.matched }}"
+        apache2_removed_check: "{{ apache2_check.rc | default('not Debian host') }}"
+        httpd_removed_check: "{{ httpd_check.rc | default('not RedHat host') }}"

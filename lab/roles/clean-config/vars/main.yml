@@ -1,0 +1,3 @@
+---
+# vars file for clean-config
+demo_txt_pattern: "ansible-loop-demo-*.txt"

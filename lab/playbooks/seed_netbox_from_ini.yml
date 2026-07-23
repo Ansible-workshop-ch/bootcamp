@@ -1,0 +1,49 @@
+---
+- name: Create NetBox objects from static INI inventory
+  hosts: ubuntu_web
+  gather_facts: false
+  connection: local
+
+  vars:
+    netbox_url: "{{ lookup('env', 'NETBOX_API') | regex_replace('/$', '') }}"
+    netbox_token: "{{ lookup('env', 'NETBOX_TOKEN') }}"
+    netbox_site_name: "Charter Lab"
+
+  pre_tasks:
+    - name: Verify NetBox environment variables
+      ansible.builtin.assert:
+        that:
+          - netbox_url | length > 0
+          - netbox_token | length > 0
+        fail_msg: "NETBOX_API or NETBOX_TOKEN is missing"
+      run_once: true
+
+    - name: Create Charter lab site
+      netbox.netbox.netbox_site:
+        netbox_url: "{{ netbox_url }}"
+        netbox_token: "{{ netbox_token }}"
+        validate_certs: false
+        data:
+          name: "{{ netbox_site_name }}"
+          status: active
+        state: present
+      run_once: true
+
+  tasks:
+    - name: Create or update virtual machine from INI host
+      netbox.netbox.netbox_virtual_machine:
+        netbox_url: "{{ netbox_url }}"
+        netbox_token: "{{ netbox_token }}"
+        validate_certs: false
+        data:
+          name: "{{ inventory_hostname }}"
+          site: "{{ netbox_site_name }}"
+          status: active
+
+          local_context_data:
+            ansible_host: "{{ ansible_host | default(inventory_hostname) }}"
+            ansible_port: "{{ ansible_port | default(22) | int }}"
+            ansible_user: "{{ ansible_user | default('ansible') }}"
+            inventory_groups: "{{ group_names }}"
+
+        state: present
