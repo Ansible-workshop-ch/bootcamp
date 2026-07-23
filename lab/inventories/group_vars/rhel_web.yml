@@ -1,4 +1,4 @@
 ---
-web_package: httpd
-web_service: httpd
-web_message: "Hello from RHEL JSON inventory"
+package_name: httpd
+service_name: httpd
+web_message: "Hello from RHEL"

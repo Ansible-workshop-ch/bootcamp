@@ -1,0 +1,2603 @@
+{
+    "plays": [
+        {
+            "__play_name": "Module 5 - deploy a config safely",
+            "name": "Module 5 - deploy a config safely",
+            "pattern": "web",
+            "play": "Module 5 - deploy a config safely",
+            "play_pattern": "web",
+            "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+            "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+            "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+            "tasks": [
+                {
+                    "__changed": false,
+                    "__duration": "1s",
+                    "__host": "container1",
+                    "__number": 0,
+                    "__result": "Ok",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.867304,
+                    "end": "2026-07-23T17:44:09.572854+00:00",
+                    "event_loop": null,
+                    "host": "container1",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "container1",
+                    "res": {
+                        "_ansible_no_log": null,
+                        "_ansible_verbose_override": true,
+                        "ansible_facts": {
+                            "ansible_apparmor": {
+                                "status": "disabled"
+                            },
+                            "ansible_architecture": "aarch64",
+                            "ansible_bios_date": "04/18/2026",
+                            "ansible_bios_vendor": "Apple Inc.",
+                            "ansible_bios_version": "2103.100.6.0.0",
+                            "ansible_board_asset_tag": "NA",
+                            "ansible_board_name": "NA",
+                            "ansible_board_serial": "NA",
+                            "ansible_board_vendor": "NA",
+                            "ansible_board_version": "NA",
+                            "ansible_chassis_asset_tag": "NA",
+                            "ansible_chassis_serial": "NA",
+                            "ansible_chassis_vendor": "Apple Inc.",
+                            "ansible_chassis_version": "1",
+                            "ansible_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": "hvc0",
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_date_time": {
+                                "date": "2026-07-23",
+                                "day": "23",
+                                "epoch": "1784828649",
+                                "epoch_int": "1784828649",
+                                "hour": "17",
+                                "iso8601": "2026-07-23T17:44:09Z",
+                                "iso8601_basic": "20260723T174409455067",
+                                "iso8601_basic_short": "20260723T174409",
+                                "iso8601_micro": "2026-07-23T17:44:09.455067Z",
+                                "minute": "44",
+                                "month": "07",
+                                "second": "09",
+                                "time": "17:44:09",
+                                "tz": "UTC",
+                                "tz_dst": "UTC",
+                                "tz_offset": "+0000",
+                                "weekday": "Thursday",
+                                "weekday_number": "4",
+                                "weeknumber": "29",
+                                "year": "2026"
+                            },
+                            "ansible_device_links": {
+                                "ids": {},
+                                "labels": {},
+                                "masters": {},
+                                "uuids": {}
+                            },
+                            "ansible_devices": {
+                                "vda": {
+                                    "holders": [],
+                                    "host": "",
+                                    "links": {
+                                        "ids": [],
+                                        "labels": [],
+                                        "masters": [],
+                                        "uuids": []
+                                    },
+                                    "model": null,
+                                    "partitions": {
+                                        "vda1": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "2048",
+                                            "sectorsize": 512,
+                                            "size": "1.00 MB",
+                                            "start": "2048",
+                                            "uuid": null
+                                        },
+                                        "vda2": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "260096",
+                                            "sectorsize": 512,
+                                            "size": "127.00 MB",
+                                            "start": "4096",
+                                            "uuid": null
+                                        },
+                                        "vda3": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "786432",
+                                            "sectorsize": 512,
+                                            "size": "384.00 MB",
+                                            "start": "264192",
+                                            "uuid": null
+                                        },
+                                        "vda4": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "208664543",
+                                            "sectorsize": 512,
+                                            "size": "99.50 GB",
+                                            "start": "1050624",
+                                            "uuid": null
+                                        }
+                                    },
+                                    "removable": "0",
+                                    "rotational": "1",
+                                    "sas_address": null,
+                                    "sas_device_handle": null,
+                                    "scheduler_mode": "mq-deadline",
+                                    "sectors": "209715200",
+                                    "sectorsize": "512",
+                                    "size": "100.00 GB",
+                                    "support_discard": "512",
+                                    "vendor": "0x1af4",
+                                    "virtual": 1
+                                }
+                            },
+                            "ansible_distribution": "Ubuntu",
+                            "ansible_distribution_file_parsed": true,
+                            "ansible_distribution_file_path": "/etc/os-release",
+                            "ansible_distribution_file_variety": "Debian",
+                            "ansible_distribution_major_version": "24",
+                            "ansible_distribution_release": "noble",
+                            "ansible_distribution_version": "24.04",
+                            "ansible_dns": {
+                                "nameservers": [
+                                    "169.254.1.1",
+                                    "192.168.127.1"
+                                ],
+                                "search": [
+                                    "ibm.com",
+                                    "lotus.com",
+                                    "s81c.com",
+                                    "ibmmodules.com",
+                                    "ibmuc.com",
+                                    "lan"
+                                ]
+                            },
+                            "ansible_domain": "",
+                            "ansible_effective_group_id": 0,
+                            "ansible_effective_user_id": 0,
+                            "ansible_fibre_channel_wwn": [],
+                            "ansible_fips": false,
+                            "ansible_form_factor": "Desktop",
+                            "ansible_fqdn": "1a74233a0335",
+                            "ansible_hostname": "1a74233a0335",
+                            "ansible_hostnqn": "",
+                            "ansible_is_chroot": false,
+                            "ansible_iscsi_iqn": "",
+                            "ansible_kernel": "6.19.7-200.fc43.aarch64",
+                            "ansible_kernel_version": "#1 SMP PREEMPT_DYNAMIC Thu Mar 12 15:54:05 UTC 2026",
+                            "ansible_loadavg": {
+                                "15m": 0.1640625,
+                                "1m": 0.08740234375,
+                                "5m": 0.15185546875
+                            },
+                            "ansible_local": {},
+                            "ansible_lsb": {
+                                "codename": "noble",
+                                "description": "Ubuntu 24.04.4 LTS",
+                                "id": "Ubuntu",
+                                "major_release": "24",
+                                "release": "24.04"
+                            },
+                            "ansible_lvm": "N/A",
+                            "ansible_machine": "aarch64",
+                            "ansible_machine_id": "3336566d25cc4006af849b45da0cd020",
+                            "ansible_memfree_mb": 198,
+                            "ansible_memory_mb": {
+                                "nocache": {
+                                    "free": 1187,
+                                    "used": 756
+                                },
+                                "real": {
+                                    "free": 198,
+                                    "total": 1943,
+                                    "used": 1745
+                                },
+                                "swap": {
+                                    "cached": 0,
+                                    "free": 0,
+                                    "total": 0,
+                                    "used": 0
+                                }
+                            },
+                            "ansible_memtotal_mb": 1943,
+                            "ansible_mounts": [],
+                            "ansible_nodename": "1a74233a0335",
+                            "ansible_os_family": "Debian",
+                            "ansible_pkg_mgr": "apt",
+                            "ansible_proc_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": [
+                                    "tty0",
+                                    "hvc0"
+                                ],
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_processor": [
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5"
+                            ],
+                            "ansible_processor_cores": 1,
+                            "ansible_processor_count": 6,
+                            "ansible_processor_nproc": 6,
+                            "ansible_processor_threads_per_core": 1,
+                            "ansible_processor_vcpus": 6,
+                            "ansible_product_name": "Apple Virtualization Generic Platform",
+                            "ansible_product_serial": "NA",
+                            "ansible_product_uuid": "NA",
+                            "ansible_product_version": "1",
+                            "ansible_python": {
+                                "executable": "/usr/bin/python3",
+                                "has_sslcontext": true,
+                                "type": "cpython",
+                                "version": {
+                                    "major": 3,
+                                    "micro": 3,
+                                    "minor": 12,
+                                    "releaselevel": "final",
+                                    "serial": 0
+                                },
+                                "version_info": [
+                                    3,
+                                    12,
+                                    3,
+                                    "final",
+                                    0
+                                ]
+                            },
+                            "ansible_python_version": "3.12.3",
+                            "ansible_real_group_id": 0,
+                            "ansible_real_user_id": 0,
+                            "ansible_selinux": {
+                                "status": "disabled"
+                            },
+                            "ansible_selinux_python_present": true,
+                            "ansible_service_mgr": "sshd",
+                            "ansible_ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBK8gqG8srA3yEA+N0FZdP6qMAEU4+pHGyHQAPDvoNHotVZbgTy2uZq1lt/Wwh2R0qsUIeDefMU0qJyXSKKzZvAw=",
+                            "ansible_ssh_host_key_ecdsa_public_keytype": "ecdsa-sha2-nistp256",
+                            "ansible_ssh_host_key_ed25519_public": "AAAAC3NzaC1lZDI1NTE5AAAAIMVnBgXjqZgRqiO5gJK5vUYTnRXAVShuekPRBi/E3uq2",
+                            "ansible_ssh_host_key_ed25519_public_keytype": "ssh-ed25519",
+                            "ansible_ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABgQDNieJ3QO1hw78gwQLY9WiD6RA35AeFUlKgBNv8S25Oc60yyTodPw7Mc1Rf+5sdQNLiPBFVwLF2FLhmDtOherFY/dpXEfDzPYLh5mZRIcg+pd7H/kQbQbNY577aX8dYEuorhCzdOTKNHckXn8gWh8pckNyq9NwecEipAO4s21OXvcDUMm6AsxMirxHkadPcFwjk45nYII6O3VNTjbmRlh7UOSl1yRkfIOesqvp8F/GfnPNzjWTjMwlLgQ3KJpNrc4fTYkSC5qa/oWUf/Lep6iUyGxN7YxRbJSRYTIC2T0f/2uL8MFLX8aajz35DX0pjAFCtJNC6kOdHzpQvcauAbaIvWuYQ9FPyxa3oaah7Ltzg8H3NqxDZP1T0QLz9CHv1Bb0Sw7IkrJF8eEL5kzzyBKu+rFh02IzkgYPIvgM88/Wru5b7IFws10vTqGkzzL42x4PmiWo8jbvhJhSHYzOAw+D+/ZuClSjvmSM0HtmvF8Rj38McLe+RR3aWZML0/0rGcV8=",
+                            "ansible_ssh_host_key_rsa_public_keytype": "ssh-rsa",
+                            "ansible_swapfree_mb": 0,
+                            "ansible_swaptotal_mb": 0,
+                            "ansible_system": "Linux",
+                            "ansible_system_capabilities": "N/A",
+                            "ansible_system_capabilities_enforced": "N/A",
+                            "ansible_system_vendor": "Apple Inc.",
+                            "ansible_uptime_seconds": 172011,
+                            "ansible_user_dir": "/root",
+                            "ansible_user_gecos": "root",
+                            "ansible_user_gid": 0,
+                            "ansible_user_id": "root",
+                            "ansible_user_shell": "/bin/bash",
+                            "ansible_user_uid": 0,
+                            "ansible_userspace_bits": "64",
+                            "ansible_virtualization_role": "guest",
+                            "ansible_virtualization_tech_guest": [
+                                "container",
+                                "docker"
+                            ],
+                            "ansible_virtualization_tech_host": [],
+                            "ansible_virtualization_type": "docker",
+                            "gather_subset": [
+                                "all"
+                            ],
+                            "module_setup": true
+                        },
+                        "changed": false,
+                        "deprecations": [],
+                        "warnings": []
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:44:08.705550+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000001d",
+                    "uuid": "c4faf92f-5149-4bb2-b1f6-b1fa8dd402c6"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "1s",
+                    "__host": "container2",
+                    "__number": 1,
+                    "__result": "Ok",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.850142,
+                    "end": "2026-07-23T17:44:09.559400+00:00",
+                    "event_loop": null,
+                    "host": "container2",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "container2",
+                    "res": {
+                        "_ansible_no_log": null,
+                        "_ansible_verbose_override": true,
+                        "ansible_facts": {
+                            "ansible_apparmor": {
+                                "status": "disabled"
+                            },
+                            "ansible_architecture": "aarch64",
+                            "ansible_bios_date": "04/18/2026",
+                            "ansible_bios_vendor": "Apple Inc.",
+                            "ansible_bios_version": "2103.100.6.0.0",
+                            "ansible_board_asset_tag": "NA",
+                            "ansible_board_name": "NA",
+                            "ansible_board_serial": "NA",
+                            "ansible_board_vendor": "NA",
+                            "ansible_board_version": "NA",
+                            "ansible_chassis_asset_tag": "NA",
+                            "ansible_chassis_serial": "NA",
+                            "ansible_chassis_vendor": "Apple Inc.",
+                            "ansible_chassis_version": "1",
+                            "ansible_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": "hvc0",
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_date_time": {
+                                "date": "2026-07-23",
+                                "day": "23",
+                                "epoch": "1784828649",
+                                "epoch_int": "1784828649",
+                                "hour": "17",
+                                "iso8601": "2026-07-23T17:44:09Z",
+                                "iso8601_basic": "20260723T174409432568",
+                                "iso8601_basic_short": "20260723T174409",
+                                "iso8601_micro": "2026-07-23T17:44:09.432568Z",
+                                "minute": "44",
+                                "month": "07",
+                                "second": "09",
+                                "time": "17:44:09",
+                                "tz": "UTC",
+                                "tz_dst": "UTC",
+                                "tz_offset": "+0000",
+                                "weekday": "Thursday",
+                                "weekday_number": "4",
+                                "weeknumber": "29",
+                                "year": "2026"
+                            },
+                            "ansible_device_links": {
+                                "ids": {},
+                                "labels": {},
+                                "masters": {},
+                                "uuids": {}
+                            },
+                            "ansible_devices": {
+                                "vda": {
+                                    "holders": [],
+                                    "host": "",
+                                    "links": {
+                                        "ids": [],
+                                        "labels": [],
+                                        "masters": [],
+                                        "uuids": []
+                                    },
+                                    "model": null,
+                                    "partitions": {
+                                        "vda1": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "2048",
+                                            "sectorsize": 512,
+                                            "size": "1.00 MB",
+                                            "start": "2048",
+                                            "uuid": null
+                                        },
+                                        "vda2": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "260096",
+                                            "sectorsize": 512,
+                                            "size": "127.00 MB",
+                                            "start": "4096",
+                                            "uuid": null
+                                        },
+                                        "vda3": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "786432",
+                                            "sectorsize": 512,
+                                            "size": "384.00 MB",
+                                            "start": "264192",
+                                            "uuid": null
+                                        },
+                                        "vda4": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "208664543",
+                                            "sectorsize": 512,
+                                            "size": "99.50 GB",
+                                            "start": "1050624",
+                                            "uuid": null
+                                        }
+                                    },
+                                    "removable": "0",
+                                    "rotational": "1",
+                                    "sas_address": null,
+                                    "sas_device_handle": null,
+                                    "scheduler_mode": "mq-deadline",
+                                    "sectors": "209715200",
+                                    "sectorsize": "512",
+                                    "size": "100.00 GB",
+                                    "support_discard": "512",
+                                    "vendor": "0x1af4",
+                                    "virtual": 1
+                                }
+                            },
+                            "ansible_distribution": "Ubuntu",
+                            "ansible_distribution_file_parsed": true,
+                            "ansible_distribution_file_path": "/etc/os-release",
+                            "ansible_distribution_file_variety": "Debian",
+                            "ansible_distribution_major_version": "24",
+                            "ansible_distribution_release": "noble",
+                            "ansible_distribution_version": "24.04",
+                            "ansible_dns": {
+                                "nameservers": [
+                                    "169.254.1.1",
+                                    "192.168.127.1"
+                                ],
+                                "search": [
+                                    "ibm.com",
+                                    "lotus.com",
+                                    "s81c.com",
+                                    "ibmmodules.com",
+                                    "ibmuc.com",
+                                    "lan"
+                                ]
+                            },
+                            "ansible_domain": "",
+                            "ansible_effective_group_id": 0,
+                            "ansible_effective_user_id": 0,
+                            "ansible_fibre_channel_wwn": [],
+                            "ansible_fips": false,
+                            "ansible_form_factor": "Desktop",
+                            "ansible_fqdn": "b752166d719e",
+                            "ansible_hostname": "b752166d719e",
+                            "ansible_hostnqn": "",
+                            "ansible_is_chroot": false,
+                            "ansible_iscsi_iqn": "",
+                            "ansible_kernel": "6.19.7-200.fc43.aarch64",
+                            "ansible_kernel_version": "#1 SMP PREEMPT_DYNAMIC Thu Mar 12 15:54:05 UTC 2026",
+                            "ansible_loadavg": {
+                                "15m": 0.1640625,
+                                "1m": 0.08740234375,
+                                "5m": 0.15185546875
+                            },
+                            "ansible_local": {},
+                            "ansible_lsb": {
+                                "codename": "noble",
+                                "description": "Ubuntu 24.04.4 LTS",
+                                "id": "Ubuntu",
+                                "major_release": "24",
+                                "release": "24.04"
+                            },
+                            "ansible_lvm": "N/A",
+                            "ansible_machine": "aarch64",
+                            "ansible_machine_id": "3336566d25cc4006af849b45da0cd020",
+                            "ansible_memfree_mb": 199,
+                            "ansible_memory_mb": {
+                                "nocache": {
+                                    "free": 1188,
+                                    "used": 755
+                                },
+                                "real": {
+                                    "free": 199,
+                                    "total": 1943,
+                                    "used": 1744
+                                },
+                                "swap": {
+                                    "cached": 0,
+                                    "free": 0,
+                                    "total": 0,
+                                    "used": 0
+                                }
+                            },
+                            "ansible_memtotal_mb": 1943,
+                            "ansible_mounts": [],
+                            "ansible_nodename": "b752166d719e",
+                            "ansible_os_family": "Debian",
+                            "ansible_pkg_mgr": "apt",
+                            "ansible_proc_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": [
+                                    "tty0",
+                                    "hvc0"
+                                ],
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_processor": [
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5"
+                            ],
+                            "ansible_processor_cores": 1,
+                            "ansible_processor_count": 6,
+                            "ansible_processor_nproc": 6,
+                            "ansible_processor_threads_per_core": 1,
+                            "ansible_processor_vcpus": 6,
+                            "ansible_product_name": "Apple Virtualization Generic Platform",
+                            "ansible_product_serial": "NA",
+                            "ansible_product_uuid": "NA",
+                            "ansible_product_version": "1",
+                            "ansible_python": {
+                                "executable": "/usr/bin/python3",
+                                "has_sslcontext": true,
+                                "type": "cpython",
+                                "version": {
+                                    "major": 3,
+                                    "micro": 3,
+                                    "minor": 12,
+                                    "releaselevel": "final",
+                                    "serial": 0
+                                },
+                                "version_info": [
+                                    3,
+                                    12,
+                                    3,
+                                    "final",
+                                    0
+                                ]
+                            },
+                            "ansible_python_version": "3.12.3",
+                            "ansible_real_group_id": 0,
+                            "ansible_real_user_id": 0,
+                            "ansible_selinux": {
+                                "status": "disabled"
+                            },
+                            "ansible_selinux_python_present": true,
+                            "ansible_service_mgr": "sshd",
+                            "ansible_ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBK8gqG8srA3yEA+N0FZdP6qMAEU4+pHGyHQAPDvoNHotVZbgTy2uZq1lt/Wwh2R0qsUIeDefMU0qJyXSKKzZvAw=",
+                            "ansible_ssh_host_key_ecdsa_public_keytype": "ecdsa-sha2-nistp256",
+                            "ansible_ssh_host_key_ed25519_public": "AAAAC3NzaC1lZDI1NTE5AAAAIMVnBgXjqZgRqiO5gJK5vUYTnRXAVShuekPRBi/E3uq2",
+                            "ansible_ssh_host_key_ed25519_public_keytype": "ssh-ed25519",
+                            "ansible_ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABgQDNieJ3QO1hw78gwQLY9WiD6RA35AeFUlKgBNv8S25Oc60yyTodPw7Mc1Rf+5sdQNLiPBFVwLF2FLhmDtOherFY/dpXEfDzPYLh5mZRIcg+pd7H/kQbQbNY577aX8dYEuorhCzdOTKNHckXn8gWh8pckNyq9NwecEipAO4s21OXvcDUMm6AsxMirxHkadPcFwjk45nYII6O3VNTjbmRlh7UOSl1yRkfIOesqvp8F/GfnPNzjWTjMwlLgQ3KJpNrc4fTYkSC5qa/oWUf/Lep6iUyGxN7YxRbJSRYTIC2T0f/2uL8MFLX8aajz35DX0pjAFCtJNC6kOdHzpQvcauAbaIvWuYQ9FPyxa3oaah7Ltzg8H3NqxDZP1T0QLz9CHv1Bb0Sw7IkrJF8eEL5kzzyBKu+rFh02IzkgYPIvgM88/Wru5b7IFws10vTqGkzzL42x4PmiWo8jbvhJhSHYzOAw+D+/ZuClSjvmSM0HtmvF8Rj38McLe+RR3aWZML0/0rGcV8=",
+                            "ansible_ssh_host_key_rsa_public_keytype": "ssh-rsa",
+                            "ansible_swapfree_mb": 0,
+                            "ansible_swaptotal_mb": 0,
+                            "ansible_system": "Linux",
+                            "ansible_system_capabilities": "N/A",
+                            "ansible_system_capabilities_enforced": "N/A",
+                            "ansible_system_vendor": "Apple Inc.",
+                            "ansible_uptime_seconds": 172011,
+                            "ansible_user_dir": "/root",
+                            "ansible_user_gecos": "root",
+                            "ansible_user_gid": 0,
+                            "ansible_user_id": "root",
+                            "ansible_user_shell": "/bin/bash",
+                            "ansible_user_uid": 0,
+                            "ansible_userspace_bits": "64",
+                            "ansible_virtualization_role": "guest",
+                            "ansible_virtualization_tech_guest": [
+                                "container",
+                                "docker"
+                            ],
+                            "ansible_virtualization_tech_host": [],
+                            "ansible_virtualization_type": "docker",
+                            "gather_subset": [
+                                "all"
+                            ],
+                            "module_setup": true
+                        },
+                        "changed": false,
+                        "deprecations": [],
+                        "warnings": []
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:44:08.709258+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000001d",
+                    "uuid": "11858c6f-1d06-4497-a8bd-862da268b378"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "1s",
+                    "__host": "container3",
+                    "__number": 2,
+                    "__result": "Ok",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.856253,
+                    "end": "2026-07-23T17:44:09.569116+00:00",
+                    "event_loop": null,
+                    "host": "container3",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "container3",
+                    "res": {
+                        "_ansible_no_log": null,
+                        "_ansible_verbose_override": true,
+                        "ansible_facts": {
+                            "ansible_apparmor": {
+                                "status": "disabled"
+                            },
+                            "ansible_architecture": "aarch64",
+                            "ansible_bios_date": "04/18/2026",
+                            "ansible_bios_vendor": "Apple Inc.",
+                            "ansible_bios_version": "2103.100.6.0.0",
+                            "ansible_board_asset_tag": "NA",
+                            "ansible_board_name": "NA",
+                            "ansible_board_serial": "NA",
+                            "ansible_board_vendor": "NA",
+                            "ansible_board_version": "NA",
+                            "ansible_chassis_asset_tag": "NA",
+                            "ansible_chassis_serial": "NA",
+                            "ansible_chassis_vendor": "Apple Inc.",
+                            "ansible_chassis_version": "1",
+                            "ansible_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": "hvc0",
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_date_time": {
+                                "date": "2026-07-23",
+                                "day": "23",
+                                "epoch": "1784828649",
+                                "epoch_int": "1784828649",
+                                "hour": "17",
+                                "iso8601": "2026-07-23T17:44:09Z",
+                                "iso8601_basic": "20260723T174409448092",
+                                "iso8601_basic_short": "20260723T174409",
+                                "iso8601_micro": "2026-07-23T17:44:09.448092Z",
+                                "minute": "44",
+                                "month": "07",
+                                "second": "09",
+                                "time": "17:44:09",
+                                "tz": "UTC",
+                                "tz_dst": "UTC",
+                                "tz_offset": "+0000",
+                                "weekday": "Thursday",
+                                "weekday_number": "4",
+                                "weeknumber": "29",
+                                "year": "2026"
+                            },
+                            "ansible_device_links": {
+                                "ids": {},
+                                "labels": {},
+                                "masters": {},
+                                "uuids": {}
+                            },
+                            "ansible_devices": {
+                                "vda": {
+                                    "holders": [],
+                                    "host": "",
+                                    "links": {
+                                        "ids": [],
+                                        "labels": [],
+                                        "masters": [],
+                                        "uuids": []
+                                    },
+                                    "model": null,
+                                    "partitions": {
+                                        "vda1": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "2048",
+                                            "sectorsize": 512,
+                                            "size": "1.00 MB",
+                                            "start": "2048",
+                                            "uuid": null
+                                        },
+                                        "vda2": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "260096",
+                                            "sectorsize": 512,
+                                            "size": "127.00 MB",
+                                            "start": "4096",
+                                            "uuid": null
+                                        },
+                                        "vda3": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "786432",
+                                            "sectorsize": 512,
+                                            "size": "384.00 MB",
+                                            "start": "264192",
+                                            "uuid": null
+                                        },
+                                        "vda4": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "208664543",
+                                            "sectorsize": 512,
+                                            "size": "99.50 GB",
+                                            "start": "1050624",
+                                            "uuid": null
+                                        }
+                                    },
+                                    "removable": "0",
+                                    "rotational": "1",
+                                    "sas_address": null,
+                                    "sas_device_handle": null,
+                                    "scheduler_mode": "mq-deadline",
+                                    "sectors": "209715200",
+                                    "sectorsize": "512",
+                                    "size": "100.00 GB",
+                                    "support_discard": "512",
+                                    "vendor": "0x1af4",
+                                    "virtual": 1
+                                }
+                            },
+                            "ansible_distribution": "Ubuntu",
+                            "ansible_distribution_file_parsed": true,
+                            "ansible_distribution_file_path": "/etc/os-release",
+                            "ansible_distribution_file_variety": "Debian",
+                            "ansible_distribution_major_version": "24",
+                            "ansible_distribution_release": "noble",
+                            "ansible_distribution_version": "24.04",
+                            "ansible_dns": {
+                                "nameservers": [
+                                    "169.254.1.1",
+                                    "192.168.127.1"
+                                ],
+                                "search": [
+                                    "ibm.com",
+                                    "lotus.com",
+                                    "s81c.com",
+                                    "ibmmodules.com",
+                                    "ibmuc.com",
+                                    "lan"
+                                ]
+                            },
+                            "ansible_domain": "",
+                            "ansible_effective_group_id": 0,
+                            "ansible_effective_user_id": 0,
+                            "ansible_fibre_channel_wwn": [],
+                            "ansible_fips": false,
+                            "ansible_form_factor": "Desktop",
+                            "ansible_fqdn": "f77bc19a221c",
+                            "ansible_hostname": "f77bc19a221c",
+                            "ansible_hostnqn": "",
+                            "ansible_is_chroot": false,
+                            "ansible_iscsi_iqn": "",
+                            "ansible_kernel": "6.19.7-200.fc43.aarch64",
+                            "ansible_kernel_version": "#1 SMP PREEMPT_DYNAMIC Thu Mar 12 15:54:05 UTC 2026",
+                            "ansible_loadavg": {
+                                "15m": 0.1640625,
+                                "1m": 0.08740234375,
+                                "5m": 0.15185546875
+                            },
+                            "ansible_local": {},
+                            "ansible_lsb": {
+                                "codename": "noble",
+                                "description": "Ubuntu 24.04.4 LTS",
+                                "id": "Ubuntu",
+                                "major_release": "24",
+                                "release": "24.04"
+                            },
+                            "ansible_lvm": "N/A",
+                            "ansible_machine": "aarch64",
+                            "ansible_machine_id": "3336566d25cc4006af849b45da0cd020",
+                            "ansible_memfree_mb": 198,
+                            "ansible_memory_mb": {
+                                "nocache": {
+                                    "free": 1187,
+                                    "used": 756
+                                },
+                                "real": {
+                                    "free": 198,
+                                    "total": 1943,
+                                    "used": 1745
+                                },
+                                "swap": {
+                                    "cached": 0,
+                                    "free": 0,
+                                    "total": 0,
+                                    "used": 0
+                                }
+                            },
+                            "ansible_memtotal_mb": 1943,
+                            "ansible_mounts": [],
+                            "ansible_nodename": "f77bc19a221c",
+                            "ansible_os_family": "Debian",
+                            "ansible_pkg_mgr": "apt",
+                            "ansible_proc_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": [
+                                    "tty0",
+                                    "hvc0"
+                                ],
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_processor": [
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5"
+                            ],
+                            "ansible_processor_cores": 1,
+                            "ansible_processor_count": 6,
+                            "ansible_processor_nproc": 6,
+                            "ansible_processor_threads_per_core": 1,
+                            "ansible_processor_vcpus": 6,
+                            "ansible_product_name": "Apple Virtualization Generic Platform",
+                            "ansible_product_serial": "NA",
+                            "ansible_product_uuid": "NA",
+                            "ansible_product_version": "1",
+                            "ansible_python": {
+                                "executable": "/usr/bin/python3",
+                                "has_sslcontext": true,
+                                "type": "cpython",
+                                "version": {
+                                    "major": 3,
+                                    "micro": 3,
+                                    "minor": 12,
+                                    "releaselevel": "final",
+                                    "serial": 0
+                                },
+                                "version_info": [
+                                    3,
+                                    12,
+                                    3,
+                                    "final",
+                                    0
+                                ]
+                            },
+                            "ansible_python_version": "3.12.3",
+                            "ansible_real_group_id": 0,
+                            "ansible_real_user_id": 0,
+                            "ansible_selinux": {
+                                "status": "disabled"
+                            },
+                            "ansible_selinux_python_present": true,
+                            "ansible_service_mgr": "sshd",
+                            "ansible_ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBK8gqG8srA3yEA+N0FZdP6qMAEU4+pHGyHQAPDvoNHotVZbgTy2uZq1lt/Wwh2R0qsUIeDefMU0qJyXSKKzZvAw=",
+                            "ansible_ssh_host_key_ecdsa_public_keytype": "ecdsa-sha2-nistp256",
+                            "ansible_ssh_host_key_ed25519_public": "AAAAC3NzaC1lZDI1NTE5AAAAIMVnBgXjqZgRqiO5gJK5vUYTnRXAVShuekPRBi/E3uq2",
+                            "ansible_ssh_host_key_ed25519_public_keytype": "ssh-ed25519",
+                            "ansible_ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABgQDNieJ3QO1hw78gwQLY9WiD6RA35AeFUlKgBNv8S25Oc60yyTodPw7Mc1Rf+5sdQNLiPBFVwLF2FLhmDtOherFY/dpXEfDzPYLh5mZRIcg+pd7H/kQbQbNY577aX8dYEuorhCzdOTKNHckXn8gWh8pckNyq9NwecEipAO4s21OXvcDUMm6AsxMirxHkadPcFwjk45nYII6O3VNTjbmRlh7UOSl1yRkfIOesqvp8F/GfnPNzjWTjMwlLgQ3KJpNrc4fTYkSC5qa/oWUf/Lep6iUyGxN7YxRbJSRYTIC2T0f/2uL8MFLX8aajz35DX0pjAFCtJNC6kOdHzpQvcauAbaIvWuYQ9FPyxa3oaah7Ltzg8H3NqxDZP1T0QLz9CHv1Bb0Sw7IkrJF8eEL5kzzyBKu+rFh02IzkgYPIvgM88/Wru5b7IFws10vTqGkzzL42x4PmiWo8jbvhJhSHYzOAw+D+/ZuClSjvmSM0HtmvF8Rj38McLe+RR3aWZML0/0rGcV8=",
+                            "ansible_ssh_host_key_rsa_public_keytype": "ssh-rsa",
+                            "ansible_swapfree_mb": 0,
+                            "ansible_swaptotal_mb": 0,
+                            "ansible_system": "Linux",
+                            "ansible_system_capabilities": "N/A",
+                            "ansible_system_capabilities_enforced": "N/A",
+                            "ansible_system_vendor": "Apple Inc.",
+                            "ansible_uptime_seconds": 172011,
+                            "ansible_user_dir": "/root",
+                            "ansible_user_gecos": "root",
+                            "ansible_user_gid": 0,
+                            "ansible_user_id": "root",
+                            "ansible_user_shell": "/bin/bash",
+                            "ansible_user_uid": 0,
+                            "ansible_userspace_bits": "64",
+                            "ansible_virtualization_role": "guest",
+                            "ansible_virtualization_tech_guest": [
+                                "docker",
+                                "container"
+                            ],
+                            "ansible_virtualization_tech_host": [],
+                            "ansible_virtualization_type": "docker",
+                            "gather_subset": [
+                                "all"
+                            ],
+                            "module_setup": true
+                        },
+                        "changed": false,
+                        "deprecations": [],
+                        "warnings": []
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:44:08.712863+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000001d",
+                    "uuid": "3d5e83a1-555d-499d-bbb7-17e79adc004b"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "1s",
+                    "__host": "rhel1",
+                    "__number": 3,
+                    "__result": "Ok",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.961932,
+                    "end": "2026-07-23T17:44:09.680946+00:00",
+                    "event_loop": null,
+                    "host": "rhel1",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "rhel1",
+                    "res": {
+                        "_ansible_no_log": null,
+                        "_ansible_verbose_override": true,
+                        "ansible_facts": {
+                            "ansible_all_ipv4_addresses": [
+                                "10.88.0.5"
+                            ],
+                            "ansible_all_ipv6_addresses": [
+                                "fe80::5c52:7dff:fe64:1e56"
+                            ],
+                            "ansible_apparmor": {
+                                "status": "disabled"
+                            },
+                            "ansible_architecture": "aarch64",
+                            "ansible_bios_date": "04/18/2026",
+                            "ansible_bios_vendor": "Apple Inc.",
+                            "ansible_bios_version": "2103.100.6.0.0",
+                            "ansible_board_asset_tag": "NA",
+                            "ansible_board_name": "NA",
+                            "ansible_board_serial": "NA",
+                            "ansible_board_vendor": "NA",
+                            "ansible_board_version": "NA",
+                            "ansible_chassis_asset_tag": "NA",
+                            "ansible_chassis_serial": "NA",
+                            "ansible_chassis_vendor": "Apple Inc.",
+                            "ansible_chassis_version": "1",
+                            "ansible_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": "hvc0",
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_date_time": {
+                                "date": "2026-07-23",
+                                "day": "23",
+                                "epoch": "1784828649",
+                                "epoch_int": "1784828649",
+                                "hour": "17",
+                                "iso8601": "2026-07-23T17:44:09Z",
+                                "iso8601_basic": "20260723T174409552475",
+                                "iso8601_basic_short": "20260723T174409",
+                                "iso8601_micro": "2026-07-23T17:44:09.552475Z",
+                                "minute": "44",
+                                "month": "07",
+                                "second": "09",
+                                "time": "17:44:09",
+                                "tz": "UTC",
+                                "tz_dst": "UTC",
+                                "tz_offset": "+0000",
+                                "weekday": "Thursday",
+                                "weekday_number": "4",
+                                "weeknumber": "29",
+                                "year": "2026"
+                            },
+                            "ansible_default_ipv4": {
+                                "address": "10.88.0.5",
+                                "alias": "eth0",
+                                "broadcast": "10.88.255.255",
+                                "gateway": "10.88.0.1",
+                                "interface": "eth0",
+                                "macaddress": "5e:52:7d:64:1e:56",
+                                "mtu": 65520,
+                                "netmask": "255.255.0.0",
+                                "network": "10.88.0.0",
+                                "prefix": "16",
+                                "type": "ether"
+                            },
+                            "ansible_default_ipv6": {},
+                            "ansible_device_links": {
+                                "ids": {},
+                                "labels": {},
+                                "masters": {},
+                                "uuids": {}
+                            },
+                            "ansible_devices": {
+                                "vda": {
+                                    "holders": [],
+                                    "host": "",
+                                    "links": {
+                                        "ids": [],
+                                        "labels": [],
+                                        "masters": [],
+                                        "uuids": []
+                                    },
+                                    "model": null,
+                                    "partitions": {
+                                        "vda1": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "2048",
+                                            "sectorsize": 512,
+                                            "size": "1.00 MB",
+                                            "start": "2048",
+                                            "uuid": null
+                                        },
+                                        "vda2": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "260096",
+                                            "sectorsize": 512,
+                                            "size": "127.00 MB",
+                                            "start": "4096",
+                                            "uuid": null
+                                        },
+                                        "vda3": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "786432",
+                                            "sectorsize": 512,
+                                            "size": "384.00 MB",
+                                            "start": "264192",
+                                            "uuid": null
+                                        },
+                                        "vda4": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "208664543",
+                                            "sectorsize": 512,
+                                            "size": "99.50 GB",
+                                            "start": "1050624",
+                                            "uuid": null
+                                        }
+                                    },
+                                    "removable": "0",
+                                    "rotational": "1",
+                                    "sas_address": null,
+                                    "sas_device_handle": null,
+                                    "scheduler_mode": "mq-deadline",
+                                    "sectors": "209715200",
+                                    "sectorsize": "512",
+                                    "size": "100.00 GB",
+                                    "support_discard": "512",
+                                    "vendor": "0x1af4",
+                                    "virtual": 1
+                                }
+                            },
+                            "ansible_distribution": "Rocky",
+                            "ansible_distribution_file_parsed": true,
+                            "ansible_distribution_file_path": "/etc/redhat-release",
+                            "ansible_distribution_file_variety": "RedHat",
+                            "ansible_distribution_major_version": "9",
+                            "ansible_distribution_release": "Blue Onyx",
+                            "ansible_distribution_version": "9.8",
+                            "ansible_dns": {
+                                "nameservers": [
+                                    "169.254.1.1",
+                                    "192.168.127.1"
+                                ],
+                                "search": [
+                                    "ibm.com",
+                                    "lotus.com",
+                                    "s81c.com",
+                                    "ibmmodules.com",
+                                    "ibmuc.com",
+                                    "lan"
+                                ]
+                            },
+                            "ansible_domain": "",
+                            "ansible_effective_group_id": 0,
+                            "ansible_effective_user_id": 0,
+                            "ansible_eth0": {
+                                "active": true,
+                                "device": "eth0",
+                                "ipv4": {
+                                    "address": "10.88.0.5",
+                                    "broadcast": "10.88.255.255",
+                                    "netmask": "255.255.0.0",
+                                    "network": "10.88.0.0",
+                                    "prefix": "16"
+                                },
+                                "ipv6": [
+                                    {
+                                        "address": "fe80::5c52:7dff:fe64:1e56",
+                                        "prefix": "64",
+                                        "scope": "link"
+                                    }
+                                ],
+                                "macaddress": "5e:52:7d:64:1e:56",
+                                "mtu": 65520,
+                                "promisc": false,
+                                "speed": 10000,
+                                "type": "ether"
+                            },
+                            "ansible_fibre_channel_wwn": [],
+                            "ansible_fips": false,
+                            "ansible_form_factor": "Desktop",
+                            "ansible_fqdn": "rhel1",
+                            "ansible_hostname": "rhel1",
+                            "ansible_hostnqn": "",
+                            "ansible_interfaces": [
+                                "lo",
+                                "eth0"
+                            ],
+                            "ansible_is_chroot": false,
+                            "ansible_iscsi_iqn": "",
+                            "ansible_kernel": "6.19.7-200.fc43.aarch64",
+                            "ansible_kernel_version": "#1 SMP PREEMPT_DYNAMIC Thu Mar 12 15:54:05 UTC 2026",
+                            "ansible_lo": {
+                                "active": true,
+                                "device": "lo",
+                                "ipv4": {
+                                    "address": "127.0.0.1",
+                                    "broadcast": "",
+                                    "netmask": "255.0.0.0",
+                                    "network": "127.0.0.0",
+                                    "prefix": "8"
+                                },
+                                "ipv6": [
+                                    {
+                                        "address": "::1",
+                                        "prefix": "128",
+                                        "scope": "host"
+                                    }
+                                ],
+                                "mtu": 65536,
+                                "promisc": false,
+                                "type": "loopback"
+                            },
+                            "ansible_loadavg": {
+                                "15m": 0.16,
+                                "1m": 0.09,
+                                "5m": 0.15
+                            },
+                            "ansible_local": {},
+                            "ansible_locally_reachable_ips": {
+                                "ipv4": [
+                                    "10.88.0.5",
+                                    "127.0.0.0/8",
+                                    "127.0.0.1"
+                                ],
+                                "ipv6": [
+                                    "::1",
+                                    "fe80::5c52:7dff:fe64:1e56"
+                                ]
+                            },
+                            "ansible_lsb": {},
+                            "ansible_lvm": "N/A",
+                            "ansible_machine": "aarch64",
+                            "ansible_machine_id": "9022598d93784537aa6abafa548cd457",
+                            "ansible_memfree_mb": 196,
+                            "ansible_memory_mb": {
+                                "nocache": {
+                                    "free": 1184,
+                                    "used": 759
+                                },
+                                "real": {
+                                    "free": 196,
+                                    "total": 1943,
+                                    "used": 1747
+                                },
+                                "swap": {
+                                    "cached": 0,
+                                    "free": 0,
+                                    "total": 0,
+                                    "used": 0
+                                }
+                            },
+                            "ansible_memtotal_mb": 1943,
+                            "ansible_mounts": [],
+                            "ansible_nodename": "rhel1",
+                            "ansible_os_family": "RedHat",
+                            "ansible_pkg_mgr": "dnf",
+                            "ansible_proc_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": [
+                                    "tty0",
+                                    "hvc0"
+                                ],
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_processor": [
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5"
+                            ],
+                            "ansible_processor_cores": 1,
+                            "ansible_processor_count": 6,
+                            "ansible_processor_nproc": 6,
+                            "ansible_processor_threads_per_core": 1,
+                            "ansible_processor_vcpus": 6,
+                            "ansible_product_name": "Apple Virtualization Generic Platform",
+                            "ansible_product_serial": "NA",
+                            "ansible_product_uuid": "NA",
+                            "ansible_product_version": "1",
+                            "ansible_python": {
+                                "executable": "/usr/bin/python3",
+                                "has_sslcontext": true,
+                                "type": "cpython",
+                                "version": {
+                                    "major": 3,
+                                    "micro": 25,
+                                    "minor": 9,
+                                    "releaselevel": "final",
+                                    "serial": 0
+                                },
+                                "version_info": [
+                                    3,
+                                    9,
+                                    25,
+                                    "final",
+                                    0
+                                ]
+                            },
+                            "ansible_python_version": "3.9.25",
+                            "ansible_real_group_id": 0,
+                            "ansible_real_user_id": 0,
+                            "ansible_selinux": {
+                                "status": "disabled"
+                            },
+                            "ansible_selinux_python_present": true,
+                            "ansible_service_mgr": "systemd",
+                            "ansible_ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBDVClWP5/4en0VdApF4STkA6/r+QH+hlDCEtx6sQN0eZz6cmM1Yzwf4lrF8OwnWW/ahs9yekwRQa4p9gggCjBXM=",
+                            "ansible_ssh_host_key_ecdsa_public_keytype": "ecdsa-sha2-nistp256",
+                            "ansible_ssh_host_key_ed25519_public": "AAAAC3NzaC1lZDI1NTE5AAAAINiAWIPnT91qiGVu2C01dC6K/VP4nQmSEpIjxyHzFItk",
+                            "ansible_ssh_host_key_ed25519_public_keytype": "ssh-ed25519",
+                            "ansible_ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABgQCroIUeoALsvgoX5hl4tW5YR21/U9Jw+F6ghUxX7iptrgxOBnBqXJD9wmaYAdLJy/BkYLZ9xteYALpPH0segbGuhADeU3e1wrm+0GdUL4ecn/FsoDT6vwNlfeCB3EIRM9EBHE3NUMEVkwhWZeyNcIUS85XTvAwf/61XZd4nmH90HBup4mcBg81Vc5vr0vfxc6wH+jeClxoR1I4l2CvrDneiRc+r3/MM93Wpia6x+Zx4nOCyjblwiykkoIbpQS1m3jkZvRhSiATvqSe+Rj2suBeF570Ivrj1MyZf9TtHul62Zb1l1gZRecj5uXsJgmTSfy+AH8RdcGxMioUSPxWXS8q+GHolvhDoLX6TLsz3oQKSm365XtSyYsmKAyCqAbJIsc3jKKhXxHxvsqTDCM+sgKDY+XiOY9vjkniEBESPGiS2OEPwCiWzF4VZJ73N7qFFkdrfEl8HW60Zdn90eDwt9Qkwq0FTZno7iyDxLw59xyYs9wnF2l2sYBeHR3/DHI6QnGk=",
+                            "ansible_ssh_host_key_rsa_public_keytype": "ssh-rsa",
+                            "ansible_swapfree_mb": 0,
+                            "ansible_swaptotal_mb": 0,
+                            "ansible_system": "Linux",
+                            "ansible_system_capabilities": [],
+                            "ansible_system_capabilities_enforced": "False",
+                            "ansible_system_vendor": "Apple Inc.",
+                            "ansible_uptime_seconds": 172011,
+                            "ansible_user_dir": "/root",
+                            "ansible_user_gecos": "root",
+                            "ansible_user_gid": 0,
+                            "ansible_user_id": "root",
+                            "ansible_user_shell": "/bin/bash",
+                            "ansible_user_uid": 0,
+                            "ansible_userspace_bits": "64",
+                            "ansible_virtualization_role": "guest",
+                            "ansible_virtualization_tech_guest": [
+                                "podman",
+                                "container"
+                            ],
+                            "ansible_virtualization_tech_host": [],
+                            "ansible_virtualization_type": "podman",
+                            "gather_subset": [
+                                "all"
+                            ],
+                            "module_setup": true
+                        },
+                        "changed": false,
+                        "deprecations": [],
+                        "warnings": []
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:44:08.719014+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000001d",
+                    "uuid": "e3d198dc-e64e-4713-9d30-638e2ff235f2"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "1s",
+                    "__host": "rhel2",
+                    "__number": 4,
+                    "__result": "Ok",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.95968,
+                    "end": "2026-07-23T17:44:09.683906+00:00",
+                    "event_loop": null,
+                    "host": "rhel2",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "rhel2",
+                    "res": {
+                        "_ansible_no_log": null,
+                        "_ansible_verbose_override": true,
+                        "ansible_facts": {
+                            "ansible_all_ipv4_addresses": [
+                                "10.88.0.6"
+                            ],
+                            "ansible_all_ipv6_addresses": [
+                                "fe80::74f8:59ff:fef6:fcb9"
+                            ],
+                            "ansible_apparmor": {
+                                "status": "disabled"
+                            },
+                            "ansible_architecture": "aarch64",
+                            "ansible_bios_date": "04/18/2026",
+                            "ansible_bios_vendor": "Apple Inc.",
+                            "ansible_bios_version": "2103.100.6.0.0",
+                            "ansible_board_asset_tag": "NA",
+                            "ansible_board_name": "NA",
+                            "ansible_board_serial": "NA",
+                            "ansible_board_vendor": "NA",
+                            "ansible_board_version": "NA",
+                            "ansible_chassis_asset_tag": "NA",
+                            "ansible_chassis_serial": "NA",
+                            "ansible_chassis_vendor": "Apple Inc.",
+                            "ansible_chassis_version": "1",
+                            "ansible_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": "hvc0",
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_date_time": {
+                                "date": "2026-07-23",
+                                "day": "23",
+                                "epoch": "1784828649",
+                                "epoch_int": "1784828649",
+                                "hour": "17",
+                                "iso8601": "2026-07-23T17:44:09Z",
+                                "iso8601_basic": "20260723T174409550682",
+                                "iso8601_basic_short": "20260723T174409",
+                                "iso8601_micro": "2026-07-23T17:44:09.550682Z",
+                                "minute": "44",
+                                "month": "07",
+                                "second": "09",
+                                "time": "17:44:09",
+                                "tz": "UTC",
+                                "tz_dst": "UTC",
+                                "tz_offset": "+0000",
+                                "weekday": "Thursday",
+                                "weekday_number": "4",
+                                "weeknumber": "29",
+                                "year": "2026"
+                            },
+                            "ansible_default_ipv4": {
+                                "address": "10.88.0.6",
+                                "alias": "eth0",
+                                "broadcast": "10.88.255.255",
+                                "gateway": "10.88.0.1",
+                                "interface": "eth0",
+                                "macaddress": "76:f8:59:f6:fc:b9",
+                                "mtu": 65520,
+                                "netmask": "255.255.0.0",
+                                "network": "10.88.0.0",
+                                "prefix": "16",
+                                "type": "ether"
+                            },
+                            "ansible_default_ipv6": {},
+                            "ansible_device_links": {
+                                "ids": {},
+                                "labels": {},
+                                "masters": {},
+                                "uuids": {}
+                            },
+                            "ansible_devices": {
+                                "vda": {
+                                    "holders": [],
+                                    "host": "",
+                                    "links": {
+                                        "ids": [],
+                                        "labels": [],
+                                        "masters": [],
+                                        "uuids": []
+                                    },
+                                    "model": null,
+                                    "partitions": {
+                                        "vda1": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "2048",
+                                            "sectorsize": 512,
+                                            "size": "1.00 MB",
+                                            "start": "2048",
+                                            "uuid": null
+                                        },
+                                        "vda2": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "260096",
+                                            "sectorsize": 512,
+                                            "size": "127.00 MB",
+                                            "start": "4096",
+                                            "uuid": null
+                                        },
+                                        "vda3": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "786432",
+                                            "sectorsize": 512,
+                                            "size": "384.00 MB",
+                                            "start": "264192",
+                                            "uuid": null
+                                        },
+                                        "vda4": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "208664543",
+                                            "sectorsize": 512,
+                                            "size": "99.50 GB",
+                                            "start": "1050624",
+                                            "uuid": null
+                                        }
+                                    },
+                                    "removable": "0",
+                                    "rotational": "1",
+                                    "sas_address": null,
+                                    "sas_device_handle": null,
+                                    "scheduler_mode": "mq-deadline",
+                                    "sectors": "209715200",
+                                    "sectorsize": "512",
+                                    "size": "100.00 GB",
+                                    "support_discard": "512",
+                                    "vendor": "0x1af4",
+                                    "virtual": 1
+                                }
+                            },
+                            "ansible_distribution": "Rocky",
+                            "ansible_distribution_file_parsed": true,
+                            "ansible_distribution_file_path": "/etc/redhat-release",
+                            "ansible_distribution_file_variety": "RedHat",
+                            "ansible_distribution_major_version": "9",
+                            "ansible_distribution_release": "Blue Onyx",
+                            "ansible_distribution_version": "9.8",
+                            "ansible_dns": {
+                                "nameservers": [
+                                    "169.254.1.1",
+                                    "192.168.127.1"
+                                ],
+                                "search": [
+                                    "ibm.com",
+                                    "lotus.com",
+                                    "s81c.com",
+                                    "ibmmodules.com",
+                                    "ibmuc.com",
+                                    "lan"
+                                ]
+                            },
+                            "ansible_domain": "",
+                            "ansible_effective_group_id": 0,
+                            "ansible_effective_user_id": 0,
+                            "ansible_eth0": {
+                                "active": true,
+                                "device": "eth0",
+                                "ipv4": {
+                                    "address": "10.88.0.6",
+                                    "broadcast": "10.88.255.255",
+                                    "netmask": "255.255.0.0",
+                                    "network": "10.88.0.0",
+                                    "prefix": "16"
+                                },
+                                "ipv6": [
+                                    {
+                                        "address": "fe80::74f8:59ff:fef6:fcb9",
+                                        "prefix": "64",
+                                        "scope": "link"
+                                    }
+                                ],
+                                "macaddress": "76:f8:59:f6:fc:b9",
+                                "mtu": 65520,
+                                "promisc": false,
+                                "speed": 10000,
+                                "type": "ether"
+                            },
+                            "ansible_fibre_channel_wwn": [],
+                            "ansible_fips": false,
+                            "ansible_form_factor": "Desktop",
+                            "ansible_fqdn": "rhel2",
+                            "ansible_hostname": "rhel2",
+                            "ansible_hostnqn": "",
+                            "ansible_interfaces": [
+                                "lo",
+                                "eth0"
+                            ],
+                            "ansible_is_chroot": false,
+                            "ansible_iscsi_iqn": "",
+                            "ansible_kernel": "6.19.7-200.fc43.aarch64",
+                            "ansible_kernel_version": "#1 SMP PREEMPT_DYNAMIC Thu Mar 12 15:54:05 UTC 2026",
+                            "ansible_lo": {
+                                "active": true,
+                                "device": "lo",
+                                "ipv4": {
+                                    "address": "127.0.0.1",
+                                    "broadcast": "",
+                                    "netmask": "255.0.0.0",
+                                    "network": "127.0.0.0",
+                                    "prefix": "8"
+                                },
+                                "ipv6": [
+                                    {
+                                        "address": "::1",
+                                        "prefix": "128",
+                                        "scope": "host"
+                                    }
+                                ],
+                                "mtu": 65536,
+                                "promisc": false,
+                                "type": "loopback"
+                            },
+                            "ansible_loadavg": {
+                                "15m": 0.16,
+                                "1m": 0.09,
+                                "5m": 0.15
+                            },
+                            "ansible_local": {},
+                            "ansible_locally_reachable_ips": {
+                                "ipv4": [
+                                    "10.88.0.6",
+                                    "127.0.0.0/8",
+                                    "127.0.0.1"
+                                ],
+                                "ipv6": [
+                                    "::1",
+                                    "fe80::74f8:59ff:fef6:fcb9"
+                                ]
+                            },
+                            "ansible_lsb": {},
+                            "ansible_lvm": "N/A",
+                            "ansible_machine": "aarch64",
+                            "ansible_machine_id": "9022598d93784537aa6abafa548cd457",
+                            "ansible_memfree_mb": 197,
+                            "ansible_memory_mb": {
+                                "nocache": {
+                                    "free": 1185,
+                                    "used": 758
+                                },
+                                "real": {
+                                    "free": 197,
+                                    "total": 1943,
+                                    "used": 1746
+                                },
+                                "swap": {
+                                    "cached": 0,
+                                    "free": 0,
+                                    "total": 0,
+                                    "used": 0
+                                }
+                            },
+                            "ansible_memtotal_mb": 1943,
+                            "ansible_mounts": [],
+                            "ansible_nodename": "rhel2",
+                            "ansible_os_family": "RedHat",
+                            "ansible_pkg_mgr": "dnf",
+                            "ansible_proc_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": [
+                                    "tty0",
+                                    "hvc0"
+                                ],
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_processor": [
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5"
+                            ],
+                            "ansible_processor_cores": 1,
+                            "ansible_processor_count": 6,
+                            "ansible_processor_nproc": 6,
+                            "ansible_processor_threads_per_core": 1,
+                            "ansible_processor_vcpus": 6,
+                            "ansible_product_name": "Apple Virtualization Generic Platform",
+                            "ansible_product_serial": "NA",
+                            "ansible_product_uuid": "NA",
+                            "ansible_product_version": "1",
+                            "ansible_python": {
+                                "executable": "/usr/bin/python3",
+                                "has_sslcontext": true,
+                                "type": "cpython",
+                                "version": {
+                                    "major": 3,
+                                    "micro": 25,
+                                    "minor": 9,
+                                    "releaselevel": "final",
+                                    "serial": 0
+                                },
+                                "version_info": [
+                                    3,
+                                    9,
+                                    25,
+                                    "final",
+                                    0
+                                ]
+                            },
+                            "ansible_python_version": "3.9.25",
+                            "ansible_real_group_id": 0,
+                            "ansible_real_user_id": 0,
+                            "ansible_selinux": {
+                                "status": "disabled"
+                            },
+                            "ansible_selinux_python_present": true,
+                            "ansible_service_mgr": "systemd",
+                            "ansible_ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBDVClWP5/4en0VdApF4STkA6/r+QH+hlDCEtx6sQN0eZz6cmM1Yzwf4lrF8OwnWW/ahs9yekwRQa4p9gggCjBXM=",
+                            "ansible_ssh_host_key_ecdsa_public_keytype": "ecdsa-sha2-nistp256",
+                            "ansible_ssh_host_key_ed25519_public": "AAAAC3NzaC1lZDI1NTE5AAAAINiAWIPnT91qiGVu2C01dC6K/VP4nQmSEpIjxyHzFItk",
+                            "ansible_ssh_host_key_ed25519_public_keytype": "ssh-ed25519",
+                            "ansible_ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABgQCroIUeoALsvgoX5hl4tW5YR21/U9Jw+F6ghUxX7iptrgxOBnBqXJD9wmaYAdLJy/BkYLZ9xteYALpPH0segbGuhADeU3e1wrm+0GdUL4ecn/FsoDT6vwNlfeCB3EIRM9EBHE3NUMEVkwhWZeyNcIUS85XTvAwf/61XZd4nmH90HBup4mcBg81Vc5vr0vfxc6wH+jeClxoR1I4l2CvrDneiRc+r3/MM93Wpia6x+Zx4nOCyjblwiykkoIbpQS1m3jkZvRhSiATvqSe+Rj2suBeF570Ivrj1MyZf9TtHul62Zb1l1gZRecj5uXsJgmTSfy+AH8RdcGxMioUSPxWXS8q+GHolvhDoLX6TLsz3oQKSm365XtSyYsmKAyCqAbJIsc3jKKhXxHxvsqTDCM+sgKDY+XiOY9vjkniEBESPGiS2OEPwCiWzF4VZJ73N7qFFkdrfEl8HW60Zdn90eDwt9Qkwq0FTZno7iyDxLw59xyYs9wnF2l2sYBeHR3/DHI6QnGk=",
+                            "ansible_ssh_host_key_rsa_public_keytype": "ssh-rsa",
+                            "ansible_swapfree_mb": 0,
+                            "ansible_swaptotal_mb": 0,
+                            "ansible_system": "Linux",
+                            "ansible_system_capabilities": [],
+                            "ansible_system_capabilities_enforced": "False",
+                            "ansible_system_vendor": "Apple Inc.",
+                            "ansible_uptime_seconds": 172011,
+                            "ansible_user_dir": "/root",
+                            "ansible_user_gecos": "root",
+                            "ansible_user_gid": 0,
+                            "ansible_user_id": "root",
+                            "ansible_user_shell": "/bin/bash",
+                            "ansible_user_uid": 0,
+                            "ansible_userspace_bits": "64",
+                            "ansible_virtualization_role": "guest",
+                            "ansible_virtualization_tech_guest": [
+                                "podman",
+                                "container"
+                            ],
+                            "ansible_virtualization_tech_host": [],
+                            "ansible_virtualization_type": "podman",
+                            "gather_subset": [
+                                "all"
+                            ],
+                            "module_setup": true
+                        },
+                        "changed": false,
+                        "deprecations": [],
+                        "warnings": []
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:44:08.724226+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000001d",
+                    "uuid": "9ceae298-aa0b-443b-8058-11c835cfc4c9"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "1s",
+                    "__host": "rhel3",
+                    "__number": 5,
+                    "__result": "Ok",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.843015,
+                    "end": "2026-07-23T17:44:10.395948+00:00",
+                    "event_loop": null,
+                    "host": "rhel3",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "rhel3",
+                    "res": {
+                        "_ansible_no_log": null,
+                        "_ansible_verbose_override": true,
+                        "ansible_facts": {
+                            "ansible_all_ipv4_addresses": [
+                                "10.88.0.7"
+                            ],
+                            "ansible_all_ipv6_addresses": [
+                                "fe80::b011:4eff:fe4d:2427"
+                            ],
+                            "ansible_apparmor": {
+                                "status": "disabled"
+                            },
+                            "ansible_architecture": "aarch64",
+                            "ansible_bios_date": "04/18/2026",
+                            "ansible_bios_vendor": "Apple Inc.",
+                            "ansible_bios_version": "2103.100.6.0.0",
+                            "ansible_board_asset_tag": "NA",
+                            "ansible_board_name": "NA",
+                            "ansible_board_serial": "NA",
+                            "ansible_board_vendor": "NA",
+                            "ansible_board_version": "NA",
+                            "ansible_chassis_asset_tag": "NA",
+                            "ansible_chassis_serial": "NA",
+                            "ansible_chassis_vendor": "Apple Inc.",
+                            "ansible_chassis_version": "1",
+                            "ansible_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": "hvc0",
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_date_time": {
+                                "date": "2026-07-23",
+                                "day": "23",
+                                "epoch": "1784828650",
+                                "epoch_int": "1784828650",
+                                "hour": "17",
+                                "iso8601": "2026-07-23T17:44:10Z",
+                                "iso8601_basic": "20260723T174410273693",
+                                "iso8601_basic_short": "20260723T174410",
+                                "iso8601_micro": "2026-07-23T17:44:10.273693Z",
+                                "minute": "44",
+                                "month": "07",
+                                "second": "10",
+                                "time": "17:44:10",
+                                "tz": "UTC",
+                                "tz_dst": "UTC",
+                                "tz_offset": "+0000",
+                                "weekday": "Thursday",
+                                "weekday_number": "4",
+                                "weeknumber": "29",
+                                "year": "2026"
+                            },
+                            "ansible_default_ipv4": {
+                                "address": "10.88.0.7",
+                                "alias": "eth0",
+                                "broadcast": "10.88.255.255",
+                                "gateway": "10.88.0.1",
+                                "interface": "eth0",
+                                "macaddress": "b2:11:4e:4d:24:27",
+                                "mtu": 65520,
+                                "netmask": "255.255.0.0",
+                                "network": "10.88.0.0",
+                                "prefix": "16",
+                                "type": "ether"
+                            },
+                            "ansible_default_ipv6": {},
+                            "ansible_device_links": {
+                                "ids": {},
+                                "labels": {},
+                                "masters": {},
+                                "uuids": {}
+                            },
+                            "ansible_devices": {
+                                "vda": {
+                                    "holders": [],
+                                    "host": "",
+                                    "links": {
+                                        "ids": [],
+                                        "labels": [],
+                                        "masters": [],
+                                        "uuids": []
+                                    },
+                                    "model": null,
+                                    "partitions": {
+                                        "vda1": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "2048",
+                                            "sectorsize": 512,
+                                            "size": "1.00 MB",
+                                            "start": "2048",
+                                            "uuid": null
+                                        },
+                                        "vda2": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "260096",
+                                            "sectorsize": 512,
+                                            "size": "127.00 MB",
+                                            "start": "4096",
+                                            "uuid": null
+                                        },
+                                        "vda3": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "786432",
+                                            "sectorsize": 512,
+                                            "size": "384.00 MB",
+                                            "start": "264192",
+                                            "uuid": null
+                                        },
+                                        "vda4": {
+                                            "holders": [],
+                                            "links": {
+                                                "ids": [],
+                                                "labels": [],
+                                                "masters": [],
+                                                "uuids": []
+                                            },
+                                            "sectors": "208664543",
+                                            "sectorsize": 512,
+                                            "size": "99.50 GB",
+                                            "start": "1050624",
+                                            "uuid": null
+                                        }
+                                    },
+                                    "removable": "0",
+                                    "rotational": "1",
+                                    "sas_address": null,
+                                    "sas_device_handle": null,
+                                    "scheduler_mode": "mq-deadline",
+                                    "sectors": "209715200",
+                                    "sectorsize": "512",
+                                    "size": "100.00 GB",
+                                    "support_discard": "512",
+                                    "vendor": "0x1af4",
+                                    "virtual": 1
+                                }
+                            },
+                            "ansible_distribution": "Rocky",
+                            "ansible_distribution_file_parsed": true,
+                            "ansible_distribution_file_path": "/etc/redhat-release",
+                            "ansible_distribution_file_variety": "RedHat",
+                            "ansible_distribution_major_version": "9",
+                            "ansible_distribution_release": "Blue Onyx",
+                            "ansible_distribution_version": "9.8",
+                            "ansible_dns": {
+                                "nameservers": [
+                                    "169.254.1.1",
+                                    "192.168.127.1"
+                                ],
+                                "search": [
+                                    "ibm.com",
+                                    "lotus.com",
+                                    "s81c.com",
+                                    "ibmmodules.com",
+                                    "ibmuc.com",
+                                    "lan"
+                                ]
+                            },
+                            "ansible_domain": "",
+                            "ansible_effective_group_id": 0,
+                            "ansible_effective_user_id": 0,
+                            "ansible_eth0": {
+                                "active": true,
+                                "device": "eth0",
+                                "ipv4": {
+                                    "address": "10.88.0.7",
+                                    "broadcast": "10.88.255.255",
+                                    "netmask": "255.255.0.0",
+                                    "network": "10.88.0.0",
+                                    "prefix": "16"
+                                },
+                                "ipv6": [
+                                    {
+                                        "address": "fe80::b011:4eff:fe4d:2427",
+                                        "prefix": "64",
+                                        "scope": "link"
+                                    }
+                                ],
+                                "macaddress": "b2:11:4e:4d:24:27",
+                                "mtu": 65520,
+                                "promisc": false,
+                                "speed": 10000,
+                                "type": "ether"
+                            },
+                            "ansible_fibre_channel_wwn": [],
+                            "ansible_fips": false,
+                            "ansible_form_factor": "Desktop",
+                            "ansible_fqdn": "rhel3",
+                            "ansible_hostname": "rhel3",
+                            "ansible_hostnqn": "",
+                            "ansible_interfaces": [
+                                "lo",
+                                "eth0"
+                            ],
+                            "ansible_is_chroot": false,
+                            "ansible_iscsi_iqn": "",
+                            "ansible_kernel": "6.19.7-200.fc43.aarch64",
+                            "ansible_kernel_version": "#1 SMP PREEMPT_DYNAMIC Thu Mar 12 15:54:05 UTC 2026",
+                            "ansible_lo": {
+                                "active": true,
+                                "device": "lo",
+                                "ipv4": {
+                                    "address": "127.0.0.1",
+                                    "broadcast": "",
+                                    "netmask": "255.0.0.0",
+                                    "network": "127.0.0.0",
+                                    "prefix": "8"
+                                },
+                                "ipv6": [
+                                    {
+                                        "address": "::1",
+                                        "prefix": "128",
+                                        "scope": "host"
+                                    }
+                                ],
+                                "mtu": 65536,
+                                "promisc": false,
+                                "type": "loopback"
+                            },
+                            "ansible_loadavg": {
+                                "15m": 0.16,
+                                "1m": 0.09,
+                                "5m": 0.15
+                            },
+                            "ansible_local": {},
+                            "ansible_locally_reachable_ips": {
+                                "ipv4": [
+                                    "10.88.0.7",
+                                    "127.0.0.0/8",
+                                    "127.0.0.1"
+                                ],
+                                "ipv6": [
+                                    "::1",
+                                    "fe80::b011:4eff:fe4d:2427"
+                                ]
+                            },
+                            "ansible_lsb": {},
+                            "ansible_lvm": "N/A",
+                            "ansible_machine": "aarch64",
+                            "ansible_machine_id": "9022598d93784537aa6abafa548cd457",
+                            "ansible_memfree_mb": 234,
+                            "ansible_memory_mb": {
+                                "nocache": {
+                                    "free": 1221,
+                                    "used": 722
+                                },
+                                "real": {
+                                    "free": 234,
+                                    "total": 1943,
+                                    "used": 1709
+                                },
+                                "swap": {
+                                    "cached": 0,
+                                    "free": 0,
+                                    "total": 0,
+                                    "used": 0
+                                }
+                            },
+                            "ansible_memtotal_mb": 1943,
+                            "ansible_mounts": [],
+                            "ansible_nodename": "rhel3",
+                            "ansible_os_family": "RedHat",
+                            "ansible_pkg_mgr": "dnf",
+                            "ansible_proc_cmdline": {
+                                "BOOT_IMAGE": "(hd0,gpt3)/boot/ostree/fedora-coreos-4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/vmlinuz-6.19.7-200.fc43.aarch64",
+                                "boot": "UUID=b5727df3-d50d-4152-a26b-7db825712128",
+                                "console": [
+                                    "tty0",
+                                    "hvc0"
+                                ],
+                                "ignition.platform.id": "applehv",
+                                "ostree": "/ostree/boot.1/fedora-coreos/4cdd3986244f39d1fa325507d84e80cf5226054f47d3a8731a5aaedd5e02d787/0",
+                                "ostree.prepare-root.composefs": "0",
+                                "root": "UUID=e6b0ac5a-ecd8-4b56-81a5-3e8638bd980f",
+                                "rootflags": "prjquota",
+                                "rw": true
+                            },
+                            "ansible_processor": [
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5"
+                            ],
+                            "ansible_processor_cores": 1,
+                            "ansible_processor_count": 6,
+                            "ansible_processor_nproc": 6,
+                            "ansible_processor_threads_per_core": 1,
+                            "ansible_processor_vcpus": 6,
+                            "ansible_product_name": "Apple Virtualization Generic Platform",
+                            "ansible_product_serial": "NA",
+                            "ansible_product_uuid": "NA",
+                            "ansible_product_version": "1",
+                            "ansible_python": {
+                                "executable": "/usr/bin/python3",
+                                "has_sslcontext": true,
+                                "type": "cpython",
+                                "version": {
+                                    "major": 3,
+                                    "micro": 25,
+                                    "minor": 9,
+                                    "releaselevel": "final",
+                                    "serial": 0
+                                },
+                                "version_info": [
+                                    3,
+                                    9,
+                                    25,
+                                    "final",
+                                    0
+                                ]
+                            },
+                            "ansible_python_version": "3.9.25",
+                            "ansible_real_group_id": 0,
+                            "ansible_real_user_id": 0,
+                            "ansible_selinux": {
+                                "status": "disabled"
+                            },
+                            "ansible_selinux_python_present": true,
+                            "ansible_service_mgr": "systemd",
+                            "ansible_ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBDVClWP5/4en0VdApF4STkA6/r+QH+hlDCEtx6sQN0eZz6cmM1Yzwf4lrF8OwnWW/ahs9yekwRQa4p9gggCjBXM=",
+                            "ansible_ssh_host_key_ecdsa_public_keytype": "ecdsa-sha2-nistp256",
+                            "ansible_ssh_host_key_ed25519_public": "AAAAC3NzaC1lZDI1NTE5AAAAINiAWIPnT91qiGVu2C01dC6K/VP4nQmSEpIjxyHzFItk",
+                            "ansible_ssh_host_key_ed25519_public_keytype": "ssh-ed25519",
+                            "ansible_ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABgQCroIUeoALsvgoX5hl4tW5YR21/U9Jw+F6ghUxX7iptrgxOBnBqXJD9wmaYAdLJy/BkYLZ9xteYALpPH0segbGuhADeU3e1wrm+0GdUL4ecn/FsoDT6vwNlfeCB3EIRM9EBHE3NUMEVkwhWZeyNcIUS85XTvAwf/61XZd4nmH90HBup4mcBg81Vc5vr0vfxc6wH+jeClxoR1I4l2CvrDneiRc+r3/MM93Wpia6x+Zx4nOCyjblwiykkoIbpQS1m3jkZvRhSiATvqSe+Rj2suBeF570Ivrj1MyZf9TtHul62Zb1l1gZRecj5uXsJgmTSfy+AH8RdcGxMioUSPxWXS8q+GHolvhDoLX6TLsz3oQKSm365XtSyYsmKAyCqAbJIsc3jKKhXxHxvsqTDCM+sgKDY+XiOY9vjkniEBESPGiS2OEPwCiWzF4VZJ73N7qFFkdrfEl8HW60Zdn90eDwt9Qkwq0FTZno7iyDxLw59xyYs9wnF2l2sYBeHR3/DHI6QnGk=",
+                            "ansible_ssh_host_key_rsa_public_keytype": "ssh-rsa",
+                            "ansible_swapfree_mb": 0,
+                            "ansible_swaptotal_mb": 0,
+                            "ansible_system": "Linux",
+                            "ansible_system_capabilities": [],
+                            "ansible_system_capabilities_enforced": "False",
+                            "ansible_system_vendor": "Apple Inc.",
+                            "ansible_uptime_seconds": 172011,
+                            "ansible_user_dir": "/root",
+                            "ansible_user_gecos": "root",
+                            "ansible_user_gid": 0,
+                            "ansible_user_id": "root",
+                            "ansible_user_shell": "/bin/bash",
+                            "ansible_user_uid": 0,
+                            "ansible_userspace_bits": "64",
+                            "ansible_virtualization_role": "guest",
+                            "ansible_virtualization_tech_guest": [
+                                "container",
+                                "podman"
+                            ],
+                            "ansible_virtualization_tech_host": [],
+                            "ansible_virtualization_type": "podman",
+                            "gather_subset": [
+                                "all"
+                            ],
+                            "module_setup": true
+                        },
+                        "changed": false,
+                        "deprecations": [],
+                        "warnings": []
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:44:09.552933+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000001d",
+                    "uuid": "66f40237-ed88-4e6c-b7ed-cae90f81e4ef"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "container1",
+                    "__number": 6,
+                    "__result": "Failed",
+                    "__task": "Install common packages (loop)",
+                    "__task_action": "ansible.builtin.package",
+                    "duration": 0.011354,
+                    "end": "2026-07-23T17:44:10.420266+00:00",
+                    "event_loop": null,
+                    "host": "container1",
+                    "ignore_errors": null,
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "container1",
+                    "res": {
+                        "_ansible_no_log": false,
+                        "msg": "'common_packages' is undefined. 'common_packages' is undefined"
+                    },
+                    "resolved_action": "ansible.builtin.package",
+                    "start": "2026-07-23T17:44:10.408912+00:00",
+                    "task": "Install common packages (loop)",
+                    "task_action": "ansible.builtin.package",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:8",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000000b",
+                    "uuid": "89d84d49-6ef8-4a6a-bdf1-0d8294dd6f7c"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "container2",
+                    "__number": 7,
+                    "__result": "Failed",
+                    "__task": "Install common packages (loop)",
+                    "__task_action": "ansible.builtin.package",
+                    "duration": 0.013188,
+                    "end": "2026-07-23T17:44:10.425810+00:00",
+                    "event_loop": null,
+                    "host": "container2",
+                    "ignore_errors": null,
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "container2",
+                    "res": {
+                        "_ansible_no_log": false,
+                        "msg": "'common_packages' is undefined. 'common_packages' is undefined"
+                    },
+                    "resolved_action": "ansible.builtin.package",
+                    "start": "2026-07-23T17:44:10.412622+00:00",
+                    "task": "Install common packages (loop)",
+                    "task_action": "ansible.builtin.package",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:8",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000000b",
+                    "uuid": "94546eb5-d536-417c-b939-9859add4606a"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "container3",
+                    "__number": 8,
+                    "__result": "Failed",
+                    "__task": "Install common packages (loop)",
+                    "__task_action": "ansible.builtin.package",
+                    "duration": 0.01436,
+                    "end": "2026-07-23T17:44:10.432089+00:00",
+                    "event_loop": null,
+                    "host": "container3",
+                    "ignore_errors": null,
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "container3",
+                    "res": {
+                        "_ansible_no_log": false,
+                        "msg": "'common_packages' is undefined. 'common_packages' is undefined"
+                    },
+                    "resolved_action": "ansible.builtin.package",
+                    "start": "2026-07-23T17:44:10.417729+00:00",
+                    "task": "Install common packages (loop)",
+                    "task_action": "ansible.builtin.package",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:8",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000000b",
+                    "uuid": "159d539e-8e69-474a-b832-22ed114c5ca3"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "rhel1",
+                    "__number": 9,
+                    "__result": "Failed",
+                    "__task": "Install common packages (loop)",
+                    "__task_action": "ansible.builtin.package",
+                    "duration": 0.014242,
+                    "end": "2026-07-23T17:44:10.437898+00:00",
+                    "event_loop": null,
+                    "host": "rhel1",
+                    "ignore_errors": null,
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "rhel1",
+                    "res": {
+                        "_ansible_no_log": false,
+                        "msg": "'common_packages' is undefined. 'common_packages' is undefined"
+                    },
+                    "resolved_action": "ansible.builtin.package",
+                    "start": "2026-07-23T17:44:10.423656+00:00",
+                    "task": "Install common packages (loop)",
+                    "task_action": "ansible.builtin.package",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:8",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000000b",
+                    "uuid": "75a945d3-5573-4b00-b648-a6dee6bbd7f6"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "rhel2",
+                    "__number": 10,
+                    "__result": "Failed",
+                    "__task": "Install common packages (loop)",
+                    "__task_action": "ansible.builtin.package",
+                    "duration": 0.009255,
+                    "end": "2026-07-23T17:44:10.439130+00:00",
+                    "event_loop": null,
+                    "host": "rhel2",
+                    "ignore_errors": null,
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "rhel2",
+                    "res": {
+                        "_ansible_no_log": false,
+                        "msg": "'common_packages' is undefined. 'common_packages' is undefined"
+                    },
+                    "resolved_action": "ansible.builtin.package",
+                    "start": "2026-07-23T17:44:10.429875+00:00",
+                    "task": "Install common packages (loop)",
+                    "task_action": "ansible.builtin.package",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:8",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000000b",
+                    "uuid": "8bebd7f4-3592-455b-90ed-fbe376b61595"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "rhel3",
+                    "__number": 11,
+                    "__result": "Failed",
+                    "__task": "Install common packages (loop)",
+                    "__task_action": "ansible.builtin.package",
+                    "duration": 0.005953,
+                    "end": "2026-07-23T17:44:10.441266+00:00",
+                    "event_loop": null,
+                    "host": "rhel3",
+                    "ignore_errors": null,
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "422c002b-e841-275d-e8b4-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "34e86eeb-92d2-4f74-8ea8-fbb392dc989d",
+                    "remote_addr": "rhel3",
+                    "res": {
+                        "_ansible_no_log": false,
+                        "msg": "'common_packages' is undefined. 'common_packages' is undefined"
+                    },
+                    "resolved_action": "ansible.builtin.package",
+                    "start": "2026-07-23T17:44:10.435313+00:00",
+                    "task": "Install common packages (loop)",
+                    "task_action": "ansible.builtin.package",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:8",
+                    "task_uuid": "422c002b-e841-275d-e8b4-00000000000b",
+                    "uuid": "472d7d88-71be-42d3-9525-99a7dda03fb1"
+                }
+            ],
+            "uuid": "422c002b-e841-275d-e8b4-000000000007"
+        }
+    ],
+    "settings_entries": {
+        "ansible-navigator": {
+            "ansible": {
+                "cmdline": "-u ansible --private-key /Users/ray/.ssh/ansible_lab_key",
+                "config": {
+                    "help": false
+                },
+                "doc": {
+                    "help": false,
+                    "plugin": {
+                        "type": "module"
+                    }
+                },
+                "inventory": {
+                    "entries": [
+                        "/Users/ray/bootcamp/lab/inventories/inventory.ini"
+                    ],
+                    "help": false
+                },
+                "playbook": {
+                    "help": false,
+                    "path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml"
+                }
+            },
+            "ansible-builder": {
+                "help": false,
+                "workdir": "/Users/ray/bootcamp/lab"
+            },
+            "ansible-runner": {
+                "job-events": false
+            },
+            "app": "run",
+            "collection-doc-cache-path": "/Users/ray/.cache/ansible-navigator/collection_doc_cache.db",
+            "color": {
+                "enable": true,
+                "osc4": true
+            },
+            "editor": {
+                "command": "vi +{line_number} {filename}",
+                "console": true
+            },
+            "enable-prompts": false,
+            "exec": {
+                "command": "/bin/bash",
+                "shell": true
+            },
+            "execution-environment": {
+                "container-engine": "podman",
+                "enabled": true,
+                "image": "ghcr.io/ansible/creator-ee:v0.22.0",
+                "pull": {
+                    "policy": "tag"
+                }
+            },
+            "format": "yaml",
+            "images": {
+                "details": [
+                    "everything"
+                ]
+            },
+            "logging": {
+                "append": true,
+                "file": "/Users/ray/bootcamp/lab/ansible-navigator.log",
+                "level": "warning"
+            },
+            "mode": "stdout",
+            "playbook-artifact": {
+                "enable": true,
+                "save-as": "{playbook_dir}/{playbook_name}-artifact-{time_stamp}.json"
+            },
+            "settings": {
+                "effective": false,
+                "sample": false,
+                "schema": "json",
+                "sources": false
+            },
+            "time-zone": "UTC"
+        }
+    },
+    "settings_sources": {
+        "ansible-navigator.ansible-builder.help": "Defaults",
+        "ansible-navigator.ansible-builder.workdir": "Defaults",
+        "ansible-navigator.ansible-lint.config": "Not set",
+        "ansible-navigator.ansible-lint.lintables": "Not set",
+        "ansible-navigator.ansible-runner.artifact-dir": "Not set",
+        "ansible-navigator.ansible-runner.job-events": "Defaults",
+        "ansible-navigator.ansible-runner.rotate-artifacts-count": "Not set",
+        "ansible-navigator.ansible-runner.timeout": "Not set",
+        "ansible-navigator.ansible.cmdline": "Command line",
+        "ansible-navigator.ansible.config.help": "Defaults",
+        "ansible-navigator.ansible.config.path": "Not set",
+        "ansible-navigator.ansible.doc.help": "Defaults",
+        "ansible-navigator.ansible.doc.plugin.name": "Not set",
+        "ansible-navigator.ansible.doc.plugin.type": "Defaults",
+        "ansible-navigator.ansible.inventory.entries": "Command line",
+        "ansible-navigator.ansible.inventory.help": "Defaults",
+        "ansible-navigator.ansible.playbook.help": "Defaults",
+        "ansible-navigator.ansible.playbook.path": "Command line",
+        "ansible-navigator.app": "Command line",
+        "ansible-navigator.collection-doc-cache-path": "Defaults",
+        "ansible-navigator.color.enable": "Defaults",
+        "ansible-navigator.color.osc4": "Defaults",
+        "ansible-navigator.editor.command": "Defaults",
+        "ansible-navigator.editor.console": "Defaults",
+        "ansible-navigator.enable-prompts": "Defaults",
+        "ansible-navigator.exec.command": "Defaults",
+        "ansible-navigator.exec.shell": "Defaults",
+        "ansible-navigator.execution-environment.container-engine": "Automatically determined",
+        "ansible-navigator.execution-environment.container-options": "Not set",
+        "ansible-navigator.execution-environment.enabled": "Defaults",
+        "ansible-navigator.execution-environment.environment-variables.pass": "Not set",
+        "ansible-navigator.execution-environment.environment-variables.set": "Not set",
+        "ansible-navigator.execution-environment.image": "Defaults",
+        "ansible-navigator.execution-environment.pull.arguments": "Not set",
+        "ansible-navigator.execution-environment.pull.policy": "Defaults",
+        "ansible-navigator.execution-environment.volume-mounts": "Not set",
+        "ansible-navigator.format": "Defaults",
+        "ansible-navigator.images.details": "Defaults",
+        "ansible-navigator.inventory-columns": "Not set",
+        "ansible-navigator.logging.append": "Defaults",
+        "ansible-navigator.logging.file": "Defaults",
+        "ansible-navigator.logging.level": "Defaults",
+        "ansible-navigator.mode": "Command line",
+        "ansible-navigator.playbook-artifact.enable": "Defaults",
+        "ansible-navigator.playbook-artifact.replay": "Not set",
+        "ansible-navigator.playbook-artifact.save-as": "Defaults",
+        "ansible-navigator.settings.effective": "Defaults",
+        "ansible-navigator.settings.sample": "Defaults",
+        "ansible-navigator.settings.schema": "Defaults",
+        "ansible-navigator.settings.sources": "Defaults",
+        "ansible-navigator.time-zone": "Defaults",
+        "settings_file_path": "None",
+        "settings_file_source": "None"
+    },
+    "status": "failed",
+    "status_color": 9,
+    "stdout": [
+        "",
+        "PLAY [Module 5 - deploy a config safely] ***************************************",
+        "",
+        "TASK [Gathering Facts] *********************************************************",
+        "\u001b[0;32mok: [container2]\u001b[0m",
+        "\u001b[0;32mok: [container3]\u001b[0m",
+        "\u001b[0;32mok: [container1]\u001b[0m",
+        "\u001b[0;32mok: [rhel1]\u001b[0m",
+        "\u001b[0;32mok: [rhel2]\u001b[0m",
+        "\u001b[0;32mok: [rhel3]\u001b[0m",
+        "",
+        "TASK [Install common packages (loop)] ******************************************",
+        "\u001b[0;31mfatal: [container1]: FAILED! => {\"msg\": \"'common_packages' is undefined. 'common_packages' is undefined\"}\u001b[0m",
+        "\u001b[0;31mfatal: [container2]: FAILED! => {\"msg\": \"'common_packages' is undefined. 'common_packages' is undefined\"}\u001b[0m",
+        "\u001b[0;31mfatal: [container3]: FAILED! => {\"msg\": \"'common_packages' is undefined. 'common_packages' is undefined\"}\u001b[0m",
+        "\u001b[0;31mfatal: [rhel1]: FAILED! => {\"msg\": \"'common_packages' is undefined. 'common_packages' is undefined\"}\u001b[0m",
+        "\u001b[0;31mfatal: [rhel2]: FAILED! => {\"msg\": \"'common_packages' is undefined. 'common_packages' is undefined\"}\u001b[0m",
+        "\u001b[0;31mfatal: [rhel3]: FAILED! => {\"msg\": \"'common_packages' is undefined. 'common_packages' is undefined\"}\u001b[0m",
+        "",
+        "PLAY RECAP *********************************************************************",
+        "\u001b[0;31mcontainer1\u001b[0m                 : \u001b[0;32mok=1   \u001b[0m changed=0    unreachable=0    \u001b[0;31mfailed=1   \u001b[0m skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mcontainer2\u001b[0m                 : \u001b[0;32mok=1   \u001b[0m changed=0    unreachable=0    \u001b[0;31mfailed=1   \u001b[0m skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mcontainer3\u001b[0m                 : \u001b[0;32mok=1   \u001b[0m changed=0    unreachable=0    \u001b[0;31mfailed=1   \u001b[0m skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mrhel1\u001b[0m                      : \u001b[0;32mok=1   \u001b[0m changed=0    unreachable=0    \u001b[0;31mfailed=1   \u001b[0m skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mrhel2\u001b[0m                      : \u001b[0;32mok=1   \u001b[0m changed=0    unreachable=0    \u001b[0;31mfailed=1   \u001b[0m skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mrhel3\u001b[0m                      : \u001b[0;32mok=1   \u001b[0m changed=0    unreachable=0    \u001b[0;31mfailed=1   \u001b[0m skipped=0    rescued=0    ignored=0   "
+    ],
+    "version": "2.0.0"
+}

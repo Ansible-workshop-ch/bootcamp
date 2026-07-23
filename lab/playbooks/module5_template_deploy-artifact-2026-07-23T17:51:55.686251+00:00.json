@@ -1,0 +1,371 @@
+{
+    "plays": [
+        {
+            "___progress": "100%",
+            "__changed": 0,
+            "__failed": 0,
+            "__ignored": 0,
+            "__in progress": 0,
+            "__ok": 0,
+            "__percent_complete": 100,
+            "__play_name": "Module 5 - deploy a config safely",
+            "__progress": "Complete",
+            "__skipped": 0,
+            "__task_count": 6,
+            "__unreachable": 6,
+            "name": "Module 5 - deploy a config safely",
+            "pattern": "web",
+            "play": "Module 5 - deploy a config safely",
+            "play_pattern": "web",
+            "play_uuid": "aa87dd4a-fcd6-5902-9932-000000000007",
+            "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+            "playbook_uuid": "eefdd8c5-59a5-40d4-bcb1-090cc112f8cd",
+            "tasks": [
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "container1",
+                    "__number": 0,
+                    "__result": "Unreachable",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.051035,
+                    "end": "2026-07-23T17:51:55.450529+00:00",
+                    "host": "container1",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "aa87dd4a-fcd6-5902-9932-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "eefdd8c5-59a5-40d4-bcb1-090cc112f8cd",
+                    "remote_addr": "container1",
+                    "res": {
+                        "changed": false,
+                        "msg": "Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2222' (ED25519) to the list of known hosts.\r\nno such identity: /home/runner/.ssh/ansib: No such file or directory\r\nansible@192.168.1.79: Permission denied (publickey,password).",
+                        "unreachable": true
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:51:55.399494+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "aa87dd4a-fcd6-5902-9932-00000000001d",
+                    "uuid": "bca14801-1493-4625-abbf-1132f75730f9"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "container2",
+                    "__number": 1,
+                    "__result": "Unreachable",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.044602,
+                    "end": "2026-07-23T17:51:55.448381+00:00",
+                    "host": "container2",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "aa87dd4a-fcd6-5902-9932-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "eefdd8c5-59a5-40d4-bcb1-090cc112f8cd",
+                    "remote_addr": "container2",
+                    "res": {
+                        "changed": false,
+                        "msg": "Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2223' (ED25519) to the list of known hosts.\r\nno such identity: /home/runner/.ssh/ansib: No such file or directory\r\nansible@192.168.1.79: Permission denied (publickey,password).",
+                        "unreachable": true
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:51:55.403779+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "aa87dd4a-fcd6-5902-9932-00000000001d",
+                    "uuid": "7f3dc120-fc15-4f86-8596-01dae2474954"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "container3",
+                    "__number": 2,
+                    "__result": "Unreachable",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.056589,
+                    "end": "2026-07-23T17:51:55.464871+00:00",
+                    "host": "container3",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "aa87dd4a-fcd6-5902-9932-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "eefdd8c5-59a5-40d4-bcb1-090cc112f8cd",
+                    "remote_addr": "container3",
+                    "res": {
+                        "changed": false,
+                        "msg": "Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2224' (ED25519) to the list of known hosts.\r\nno such identity: /home/runner/.ssh/ansib: No such file or directory\r\nansible@192.168.1.79: Permission denied (publickey,password).",
+                        "unreachable": true
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:51:55.408282+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "aa87dd4a-fcd6-5902-9932-00000000001d",
+                    "uuid": "1d651af1-2683-44fe-b88a-ab4dee40bf74"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "rhel1",
+                    "__number": 3,
+                    "__result": "Unreachable",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.057264,
+                    "end": "2026-07-23T17:51:55.475921+00:00",
+                    "host": "rhel1",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "aa87dd4a-fcd6-5902-9932-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "eefdd8c5-59a5-40d4-bcb1-090cc112f8cd",
+                    "remote_addr": "rhel1",
+                    "res": {
+                        "changed": false,
+                        "msg": "Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2232' (ED25519) to the list of known hosts.\r\nno such identity: /home/runner/.ssh/ansib: No such file or directory\r\nansible@192.168.1.79: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).",
+                        "unreachable": true
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:51:55.418657+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "aa87dd4a-fcd6-5902-9932-00000000001d",
+                    "uuid": "a8d83573-671e-4dbe-b247-87f06713fd7b"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "rhel2",
+                    "__number": 4,
+                    "__result": "Unreachable",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.054953,
+                    "end": "2026-07-23T17:51:55.479576+00:00",
+                    "host": "rhel2",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "aa87dd4a-fcd6-5902-9932-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "eefdd8c5-59a5-40d4-bcb1-090cc112f8cd",
+                    "remote_addr": "rhel2",
+                    "res": {
+                        "changed": false,
+                        "msg": "Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2233' (ED25519) to the list of known hosts.\r\nno such identity: /home/runner/.ssh/ansib: No such file or directory\r\nansible@192.168.1.79: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).",
+                        "unreachable": true
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:51:55.424623+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "aa87dd4a-fcd6-5902-9932-00000000001d",
+                    "uuid": "3f3ccddc-5f8d-4945-9f30-90763ca62a9f"
+                },
+                {
+                    "__changed": false,
+                    "__duration": "0s",
+                    "__host": "rhel3",
+                    "__number": 5,
+                    "__result": "Unreachable",
+                    "__task": "Gathering Facts",
+                    "__task_action": "gather_facts",
+                    "duration": 0.037654,
+                    "end": "2026-07-23T17:51:55.483080+00:00",
+                    "host": "rhel3",
+                    "play": "Module 5 - deploy a config safely",
+                    "play_pattern": "web",
+                    "play_uuid": "aa87dd4a-fcd6-5902-9932-000000000007",
+                    "playbook": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml",
+                    "playbook_uuid": "eefdd8c5-59a5-40d4-bcb1-090cc112f8cd",
+                    "remote_addr": "rhel3",
+                    "res": {
+                        "changed": false,
+                        "msg": "Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2234' (ED25519) to the list of known hosts.\r\nno such identity: /home/runner/.ssh/ansib: No such file or directory\r\nansible@192.168.1.79: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).",
+                        "unreachable": true
+                    },
+                    "resolved_action": "ansible.builtin.gather_facts",
+                    "start": "2026-07-23T17:51:55.445426+00:00",
+                    "task": "Gathering Facts",
+                    "task_action": "gather_facts",
+                    "task_args": "",
+                    "task_path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml:2",
+                    "task_uuid": "aa87dd4a-fcd6-5902-9932-00000000001d",
+                    "uuid": "0fde780e-8621-4c38-8344-afe9139ab077"
+                }
+            ],
+            "uuid": "aa87dd4a-fcd6-5902-9932-000000000007"
+        }
+    ],
+    "settings_entries": {
+        "ansible-navigator": {
+            "ansible": {
+                "cmdline": "-u ansible --private-key '~/.ssh/ansib'",
+                "config": {
+                    "help": false
+                },
+                "doc": {
+                    "help": false,
+                    "plugin": {
+                        "type": "module"
+                    }
+                },
+                "inventory": {
+                    "entries": [
+                        "/Users/ray/bootcamp/lab/inventories/inventory.ini"
+                    ],
+                    "help": false
+                },
+                "playbook": {
+                    "help": false,
+                    "path": "/Users/ray/bootcamp/lab/playbooks/module5_template_deploy.yml"
+                }
+            },
+            "ansible-builder": {
+                "help": false,
+                "workdir": "/Users/ray/bootcamp/lab"
+            },
+            "ansible-runner": {
+                "job-events": false
+            },
+            "app": "run",
+            "collection-doc-cache-path": "/Users/ray/.cache/ansible-navigator/collection_doc_cache.db",
+            "color": {
+                "enable": true,
+                "osc4": true
+            },
+            "editor": {
+                "command": "vi +{line_number} {filename}",
+                "console": true
+            },
+            "enable-prompts": false,
+            "exec": {
+                "command": "/bin/bash",
+                "shell": true
+            },
+            "execution-environment": {
+                "container-engine": "podman",
+                "enabled": true,
+                "image": "ghcr.io/ansible/creator-ee:v0.22.0",
+                "pull": {
+                    "policy": "tag"
+                }
+            },
+            "format": "yaml",
+            "images": {
+                "details": [
+                    "everything"
+                ]
+            },
+            "logging": {
+                "append": true,
+                "file": "/Users/ray/bootcamp/lab/ansible-navigator.log",
+                "level": "warning"
+            },
+            "mode": "interactive",
+            "playbook-artifact": {
+                "enable": true,
+                "save-as": "{playbook_dir}/{playbook_name}-artifact-{time_stamp}.json"
+            },
+            "settings": {
+                "effective": false,
+                "sample": false,
+                "schema": "json",
+                "sources": false
+            },
+            "time-zone": "UTC"
+        }
+    },
+    "settings_sources": {
+        "ansible-navigator.ansible-builder.help": "Defaults",
+        "ansible-navigator.ansible-builder.workdir": "Defaults",
+        "ansible-navigator.ansible-lint.config": "Not set",
+        "ansible-navigator.ansible-lint.lintables": "Not set",
+        "ansible-navigator.ansible-runner.artifact-dir": "Not set",
+        "ansible-navigator.ansible-runner.job-events": "Defaults",
+        "ansible-navigator.ansible-runner.rotate-artifacts-count": "Not set",
+        "ansible-navigator.ansible-runner.timeout": "Not set",
+        "ansible-navigator.ansible.cmdline": "Command line",
+        "ansible-navigator.ansible.config.help": "Defaults",
+        "ansible-navigator.ansible.config.path": "Not set",
+        "ansible-navigator.ansible.doc.help": "Defaults",
+        "ansible-navigator.ansible.doc.plugin.name": "Not set",
+        "ansible-navigator.ansible.doc.plugin.type": "Defaults",
+        "ansible-navigator.ansible.inventory.entries": "Command line",
+        "ansible-navigator.ansible.inventory.help": "Defaults",
+        "ansible-navigator.ansible.playbook.help": "Defaults",
+        "ansible-navigator.ansible.playbook.path": "Command line",
+        "ansible-navigator.app": "Command line",
+        "ansible-navigator.collection-doc-cache-path": "Defaults",
+        "ansible-navigator.color.enable": "Defaults",
+        "ansible-navigator.color.osc4": "Defaults",
+        "ansible-navigator.editor.command": "Defaults",
+        "ansible-navigator.editor.console": "Defaults",
+        "ansible-navigator.enable-prompts": "Defaults",
+        "ansible-navigator.exec.command": "Defaults",
+        "ansible-navigator.exec.shell": "Defaults",
+        "ansible-navigator.execution-environment.container-engine": "Automatically determined",
+        "ansible-navigator.execution-environment.container-options": "Not set",
+        "ansible-navigator.execution-environment.enabled": "Defaults",
+        "ansible-navigator.execution-environment.environment-variables.pass": "Not set",
+        "ansible-navigator.execution-environment.environment-variables.set": "Not set",
+        "ansible-navigator.execution-environment.image": "Defaults",
+        "ansible-navigator.execution-environment.pull.arguments": "Not set",
+        "ansible-navigator.execution-environment.pull.policy": "Defaults",
+        "ansible-navigator.execution-environment.volume-mounts": "Not set",
+        "ansible-navigator.format": "Defaults",
+        "ansible-navigator.images.details": "Defaults",
+        "ansible-navigator.inventory-columns": "Not set",
+        "ansible-navigator.logging.append": "Defaults",
+        "ansible-navigator.logging.file": "Defaults",
+        "ansible-navigator.logging.level": "Defaults",
+        "ansible-navigator.mode": "Defaults",
+        "ansible-navigator.playbook-artifact.enable": "Defaults",
+        "ansible-navigator.playbook-artifact.replay": "Not set",
+        "ansible-navigator.playbook-artifact.save-as": "Defaults",
+        "ansible-navigator.settings.effective": "Defaults",
+        "ansible-navigator.settings.sample": "Defaults",
+        "ansible-navigator.settings.schema": "Defaults",
+        "ansible-navigator.settings.sources": "Defaults",
+        "ansible-navigator.time-zone": "Defaults",
+        "settings_file_path": "None",
+        "settings_file_source": "None"
+    },
+    "status": "failed",
+    "status_color": 9,
+    "stdout": [
+        "",
+        "PLAY [Module 5 - deploy a config safely] ***************************************",
+        "",
+        "TASK [Gathering Facts] *********************************************************",
+        "\u001b[1;31mfatal: [container2]: UNREACHABLE! => {\"changed\": false, \"msg\": \"Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2223' (ED25519) to the list of known hosts.\\r\\nno such identity: /home/runner/.ssh/ansib: No such file or directory\\r\\nansible@192.168.1.79: Permission denied (publickey,password).\", \"unreachable\": true}\u001b[0m",
+        "\u001b[1;31mfatal: [container1]: UNREACHABLE! => {\"changed\": false, \"msg\": \"Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2222' (ED25519) to the list of known hosts.\\r\\nno such identity: /home/runner/.ssh/ansib: No such file or directory\\r\\nansible@192.168.1.79: Permission denied (publickey,password).\", \"unreachable\": true}\u001b[0m",
+        "\u001b[1;31mfatal: [container3]: UNREACHABLE! => {\"changed\": false, \"msg\": \"Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2224' (ED25519) to the list of known hosts.\\r\\nno such identity: /home/runner/.ssh/ansib: No such file or directory\\r\\nansible@192.168.1.79: Permission denied (publickey,password).\", \"unreachable\": true}\u001b[0m",
+        "\u001b[1;31mfatal: [rhel1]: UNREACHABLE! => {\"changed\": false, \"msg\": \"Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2232' (ED25519) to the list of known hosts.\\r\\nno such identity: /home/runner/.ssh/ansib: No such file or directory\\r\\nansible@192.168.1.79: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).\", \"unreachable\": true}\u001b[0m",
+        "\u001b[1;31mfatal: [rhel2]: UNREACHABLE! => {\"changed\": false, \"msg\": \"Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2233' (ED25519) to the list of known hosts.\\r\\nno such identity: /home/runner/.ssh/ansib: No such file or directory\\r\\nansible@192.168.1.79: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).\", \"unreachable\": true}\u001b[0m",
+        "\u001b[1;31mfatal: [rhel3]: UNREACHABLE! => {\"changed\": false, \"msg\": \"Failed to connect to the host via ssh: Warning: Permanently added '[192.168.1.79]:2234' (ED25519) to the list of known hosts.\\r\\nno such identity: /home/runner/.ssh/ansib: No such file or directory\\r\\nansible@192.168.1.79: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).\", \"unreachable\": true}\u001b[0m",
+        "",
+        "PLAY RECAP *********************************************************************",
+        "\u001b[0;31mcontainer1\u001b[0m                 : ok=0    changed=0    \u001b[1;31munreachable=1   \u001b[0m failed=0    skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mcontainer2\u001b[0m                 : ok=0    changed=0    \u001b[1;31munreachable=1   \u001b[0m failed=0    skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mcontainer3\u001b[0m                 : ok=0    changed=0    \u001b[1;31munreachable=1   \u001b[0m failed=0    skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mrhel1\u001b[0m                      : ok=0    changed=0    \u001b[1;31munreachable=1   \u001b[0m failed=0    skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mrhel2\u001b[0m                      : ok=0    changed=0    \u001b[1;31munreachable=1   \u001b[0m failed=0    skipped=0    rescued=0    ignored=0   ",
+        "\u001b[0;31mrhel3\u001b[0m                      : ok=0    changed=0    \u001b[1;31munreachable=1   \u001b[0m failed=0    skipped=0    rescued=0    ignored=0   "
+    ],
+    "version": "2.0.0"
+}

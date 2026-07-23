@@ -49,6 +49,9 @@
           }
         }
       }
+    },
+    "vars": {
+      "ansible_user": "ansible"
     }
   }
 }
