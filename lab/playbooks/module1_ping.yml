@@ -11,10 +11,7 @@
 # 4. Print the hostname Ansible sees for each target.
 
 - name: Module 1 - verify connectivity
-
-  # This tells Ansible which group of hosts to target.
-  # The linux group is defined in inventories/inventory.ini.
-  hosts: linux
+  hosts: web
 
   # gather_facts: true tells Ansible to collect system information
   # such as hostname, OS, IP addresses, Python version, and more.
