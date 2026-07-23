@@ -1,0 +1,22 @@
+---
+plugin: netbox.netbox.nb_inventory
+
+api_endpoint: "{{ lookup('env', 'NETBOX_API') }}"
+
+token:
+  type: Bearer
+  value: "{{ lookup('env', 'NETBOX_TOKEN') }}"
+
+validate_certs: true
+config_context: false
+interfaces: false
+services: false
+plurals: false
+
+group_by:
+  - site
+  - role
+  - platform
+
+device_query_filters:
+  - has_primary_ip: "true"
