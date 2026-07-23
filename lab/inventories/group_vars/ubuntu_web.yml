@@ -1,12 +1,4 @@
 ---
-package_name: apache2
-service_name: apache2
-
-update_cache: true
-cache_valid_time: 0
-
-common_packages:
-  - vim
-  - git
-  - curl
-  - apache2
+web_package: apache2
+web_service: apache2
+web_message: "Hello from Ubuntu JSON inventory"

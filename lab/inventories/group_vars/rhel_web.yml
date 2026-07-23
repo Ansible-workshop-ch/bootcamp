@@ -1,9 +1,4 @@
 ---
-package_name: httpd
-service_name: httpd
-
-common_packages:
-  - vim
-  - git
-  - curl-minimal
-  - httpd
+web_package: httpd
+web_service: httpd
+web_message: "Hello from RHEL JSON inventory"
