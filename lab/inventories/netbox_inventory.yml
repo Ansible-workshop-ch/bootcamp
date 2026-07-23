@@ -1,22 +1,21 @@
 ---
 plugin: netbox.netbox.nb_inventory
-
-api_endpoint: "{{ lookup('env', 'NETBOX_API') }}"
-
-token:
-  type: Bearer
-  value: "{{ lookup('env', 'NETBOX_TOKEN') }}"
-
 validate_certs: true
-config_context: false
-interfaces: false
-services: false
-plurals: false
+
+query_filters:
+  - status: active
 
 group_by:
-  - site
-  - role
-  - platform
+  - sites
+  - device_roles
+  - platforms
 
-device_query_filters:
-  - has_primary_ip: "true"
+keyed_groups:
+  - prefix: site
+    key: site.slug
+
+  - prefix: role
+    key: device_role.slug
+
+compose:
+  ansible_host: primary_ip4.address | split('/') | first

@@ -1,0 +1,16 @@
+---
+- name: Test hosts discovered from NetBox
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Verify Ansible connectivity
+      ansible.builtin.ping:
+
+    - name: Show NetBox host information
+      ansible.builtin.debug:
+        msg:
+          - "Inventory name: {{ inventory_hostname }}"
+          - "Connection address: {{ ansible_host | default('not defined') }}"
+          - "Operating system: {{ ansible_distribution | default('unknown') }}"
+          - "Platform group: {{ group_names | join(', ') }}"
